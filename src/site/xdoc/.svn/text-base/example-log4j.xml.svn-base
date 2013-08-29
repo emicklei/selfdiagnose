@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<document>
+  <properties>
+    <title>Example SelfDiagnose log4j configuration</title>
+    <author email="ernest.micklei@philemonworks.com">Ernest Micklei</author>
+  </properties>
+  <body>
+
+    <section name="log4j.properties (example)">
+      <source><![CDATA[ 
+# --- SelfDiagnose ---
+log4j.logger.com.philemonworks.selfdiagnose=INFO, SELFDIAGNOSE
+log4j.appender.SELFDIAGNOSE=org.apache.log4j.ConsoleAppender
+log4j.appender.SELFDIAGNOSE.layout=org.apache.log4j.PatternLayout
+log4j.appender.SELFDIAGNOSE.layout.ConversionPattern=%d{dd/MM/yyyy HH:mm:ss,SSS} %-5p %c{1} - %m%n
+      ]]></source>
+    </section>
+
+  </body>
+</document>

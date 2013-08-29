@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<selfdiagnose>
+	<tasks>
+		<iterator comment="i am an iterator" value="${{&quot;one&quot;}}" var="each">
+			<checkvaluematches value="{each}" pattern=".*" />
+		</iterator>
+		<checksystemproperty property="java.version" />
+	</tasks>
+</selfdiagnose>

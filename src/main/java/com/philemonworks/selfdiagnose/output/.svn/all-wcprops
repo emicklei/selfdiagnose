@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svnroot/selfdiagnose/!svn/ver/209/trunk/src/main/java/com/philemonworks/selfdiagnose/output
+END
+DiagnoseRunReporter.java
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svnroot/selfdiagnose/!svn/ver/73/trunk/src/main/java/com/philemonworks/selfdiagnose/output/DiagnoseRunReporter.java
+END
+XMLReporter.java
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svnroot/selfdiagnose/!svn/ver/160/trunk/src/main/java/com/philemonworks/selfdiagnose/output/XMLReporter.java
+END
+HTMLReporter.java
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svnroot/selfdiagnose/!svn/ver/215/trunk/src/main/java/com/philemonworks/selfdiagnose/output/HTMLReporter.java
+END
+LoggingReporter.java
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svnroot/selfdiagnose/!svn/ver/193/trunk/src/main/java/com/philemonworks/selfdiagnose/output/LoggingReporter.java
+END
+DiagnoseRun.java
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svnroot/selfdiagnose/!svn/ver/203/trunk/src/main/java/com/philemonworks/selfdiagnose/output/DiagnoseRun.java
+END

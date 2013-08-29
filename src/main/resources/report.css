@@ -1,0 +1,12 @@
+body, table {
+	font-family:verdana;
+	font-size:small;
+}
+.odd { background-color:#F3F5F8 }
+.even { background-color:#DCE2EB }
+.table {
+	padding: 4px;
+}
+.passed { color: #000; }
+.failed { color: #0000ff; }
+.error { color: #ff0000; }

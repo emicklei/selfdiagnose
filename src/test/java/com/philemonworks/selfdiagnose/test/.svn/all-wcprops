@@ -1,0 +1,155 @@
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svnroot/selfdiagnose/!svn/ver/193/trunk/src/test/java/com/philemonworks/selfdiagnose/test
+END
+CheckResourceAccessibleTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/svnroot/selfdiagnose/!svn/ver/17/trunk/src/test/java/com/philemonworks/selfdiagnose/test/CheckResourceAccessibleTest.java
+END
+CheckFileContainsStringTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/svnroot/selfdiagnose/!svn/ver/18/trunk/src/test/java/com/philemonworks/selfdiagnose/test/CheckFileContainsStringTest.java
+END
+SelfDiagnoseTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svnroot/selfdiagnose/!svn/ver/143/trunk/src/test/java/com/philemonworks/selfdiagnose/test/SelfDiagnoseTest.java
+END
+InstanceTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svnroot/selfdiagnose/!svn/ver/132/trunk/src/test/java/com/philemonworks/selfdiagnose/test/InstanceTest.java
+END
+ConfigurationTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svnroot/selfdiagnose/!svn/ver/137/trunk/src/test/java/com/philemonworks/selfdiagnose/test/ConfigurationTest.java
+END
+ExecutionContextTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svnroot/selfdiagnose/!svn/ver/136/trunk/src/test/java/com/philemonworks/selfdiagnose/test/ExecutionContextTest.java
+END
+CheckResoucePropertyTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svnroot/selfdiagnose/!svn/ver/132/trunk/src/test/java/com/philemonworks/selfdiagnose/test/CheckResoucePropertyTest.java
+END
+CheckBeanPropertyTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svnroot/selfdiagnose/!svn/ver/16/trunk/src/test/java/com/philemonworks/selfdiagnose/test/CheckBeanPropertyTest.java
+END
+SelfDiagnoseServletTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svnroot/selfdiagnose/!svn/ver/168/trunk/src/test/java/com/philemonworks/selfdiagnose/test/SelfDiagnoseServletTest.java
+END
+BasicDiagnosticTaskTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svnroot/selfdiagnose/!svn/ver/136/trunk/src/test/java/com/philemonworks/selfdiagnose/test/BasicDiagnosticTaskTest.java
+END
+ReportMapTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svnroot/selfdiagnose/!svn/ver/162/trunk/src/test/java/com/philemonworks/selfdiagnose/test/ReportMapTest.java
+END
+CheckTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svnroot/selfdiagnose/!svn/ver/136/trunk/src/test/java/com/philemonworks/selfdiagnose/test/CheckTest.java
+END
+CheckValueMatchesTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svnroot/selfdiagnose/!svn/ver/127/trunk/src/test/java/com/philemonworks/selfdiagnose/test/CheckValueMatchesTest.java
+END
+XMLUtilsTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svnroot/selfdiagnose/!svn/ver/136/trunk/src/test/java/com/philemonworks/selfdiagnose/test/XMLUtilsTest.java
+END
+CheckReportSystemPropertyTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 124
+/svnroot/selfdiagnose/!svn/ver/96/trunk/src/test/java/com/philemonworks/selfdiagnose/test/CheckReportSystemPropertyTest.java
+END
+CheckJ2EETest.java
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svnroot/selfdiagnose/!svn/ver/126/trunk/src/test/java/com/philemonworks/selfdiagnose/test/CheckJ2EETest.java
+END
+TasksTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svnroot/selfdiagnose/!svn/ver/99/trunk/src/test/java/com/philemonworks/selfdiagnose/test/TasksTest.java
+END
+SelfDiagnoseReporterTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svnroot/selfdiagnose/!svn/ver/193/trunk/src/test/java/com/philemonworks/selfdiagnose/test/SelfDiagnoseReporterTest.java
+END
+DiagnoseUtilTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svnroot/selfdiagnose/!svn/ver/160/trunk/src/test/java/com/philemonworks/selfdiagnose/test/DiagnoseUtilTest.java
+END
+CheckURLReachableTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svnroot/selfdiagnose/!svn/ver/136/trunk/src/test/java/com/philemonworks/selfdiagnose/test/CheckURLReachableTest.java
+END
+CollectionIteratorTaskTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/svnroot/selfdiagnose/!svn/ver/137/trunk/src/test/java/com/philemonworks/selfdiagnose/test/CollectionIteratorTaskTest.java
+END
+CheckResourceBundleKeyTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svnroot/selfdiagnose/!svn/ver/23/trunk/src/test/java/com/philemonworks/selfdiagnose/test/CheckResourceBundleKeyTest.java
+END
+ReportPropertiesTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svnroot/selfdiagnose/!svn/ver/160/trunk/src/test/java/com/philemonworks/selfdiagnose/test/ReportPropertiesTest.java
+END
+CheckXMLContentTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svnroot/selfdiagnose/!svn/ver/18/trunk/src/test/java/com/philemonworks/selfdiagnose/test/CheckXMLContentTest.java
+END
+SelfTestTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svnroot/selfdiagnose/!svn/ver/134/trunk/src/test/java/com/philemonworks/selfdiagnose/test/SelfTestTest.java
+END

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<document>
+	<properties>
+		<title>SelfDiagnose - Get Started</title>
+		<author email="ernest.micklei@philemonworks.com">
+			Ernest Micklei
+		</author>
+	</properties>
+	<body>
+		<section name="Get started">
+			Adding SelfDiagnose to your existing project requires the
+			following steps:
+			<ul>
+				<li>Installing SelfDiagnose</li>
+				<li>Adding tasks to a configuration</li>
+				<li>Running tasks and view the report</li>
+			</ul>
+
+			<subsection name="Installing SelfDiagnose">
+				<p>
+					<ol>
+						<li>
+							Add selfdiagnose-{version}.jar to the
+							classpath of the (web)application
+						</li>
+						<li>
+							Make sure the log4j-{version 1.2.8 or
+							higher}.jar is on the same classpath
+						</li>
+						<li>
+							Make sure the ognl-{version 2.6.11 or
+							higher}.jar is on the same classpath.
+							(see Open Symphony Object Graph Navigation Language).
+						</li>						
+						<li>
+							Add the SelfDiagnoseServlet to your Web
+							Deployment Descriptor:
+						</li>
+					</ol>
+
+					<source>
+						<![CDATA[
+<!-- SelfDiagnose - Servlet -->
+<servlet>
+	<servlet-name>SelfDiagnoseServlet</servlet-name>
+	<display-name>SelfDiagnose</display-name>
+	<servlet-class>
+	  com.philemonworks.selfdiagnose.SelfDiagnoseServlet
+	</servlet-class>
+</servlet> 	  
+
+<!-- SelfDiagnose - Mapping -->	  	  
+<servlet-mapping>
+	<servlet-name>SelfDiagnoseServlet</servlet-name>
+	<url-pattern>/selfdiagnose/*</url-pattern>
+</servlet-mapping> ]]>
+					</source>
+
+				</p>
+			</subsection>
+
+			<subsection name="Adding Tasks">
+				<p>
+					Registration of diagnostic task can be done directly
+					in Java or by configuration in XML. Create the file
+					name
+					<strong>selfdiagnose.xml</strong>
+					and place it in a source folder (e.g. WebContent)
+					such that this resource can be found on the
+					classpath.
+					<source>
+						<![CDATA[
+<?xml version="1.0" ?>				
+<selfdiagnose 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:noNamespaceSchemaLocation="http://selfdiagnose.sourceforge.net/selfdiagnose-2.4.xsd">
+	
+	<tasks>
+		<checksystemproperty property="java.version" />
+	</tasks>
+</selfdiagnose>]]>
+					</source>
+				</p>
+			</subsection>
+
+			<subsection name="Running SelfDiagnose">
+				<p>
+					The following request to the SelfDiagnoseServlet
+					will run the diagnostic tasks and return an HTML
+					page showing the results.
+					<source>
+http://{your host:port}/{your context}/selfdiagnose
+					</source>
+				</p>
+			</subsection>
+		</section>
+	</body>
+</document>

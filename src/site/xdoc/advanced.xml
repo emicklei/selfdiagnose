@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<document>
+	<properties>
+		<title>SelfDiagnose - Advanced use</title>
+		<author email="ernest.micklei@philemonworks.com">Ernest Micklei</author>
+	</properties>
+	<body>
+		<section name="Advanced use">
+			<p>
+				The topics listed on this page describe other features of the SelfDiagnose package.
+			</p>
+		
+		<subsection name="Running Diagnostic Tasks" >
+			<p/>
+			<table>
+				<tr>
+					<th>What</th>
+					<th>How</th>
+				</tr>
+				<tr>
+					<td>Using the Servlet and requesting to reload the configuration</td>
+					<td>http://{host}/{webapp}/selfdiagnose?reload=true</td>
+				</tr>
+				<tr>
+					<td>Run and report the results in plain text</td>
+					<td>http://{host}/{webapp}/selfdiagnose?format=txt</td>
+				</tr>				
+				<tr>
+					<td>Invoking from Java</td>
+					<td>com.philemonworks.selfdiagnose.SelfDiagnose.run();</td>
+				</tr>
+				<tr>
+					<td>Once, upon startup, using the ServletContext Listener</td>
+					<td>View
+						<a href="example-webdescriptor.html">configuration</a>
+					</td>
+				</tr>
+			</table>
+		</subsection>
+		
+		<subsection name="Report as XML">
+			<p>The results of runnning diagnostic tasks are simply logged. In addition,
+				results can be retrieved directly from the SelfDiagnoseServlet in XML
+				format. If the request to the SelfDiagnoseServlet contains the query part:
+				format="xml" then the servlet will respond with the results as an XML
+				document. View the <a href="selfdiagnose-report-xml.xml">example</a>
+			</p>
+		</subsection>
+		
+		<subsection name="Registering tasks from Java">
+			<source>
+CheckURLReachable task = new CheckURLReachable();
+task.setUrl("http://localhost:900");
+SelfDiagnose.register(task);
+			</source>
+		</subsection>					
+		
+		<subsection name="Custom tasks">
+			Developers can define and use custom tasks that are run by SelfDiagnose.
+			<source><![CDATA[
+public MyTask extends DiagnosticTask {
+	public String getDescription() { 
+			return "purpose of this task";
+	}
+	public void run(ExecutionContext ctx, DiagnosticTaskResult result) 
+			throws DiagnoseException {}
+}
+			]]></source>
+		</subsection>		
+		
+		<subsection name="Using context variables">
+		</subsection>
+			
+		</section>
+	</body>
+</document>

@@ -1,0 +1,71 @@
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svnroot/selfdiagnose/!svn/ver/137/trunk/src/test/resources
+END
+selfdiagnose-test.xml
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svnroot/selfdiagnose/!svn/ver/134/trunk/src/test/resources/selfdiagnose-test.xml
+END
+checkfilecontainsstringtest.txt
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svnroot/selfdiagnose/!svn/ver/18/trunk/src/test/resources/checkfilecontainsstringtest.txt
+END
+checkxmlcontenttest.xml
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/selfdiagnose/!svn/ver/18/trunk/src/test/resources/checkxmlcontenttest.xml
+END
+classes.properties
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svnroot/selfdiagnose/!svn/ver/17/trunk/src/test/resources/classes.properties
+END
+data.xml
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svnroot/selfdiagnose/!svn/ver/9/trunk/src/test/resources/data.xml
+END
+empty.properties
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/selfdiagnose/!svn/ver/9/trunk/src/test/resources/empty.properties
+END
+selfdiagnose-iterator.xml
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svnroot/selfdiagnose/!svn/ver/137/trunk/src/test/resources/selfdiagnose-iterator.xml
+END
+selfdiagnose-missing.xml
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svnroot/selfdiagnose/!svn/ver/134/trunk/src/test/resources/selfdiagnose-missing.xml
+END
+log4j.properties
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/selfdiagnose/!svn/ver/9/trunk/src/test/resources/log4j.properties
+END
+CheckPropertyValuesAreJavaTypes.properties
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svnroot/selfdiagnose/!svn/ver/18/trunk/src/test/resources/CheckPropertyValuesAreJavaTypes.properties
+END
+some.properties
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svnroot/selfdiagnose/!svn/ver/9/trunk/src/test/resources/some.properties
+END

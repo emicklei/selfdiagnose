@@ -1,0 +1,284 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="editor-xdoc.xsl"?>
+<document name="SelfDiagnose">
+	<properties>
+		<title>SelfDiagnose</title>
+	</properties>
+	<body>	
+   <section name="Introduction">
+      <p>Once our application makes it to the production stage, the process of finding bugs is different. 
+      If one looks at where most of the time is spent when resolving problems then it is all about interpreting
+		stack traces of errors for which the cause cannot always be seen immediately.</p>
+
+      <p>The complexity in solving those problems is even higher when multiple components are integrated.
+	   How can we code or extend our applications with functionality to help application maintenance
+	   in finding the cause for a problem at hand?
+       Let us take a look at this code fragment taken from some application:</p>
+
+      <source>
+InputStream input = this.getClass().getClassLoader().resourceAsStream("configuration.properties"); 
+if (input == null) 
+	throw new RuntimeException("Unable to read properties from: configuration.properties");</source>
+
+      <p>Now this is safe code and it will provide a developer with information about the cause of a problem.
+      However, it will not detect the missing resource until this piece of code is executed. 
+      This kind of lazy access to resources can be very frustrating when testing applications. 
+      Only when certain functionality of the system is "touched", problems with this availability can be detected.
+      What if we could collect such dependencies beforehand and validate them on startup?</p>
+
+      <p>This document is about extending a Java (Web)application such that it can perform a diagnose on itself
+      by running tasks that validates the availability of resources.
+      The solution presented here is designed to minimize both the effort and impact on existing code. 
+      This way the self diagnose capability can be built-in more or less implicitly.
+      </p>
+   </section>
+
+   <section name="Class SelfDiagnose">
+      <p>SelfDiagnose is a component that can run DiagnosticTask objects which are registered by the application. 
+      A DiagnosticTask is an object that can check some (external) aspect required by the application. 
+      For instance, the task <strong>CheckURLReachable</strong> verifies that a connection to this server can be opened. 
+      The task <strong>CheckResourceName</strong> verifies that a resource can be found on the classpath. 
+      Diagnostic tasks are created by classes in your application and must be registered to the SelfDiagnose.</p>
+   </section>
+
+   <section name="When to run the SelfDiagnose">
+      <p>SelfDiagnose can run tasks: 
+      <ul>
+         <li>at startup of the application ; a longer startup time is not really a problem I think</li>
+
+         <li>at exception handling time; whenever an exception occurs, SelfDiagnose can check all known 
+         (external) dependencies and report any issues</li>
+
+         <li>upon request while the application is running; whenever the maintainer suspects that 
+         something unexplained is happening, he might want to run the diagnose to rule out the known causes of problems.</li>
+
+         <li>on request by another component. Theoretically, a SelfDiagnose run can also be 
+         requested by a component that is a dependent. For instance, an application may want 
+         to run the diagnose on all (web)services it is going to use.</li>
+      </ul>
+
+      One can argue whether or not a task should be run as soon as it gets registered. 
+      SelfDiagnose has a global property <strong>runAtRegistration</strong> that controls this behavior.</p>
+   </section>
+
+   <section name="Checking constants">
+      <p>The following example is a simple constant declaration:</p>
+
+      <source>private final static String SOME_PROPERTIES = "some.properties";</source>
+
+      <p>Although this static variable is defined as a String, it actually represents a resource name 
+      containing key-value pairs. This can be rewritten using a task that wraps the value into an expression, 
+      stating its intend of use:</p>
+
+      <source>private final static String SOME_PROPERTIES = Check.propertiesFile("some.properties");</source>
+
+      <p>Now the static variable gets initialized and a Diagnostic Task is registered that can verify its availability.</p>
+   </section>
+
+   <section name="Remote Diagnose">
+      <p>Server components should have a remote interface to invoke their diagnostic tasks. 
+      It should respond with a report of those tasks (in addition to log their results as the normal output). 
+      For Web applications, a DiagnoseServlet can be deployed that listens to a GET 
+      and produces either plain text, HTML or some XML formatter report. 
+      How should this servlet be authorised?</p>
+   </section>
+   
+   <section name="What is being tested?">
+   	<p>Diagnostic tasks are intended to run while the application is alive.
+   	Tasks are available that verify the availability of external resources.
+   	Some of those tasks can also be used to test the validity of application configuration <strong>before</strong> it
+   	is deployed. For instance, the CheckPropertyValue is a task that can tell whether a configuration has a value for
+   	a given key. The absence of such a value can be considered a programming error. 
+   	(In my opinion, writing a configuration file is programming too!).
+   	So this task is not a Diagnostic task conform its initial definition.
+   	However, this task can be extremely usefull because it can detect the error <strong>before</strong> the application is started.
+   	</p>
+   	<p>
+   	Perhaps for this discussion it is necessary to distinguish two kinds of configurations.    	
+   	The first is a environment independent configuration, the second is a environment specific configuration.
+   	For instance, the Hibernate table mapping specifications are environment independent and are part of the program that converts 
+   	SQL data to Java objects. The Hibernate configuration file has environment dependent values such as the database URL.
+   	Diagnostic tasks for the verification of this configuration file are useful where tasks that verify table mappings are not.
+   	First, the mappings are validated against a DTD and secondly proper Unit tests should detect any errors in them.
+   	</p>
+   </section>
+
+   <section name="Task registration may not fail">
+      <p>The implicit registration of diagnostic tasks may not fail. This means that verification of task parameters
+      should be done by the task itself when it is requested to run. This means that every task should validate 
+      all its parameters before actually doing the check.</p>
+   </section>
+
+   <section name="Parameter validation">
+      <p>Currently, before creating a Task by the Check facade, all parameters are checked for their types and contents.
+      In the case that parameters values are not constants but are derived from other objects, 
+      these values may not be correct and will result in RuntimeExceptions. 
+      The Question is whether the validation of task parameters is part of the diagnose itself. 
+      If true then each task.run() should verify its parameters before the actual check is done. 
+      This is a case of a diagnose of the diagnose task itself, an example of the ... paradox.</p>
+   </section>
+
+   <section name="Using a task as pre-check for another task">
+      <p>For some tasks the verification of parameters is complex and could done by a task. 
+      For instance, checking the namingServerURL for CheckJNDIBinding might want to use the task CheckValidURL 
+      that could be used on by CheckURLReachable. This is another case of diagnosing the diagnostic task. 
+      What are the implications of this?</p>
+   </section>
+
+   <section name="Configurating SelfDiagnose">		
+		
+   <subsection name="Configure in Java">
+	   <p>Using Facade Check and Report in: constant declaration, static blocks, startup code</p>
+
+	   <p>Check tasks verify the availability of a resource mostly specified by some configuration setting.
+	   Report tasks collect information about the current status of the application.
+	   Both <strong>Check</strong> and <strong>Report</strong> are Facade classes to create and register these tasks.
+	   </p>
+   </subsection>
+		
+   <subsection name="Configure using XML">
+      <p>Jan van de Sandt suggested to put all the diagnostic tasks in a separate configuration file (XML). 
+      <br />
+      <strong>pro:</strong> application code is not mixed with "debugging" information 
+      <br />
+      <strong>con:</strong> information (parameter values) is stored on two places which is a potential 
+      source of problems. In addition, no runtime values can be checked,e.g. if the value of a property is the name of a resource.</p>
+      <p>But why not support them both? (Note that these tasks do not have a requestor)</p>
+      
+      <source><![CDATA[ 
+<?xml version="1.0" ?>
+<!DOCTYPE selfdiagnose PUBLIC
+    "-//SelfDiagnose/SelfDiagnose Configuration DTD 1.0//EN"
+    "http://www.philemonworks.com/dtd/selfdiagnose-1.0.dtd">
+
+<selfdiagnose>
+	<tasks>
+		<checkpropertieskey file="some.properties" key="some" />
+		<checkpropertieskey file="some.properties" key="some"/>
+		<checkaccessibleresource name="log4j.properties"/>
+		<checkclassloadable name="org.apache.log4j.Logger"/>
+		<checkdatasourceconnectable name="jdbc/active"/>
+		<checkdirectoryaccessible path="." writeable="true"/>
+		<checkdirectoryaccessible path="."/>
+		<checkfilecontainsstring string="Hello"/>
+		<checkjndibinding key="jms.queuename" class="java.jms.Queue"/>
+		<checkmethoddefined name="setUp"/>
+		<checkproperty name="some.properties" key="any"/>
+		<checkpropertyvalue name="some.properties" key="color" pattern="#[0-9A-F](6)"/>
+		<checkresourcebundle name="catalog.properties"/>
+		<checkresourcebundlekey name="catalog.properties" key="any"/>
+		<checkurlreachable url="http://www.philemonworks.com"/>
+		<checkvalidurl url="http://localhost:8000"/>
+		<!-- User-defined Tasks -->
+		<task class="com.myproject.MyTask">
+			<param name="myParam" value="123"/>
+		</task>		
+	</tasks>
+</selfdiagnose>
+      ]]></source>      
+   </subsection>
+
+	 <subsection name="Configure using Annotations">
+		 <p>
+			 Doclet tags could be used to specify task entries.
+			 This reduces the effort of keeping constant values in sync between the code and the configuration.
+			 The idea is to use a program (e.g. QDOX based) to extract XML configuration entries from all Java sources
+			 just before a build is created. (e.g. using Maven preGoal)			 
+		 </p>
+		 <source><![CDATA[
+@selfdiagnose <checkpropertiesfile file="some.properties" />
+@selfdiagnose <checkresourcename name="log4j.properties" />
+		 ]]></source>
+	 </subsection>			
+   </section>		
+		
+		
+   <section name="Unit TestCase vs Diagnostic Task">
+      <p>There is a resemblance and difference between these two components. 
+      Both can be seen as white-box tests; they need knowledge of the internal workings. 
+      Unit tests are created to find programming and design errors. 
+      Diagnostic tasks are created to verify (external) resource availability or to verify the integrity of objects.</p>
+   </section>
+
+   <section name="Extending the library">
+      <p>New tasks can be created by extending the abstract DiagnosticTask class and implement the methods 
+      <strong>run</strong>,<strong>getDescription</strong> and optionally <strong>setUp</strong>.
+      When the task detects a failure, it must throw a DiagnoseFailedException providing a clear explanation and, 
+      if available, the exception that caused the failure.
+	  If the check was succesfull then it provides a report message to be logged.
+	  Optionally, the setUp method can be defined that should verify the required task parameters.</p>
+   </section>
+
+   <section name="DiagnoseServlet">
+      <p>The library provides a simple J2EE servlet that can be deployed along with your webapplication. 
+      Using the standard Http GET, this servlet runs all tasks registered to SelfDiagnose. 
+      On default, an HTML report is created by observing the log information as its runs the tasks.</p>
+      <p><a href="cae-selfdiagnose.htm">Example</a></p>
+   </section>
+   
+   <section name="Remarks">
+      <ul>
+         <li>Java uses lazy class loading. Just-in-time, classes are loaded once "new" functionality is executed.         
+         Also running tasks may cause the loading of new classes.
+         Therefore, the tasks in SelfDiagnose may grow while running the SelfDiagnose. 
+         This happens when the class to be loaded has a static method in which new tasks are added.</li>
+
+         <li>What happens if SelfDiagnose is asked to register a task that is already registered by another class? 
+         Ignore it? Allow duplicates?</li>
+
+         <li>By storing the Class that was responsible for registering a Task, 
+         one can ask SelfDiagnose to run only those tasks. 
+         In addition the log will show who was responsibile for the registration.</li>
+
+         <li>If tasks know about the potential execution time (short and long runners), 
+         one can ask SelfDiagnose to run a quick diagnose. Typically tasks that query lots of externally 
+         stored data may take a while to complete. Then if nothing shows up, you might want to take the long run.</li>
+      </ul>
+   </section> 
+		
+   <section name="Examples of Application-specific Tasks">
+	   <p>
+		   These are examples of extra tasks that were defined for a Web application that I used for experimenting with the ideas.
+	   </p>
+	   <subsection name="Tasks registered at StartUp">
+		   <p>This application uses a StartUp class the performs the global initialization of the application.
+		   The fragment below shows two sections of statements; the second uses values from configuration files.</p>
+		   <source><![CDATA[// static diagnostic tasks
+Check.resourceName(Configuration.getFileName());
+SelfDiagnose.register(new CheckIntegrityDatabaseEntities(Schema.global.getSubjects()));
+SelfDiagnose.register(new CheckIntegrityDatabaseEntities(Schema.global.getObjectives()));
+SelfDiagnose.register(new CheckIntegrityDatabaseEntities(Schema.global.getExams()));		
+SelfDiagnose.register(new CheckIntegrityDatabaseEntities(Schema.global.getCourses()));		
+SelfDiagnose.register(new CheckIntegrityDatabaseEntities(Schema.global.getPlans()));		
+SelfDiagnose.register(new CheckIntegrityDatabaseEntities(GroupDatabase.current));
+SelfDiagnose.register(new CheckIntegrityDatabaseEntities(RoleDatabase.current));
+SelfDiagnose.register(new CheckIntegrityDatabaseEntities(UserDatabase.current));			   
+
+// diagnostic tasks using runtime parameter values
+Check.directory(Context.getAttachmentsDir(),false);
+Check.directory(Context.getDataDir());
+SelfDiagnose.register(new CheckImagesAvailable());
+SelfDiagnose.register(new ReportCacheSizes());]]>
+		   </source>
+	   </subsection>   	   
+	   <subsection name="Example: CheckImagesAvailable">
+		   <p>URLs to images used by the WebApplication are stored in a configuration file (Properties). 
+		   Another properties file is used to store the absolute URL path to the images.
+		   For each entry in the configuration file, the availability of the specified image resource is checked.</p>
+	   </subsection>
+	   <subsection name="Example: ReportCacheSizes">
+		   <p>To improve the performance of the database access, several entities are cached.
+		   This task reports on the current status of each cache used. This task merely provides information.</p>
+	   </subsection>
+	   <subsection name="Example: CheckIntegrityDatabaseEntities">
+		   <p>Currently, this application uses an XML file-based database.
+		   This means that integrity checks cannot be performed by the database engine itself.
+		   This tasks loads all entities for a particular database and invokes the checkIntegrity method.</p>
+	   </subsection>		   
+    </section>				  
+   </body>
+</document>
+
+
+
+

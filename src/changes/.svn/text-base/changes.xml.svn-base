@@ -1,0 +1,191 @@
+<document>
+  <properties>
+    <title>Changes SelfDiagnose Project</title>
+    <author email="ernest.micklei@philemonworks.com">Ernest Micklei</author>
+  </properties>
+  <body>
+    <release version="2.4" date="2012-10-02" description="Added SpringController">
+      <action dev="ernest" type="add">
+        Added SpringController, SpringResource
+      </action>
+      <action dev="ernest" type="add">
+        Added X-SelfDiagnose-OK HTTP header with true|false in the report response.
+      </action>            
+      <action dev="ernest" type="change">
+        Improved JaMon reporting
+      </action>
+      <action dev="ernest" type="change">
+        Redesign Spring bean checks
+      </action>      
+      <action dev="ernest" type="add">
+        Added selfdiagnose-2.4.xsd
+      </action>         
+    </release>   
+  
+    <release version="2.3" date="2012-05-16" description="Added CheckSpringDatasourceConnectable">
+      <action dev="ernest" type="add">
+        Added CheckSpringDatasourceConnectable
+      </action>
+      <action dev="ernest" type="add">
+        Added selfdiagnose-2.3.xsd
+      </action>         
+    </release>    
+  
+    <release version="2.1" date="2011-09-30" description="Added Jamon, JAX-RS Resource">
+      <action dev="ernest" type="add">
+        Added SelfDiagnoseResource
+        Added ReportJamonMonitors
+      </action>
+      <action dev="ernest" type="add">
+        Added selfdiagnose-2.1.xsd
+      </action>         
+    </release>   
+  
+    <release version="2.0" date="2011-05-03" description="Clean up code: remove dead features">
+      <action dev="ernest" type="remove">
+        Removed Atom, Log and Pda reporter.
+        Removed SelfDiagnoseRunner (a Servlet listener).
+        Removed support for JDK 1.4.
+      </action>
+      <action dev="ernest" type="fix">
+        Updated selfdiagnose-2.0.xsd
+      </action>         
+    </release>  
+  
+    <release version="2.0-rc11" date="2011-01-14" description="CheckMBeanProperty, CheckSpringBeanProperty, ReportMavenPOMProperties, ReprtJVMRuntimeMemory, ReportProperties">
+      <action dev="ernest" type="add">
+		New tasks (ReportMap, CheckMBeanProperty, CheckSpringBeanProperty, ReportMavenPOMProperties, ReprtJVMRuntimeMemory, ReportProperties); see Javadoc. 
+		Add query attribute to CheckDatabaseTableExists to set detection strategy (IN_ALL_TABLES,COUNT,FETCH_FIRST)
+      </action>   
+    </release>
+    
+    <release version="1.1-rc8" date="2008-06-06" description="CheckMapContainsKey, CheckValueMatches, OGNL, Config">
+      <action dev="ernest" type="fix">
+		Optimized configuration load. Only tasks definitions needed are loaded into JVM.
+      </action>
+      <action dev="ernest" type="add">
+		Added support for OGNL (object graph navigation language).
+		Attribute values can be of format ${expression}.
+      </action>   
+      <action dev="ernest" type="remove">
+		Removed deprecated CheckCollectionElement. Use CheckValueMatches.
+      </action>  	                 
+      <action dev="ernest" type="remove">
+		Removed deprecated CheckMapContainsKey. Use CheckValueMatches.
+      </action>
+    </release>
+	
+    <release version="1.1-rc7" date="2008-06-04" description="CheckCollectionElement">
+      <action dev="ernest" type="fix">
+		Totally forgot to implement (and test!) the handling of tag attributes for class CheckCollectionElement.
+      </action>                  
+    </release>
+	  	
+    <release version="1.1-rc6" date="2008-06-03" description="CheckCollectionElement">
+      <action dev="ernest" type="add">
+		CheckCollectionElement is a new check that can help in inspecting result values from the execution context.
+		It support element accesses of Map,List and Object[] types. If a pattern is given then the element is matched against that regular expression.
+      </action>                  
+    </release>
+	  	
+    <release version="1.1-rc3..5" date="2008-04-23" description="External Configuration">
+      <action dev="ernest" type="add">
+		The SelfDiagnoseServlet has a new query parameter called "config" that takes an URL to a configuration
+		that is stored externally with respect to the application. 
+		This allows you to develop a SelfDiagnose configuration after the application is build and deployed in your development environment.
+		Once you have completed the configuration, you can place the resource back inside the Web application for the next build.
+      </action>                   
+      <action dev="ernest" type="add">
+		CheckHttpRequestHeader can be used to inspect headers and match them against some pattern.
+		Small changes to the HTML layout.
+      </action> 
+      <action dev="ernest" type="remove">
+		CheckMethodDefined has been removed because it refers to the implementation of the application instead of its environment.
+		Removed some JDK 1.5 dependent code to (again) make it compliant with JDK 1.4.
+      </action>                   
+    </release>
+	  	
+    <release version="1.1-rc2" date="2008-04-11" description="Vendor Specific Tasks">
+      <action dev="ernest" type="add">
+		ATG is a J2EE-based e-commerce framework.
+		Endeca is a Search Engine.
+      </action>                   
+      <action dev="ernest" type="remove">
+		ReportSystemProperty has been replaced by CheckSystemProperty.
+		ReportResourceLocation had the same behavior as CheckResourceAccessible.
+		CheckMethodDefined is about verifying the application and should be done with Unit tests instead.
+      </action>                   
+    </release>
+	  	
+    <release version="1.1-rc" date="2008-03-27" description="JSP">
+      <action dev="ernest" type="add">
+		Instead of declaring the Servlet in your deployment descriptor, you can also use a simple JSP page that invokes the servlet.
+		See "Example Configurations" for an example of such document.
+      </action>                   
+      <action dev="ernest" type="add">
+		In addition to Html and Xml, new formats are available:
+		(1) Atom 2.0: this report can be used in any RSS reader.
+		(2) Mobile: this report can be used when viewing results on a mobile device that typically has a smaller screen.
+      </action>                   
+      <action dev="ernest" type="add">
+		Sometimes the result message of a task can be cryptic and can only be understood by the developer that made the configuration.
+		Tasks descriptions in the configuration file can now have a "comment" attribute that can be used for a more readable explanation of the task.
+      </action>                   
+    </release> 
+	
+    <release version="1.0" date="2007-06-13" description="CheckDatabaseTableExists">
+      <action dev="ernest" type="fix">
+		CheckDatabaseTableExists now uses the basic COUNT(*) query to detect the presence of a table.
+		No longer this task is RDMS dependent and does not require READ rights to System tables.
+		It is assumed that this count query is "cheap" (low execution time). This tasks also reports the number of records counted.
+      </action>                   
+    </release>
+  
+      <release version="1.0-rc10" date="2007-05-07" description="CheckMapContainsKey">
+      <action dev="ernest" type="fix">
+		URL specifications now may be composed of variable specifications and arbitrary strings.       
+      </action>       
+      <action dev="ernest" type="add">
+        CheckMapContainsKey can be used to check whether a String value is contained in a String-to-String map.
+        The value can be made available in the Execution Context to serve as input parameters to other checks.
+      </action> 
+      <action dev="ernest" type="fix">
+        ReportSystemProperty now takes the parameter "name" instead of "key" ; this is because of consistency with other checks.
+      </action>            
+    </release>
+  
+    <release version="1.0-rc9" date="2007-03-03" description="Refactoring DatabaseTableExists">
+      <action dev="ernest" type="fix">
+		CheckDatabaseTableExists now supports 3 databases oracle,mysql and postgres.
+		This task now requires the parameter "database".        
+      </action>       
+      <action dev="ernest" type="remove">
+        CheckSpringBeansAreJavaTypes is deprecated. Spring itself provides sufficient information about loadable beans.
+      </action>      
+    </release>  
+    <release version="1.0-rc8" date="2006-12-25" description="Adding XSD and fixes reloads">
+      <action dev="ernest" type="add">
+        An XML Schema (XSD) is now available for creating and validating the selfdiagnose.xml
+      </action>      
+      <action dev="ernest" type="fix">
+        When requesting for the XML report, the reload=true query part was ignored
+      </action>       
+    </release>   
+    <release version="1.0-rc7" date="2006-12-25" description="Adding JMX Bean support">
+      <action dev="ernest" type="add">
+        CheckWebsphereJMSListenerport for checking the active state of the listener process.
+      </action>
+      <action dev="ernest" type="add">
+        CheckMBeanProperty for checking a property for a managed bean using JMX.
+      </action>      
+      <action dev="ernest" type="fix">
+        DiagnosticTask now has a serialversionUID that is required for custom subclassing in other packages.
+      </action>       
+    </release>  
+    <release version="1.0-rc6" date="2006-11-12" description="First public release candidate">
+      <action dev="ernest" type="add">
+        Added enough documentation (JavaDoc) to get started.
+      </action>
+    </release>
+  </body>
+</document>

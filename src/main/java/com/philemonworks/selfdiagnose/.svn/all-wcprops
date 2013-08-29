@@ -1,0 +1,113 @@
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svnroot/selfdiagnose/!svn/ver/213/trunk/src/main/java/com/philemonworks/selfdiagnose
+END
+SelfDiagnoseHandler.java
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svnroot/selfdiagnose/!svn/ver/160/trunk/src/main/java/com/philemonworks/selfdiagnose/SelfDiagnoseHandler.java
+END
+CustomDiagnosticTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svnroot/selfdiagnose/!svn/ver/192/trunk/src/main/java/com/philemonworks/selfdiagnose/CustomDiagnosticTask.java
+END
+SelfDiagnose.java
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svnroot/selfdiagnose/!svn/ver/215/trunk/src/main/java/com/philemonworks/selfdiagnose/SelfDiagnose.java
+END
+Instance.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svnroot/selfdiagnose/!svn/ver/136/trunk/src/main/java/com/philemonworks/selfdiagnose/Instance.java
+END
+DiagnosticTaskResult.java
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svnroot/selfdiagnose/!svn/ver/184/trunk/src/main/java/com/philemonworks/selfdiagnose/DiagnosticTaskResult.java
+END
+DiagnosticTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svnroot/selfdiagnose/!svn/ver/160/trunk/src/main/java/com/philemonworks/selfdiagnose/DiagnosticTask.java
+END
+SelfDiagnoseServlet.java
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svnroot/selfdiagnose/!svn/ver/203/trunk/src/main/java/com/philemonworks/selfdiagnose/SelfDiagnoseServlet.java
+END
+ExecutionContext.java
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svnroot/selfdiagnose/!svn/ver/136/trunk/src/main/java/com/philemonworks/selfdiagnose/ExecutionContext.java
+END
+DiagnoseException.java
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svnroot/selfdiagnose/!svn/ver/31/trunk/src/main/java/com/philemonworks/selfdiagnose/DiagnoseException.java
+END
+SelfDiagnoseListener.java
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svnroot/selfdiagnose/!svn/ver/193/trunk/src/main/java/com/philemonworks/selfdiagnose/SelfDiagnoseListener.java
+END
+Report.java
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svnroot/selfdiagnose/!svn/ver/160/trunk/src/main/java/com/philemonworks/selfdiagnose/Report.java
+END
+PatternMatchingTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svnroot/selfdiagnose/!svn/ver/160/trunk/src/main/java/com/philemonworks/selfdiagnose/PatternMatchingTask.java
+END
+Check.java
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svnroot/selfdiagnose/!svn/ver/136/trunk/src/main/java/com/philemonworks/selfdiagnose/Check.java
+END
+XMLUtils.java
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svnroot/selfdiagnose/!svn/ver/72/trunk/src/main/java/com/philemonworks/selfdiagnose/XMLUtils.java
+END
+DiagnoseUtil.java
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svnroot/selfdiagnose/!svn/ver/211/trunk/src/main/java/com/philemonworks/selfdiagnose/DiagnoseUtil.java
+END
+CollectionIteratorTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svnroot/selfdiagnose/!svn/ver/140/trunk/src/main/java/com/philemonworks/selfdiagnose/CollectionIteratorTask.java
+END
+SelfTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svnroot/selfdiagnose/!svn/ver/160/trunk/src/main/java/com/philemonworks/selfdiagnose/SelfTest.java
+END
+CompositeDiagnosticTaskResult.java
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svnroot/selfdiagnose/!svn/ver/162/trunk/src/main/java/com/philemonworks/selfdiagnose/CompositeDiagnosticTaskResult.java
+END

@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svnroot/selfdiagnose/!svn/ver/209/trunk/src/main/java/com/philemonworks/selfdiagnose/report
+END
+ReportJVMRuntimeMemory.java
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svnroot/selfdiagnose/!svn/ver/149/trunk/src/main/java/com/philemonworks/selfdiagnose/report/ReportJVMRuntimeMemory.java
+END
+ReportProperties.java
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svnroot/selfdiagnose/!svn/ver/161/trunk/src/main/java/com/philemonworks/selfdiagnose/report/ReportProperties.java
+END
+ReportMap.java
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svnroot/selfdiagnose/!svn/ver/162/trunk/src/main/java/com/philemonworks/selfdiagnose/report/ReportMap.java
+END
+ReportMavenPOMProperties.java
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/svnroot/selfdiagnose/!svn/ver/189/trunk/src/main/java/com/philemonworks/selfdiagnose/report/ReportMavenPOMProperties.java
+END

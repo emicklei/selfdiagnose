@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<document>
+  <properties>
+    <title>Example SelfDiagnose log4j configuration (xml)</title>
+    <author email="ernest.micklei@philemonworks.com">Ernest Micklei</author>
+  </properties>
+  <body>
+
+    <section name="log4j.xml (example)">
+      <source><![CDATA[ 
+<!-- For SelfDiagnose, http://www.philemonworks.com/selfdiagnose -->
+<appender name="selfdiagnose" class="org.apache.log4j.ConsoleAppender">
+  <layout class="org.apache.log4j.PatternLayout">
+    <param name="ConversionPattern" value="%d{dd/MM/yyyy HH:mm:ss,SSS} %-5p %c{1} - %m%n"/>
+  </layout>
+</appender>
+
+<!-- For SelfDiagnose, http://www.philemonworks.com/selfdiagnose -->
+  <logger name="com.philemonworks.selfdiagnose">
+    <level value="INFO" />
+    <appender-ref ref="selfdiagnose"/>
+  </logger>
+]]></source>
+    </section>
+
+  </body>
+</document>
