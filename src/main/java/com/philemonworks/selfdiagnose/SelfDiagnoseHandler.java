@@ -105,9 +105,7 @@ public class SelfDiagnoseHandler extends DefaultHandler {
 	private void handleCustomTask(Attributes attributes) throws SAXException {
 	    CustomDiagnosticTask customTask = new CustomDiagnosticTask();
 		String className = attributes.getValue("class");
-		if (!className.isEmpty()) {
-
-    		
+		if (className != null ) {
     		try {
     			@SuppressWarnings("unchecked")
                 Class<? extends DiagnosticTask> taskClass = (Class<? extends DiagnosticTask>)Thread.currentThread().getContextClassLoader().loadClass(className);

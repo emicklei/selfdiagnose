@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<!-- DOCTYPE selfdiagnose PUBLIC
+    "-//SelfDiagnose/SelfDiagnose Configuration DTD 1.0//EN"
+    "http://www.philemonworks.com/dtd/selfdiagnose-1.0.dtd" -->
+<!-- declaration is commented for sake of local testing -->
+
+<selfdiagnose>
+    <tasks>
+        <task ref="spring-enabled-task" />      
+    </tasks>
+</selfdiagnose>
