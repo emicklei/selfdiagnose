@@ -103,23 +103,25 @@ public class SelfDiagnoseHandler extends DefaultHandler {
         iteratorStack.push(cit);        
     }
 	private void handleCustomTask(Attributes attributes) throws SAXException {
+	    CustomDiagnosticTask customTask = new CustomDiagnosticTask();
 		String className = attributes.getValue("class");
-		if (className.isEmpty() && attributes.getValue("ref") != null) {
-		    // task will be resolved by its reference
-		    this.addTaskToRegistration(new TaskReference(attributes.getValue("ref")));
-		    return;
-		}
-		CustomDiagnosticTask customTask = new CustomDiagnosticTask();
-		try {
-			@SuppressWarnings("unchecked")
-            Class<? extends DiagnosticTask> taskClass = (Class<? extends DiagnosticTask>)Thread.currentThread().getContextClassLoader().loadClass(className);
-			DiagnosticTask task = (DiagnosticTask)taskClass.newInstance();
-			task.initializeFromAttributes(attributes);			
-			customTask.setTask(task);
-		} catch (Exception e) {
-			customTask.setErrorMessage(e.getMessage());
-			this.addTaskToRegistration(customTask);
-			throw new SAXException(e);
+		if (!className.isEmpty()) {
+
+    		
+    		try {
+    			@SuppressWarnings("unchecked")
+                Class<? extends DiagnosticTask> taskClass = (Class<? extends DiagnosticTask>)Thread.currentThread().getContextClassLoader().loadClass(className);
+    			DiagnosticTask task = (DiagnosticTask)taskClass.newInstance();
+    			task.initializeFromAttributes(attributes);			
+    			customTask.setTask(task);
+    		} catch (Exception e) {
+    			customTask.setErrorMessage(e.getMessage());
+    			this.addTaskToRegistration(customTask);
+    			throw new SAXException(e);
+    		}
+		} else {		    
+		    // task will be resolved by its reference in a DI context
+		    customTask.setReference(attributes.getValue("ref"));		    
 		}
 		this.addTaskToRegistration(customTask);
 	}
