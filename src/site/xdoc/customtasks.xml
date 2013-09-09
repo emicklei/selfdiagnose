@@ -40,6 +40,13 @@ public MyTask extends DiagnosticTask {
 	anyOtherAttribute="some other value" />
 			]]></source>			
 		</subsection>
+		
+        <subsection name="Configure Spring-enabled Custom Task">
+            <source><![CDATA[
+<task ref="id-of-spring-bean" />
+            ]]></source>            
+        </subsection>		
+		
 		</section>		
 	</body>
 </document>
