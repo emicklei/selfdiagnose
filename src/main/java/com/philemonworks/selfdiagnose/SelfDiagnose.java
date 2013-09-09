@@ -229,4 +229,11 @@ public abstract class SelfDiagnose {
 	public static List<DiagnosticTask> getTasks() {
 		return tasks;
 	}
+	/**
+	 * Remove the previously registered task. Ignore if was not present.
+	 * @param custom
+	 */
+    public static void unregister(DiagnosticTask task) {
+        tasks.remove(task);        
+    }
 }

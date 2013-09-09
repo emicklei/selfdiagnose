@@ -27,6 +27,7 @@ package com.philemonworks.selfdiagnose;
 public class CustomDiagnosticTask extends DiagnosticTask {
 	private static final long serialVersionUID = 3770101714847787671L;
 	
+	String reference; // an identifier to a task in a DI context
 	DiagnosticTask task;
 	String errorMessage;
 	
@@ -72,4 +73,10 @@ public class CustomDiagnosticTask extends DiagnosticTask {
 	public String getComment() {
 	    return task == null ? super.getComment() : task.getComment();
 	}
+    public String getReference() {
+        return reference;
+    }
+    public void setReference(String reference) {
+        this.reference = reference;
+    }
 }

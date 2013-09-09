@@ -8,7 +8,7 @@ import org.xml.sax.Attributes;
 public class CollectionIteratorTask extends DiagnosticTask {
     private static final long serialVersionUID = -6424385910785821011L;
 
-    private ArrayList tasks = new ArrayList();
+    private ArrayList<DiagnosticTask> tasks = new ArrayList<DiagnosticTask>();
     
     private String expression = "";
     
@@ -83,7 +83,7 @@ public class CollectionIteratorTask extends DiagnosticTask {
         tasks.add(task);        
     }
     
-    public List getTasks() { return tasks; }
+    public List<DiagnosticTask> getTasks() { return tasks; }
 
     public String getExpression() {
         return expression;

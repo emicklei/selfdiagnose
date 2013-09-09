@@ -33,7 +33,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author E.M.Micklei
  */
 public class SelfDiagnoseHandler extends DefaultHandler {
-	private Stack iteratorStack = new Stack();
+	private Stack<DiagnosticTask> iteratorStack = new Stack<DiagnosticTask>();
     private static Properties taskMapping;
 	/**
 	 * In order to read the configuration, all task element definitions must be known.
@@ -52,7 +52,7 @@ public class SelfDiagnoseHandler extends DefaultHandler {
 	 * is created and initialized by the handler.
 	 * @param diagnosticTaskClass Class must be concrete subclass of DiagnosticTask
 	 */
-	public static void addBindingFor(Class diagnosticTaskClass){
+	public static void addBindingFor(Class<? extends DiagnosticTask> diagnosticTaskClass){
 		if (!DiagnosticTask.class.isAssignableFrom(diagnosticTaskClass))
 			throw new RuntimeException("Only DiagnosticTask classes can be handled");
 		String tag = DiagnoseUtil.shortName(diagnosticTaskClass).toLowerCase(Locale.getDefault());
@@ -80,7 +80,8 @@ public class SelfDiagnoseHandler extends DefaultHandler {
         try {
             // element names for tasks are case-insensitive
             String className = taskMapping.getProperty(qName.toLowerCase(Locale.getDefault()));
-            Class taskClass = Thread.currentThread().getContextClassLoader().loadClass(className);
+            @SuppressWarnings("unchecked")
+            Class<? extends DiagnosticTask> taskClass = (Class<? extends DiagnosticTask>)Thread.currentThread().getContextClassLoader().loadClass(className);
             if (taskClass == null)
                 throw new RuntimeException("No task class registered (case-insensitive) for:" + qName);
 			DiagnosticTask task = (DiagnosticTask)taskClass.newInstance();
@@ -103,10 +104,15 @@ public class SelfDiagnoseHandler extends DefaultHandler {
     }
 	private void handleCustomTask(Attributes attributes) throws SAXException {
 		String className = attributes.getValue("class");
+		if (className.isEmpty() && attributes.getValue("ref") != null) {
+		    // task will be resolved by its reference
+		    this.addTaskToRegistration(new TaskReference(attributes.getValue("ref")));
+		    return;
+		}
 		CustomDiagnosticTask customTask = new CustomDiagnosticTask();
-		if (className == null) throw new SAXException("Missing xml attribute [class] for tag [task]");
 		try {
-			Class taskClass = Thread.currentThread().getContextClassLoader().loadClass(className);
+			@SuppressWarnings("unchecked")
+            Class<? extends DiagnosticTask> taskClass = (Class<? extends DiagnosticTask>)Thread.currentThread().getContextClassLoader().loadClass(className);
 			DiagnosticTask task = (DiagnosticTask)taskClass.newInstance();
 			task.initializeFromAttributes(attributes);			
 			customTask.setTask(task);

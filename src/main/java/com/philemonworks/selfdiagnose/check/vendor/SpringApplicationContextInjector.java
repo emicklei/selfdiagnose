@@ -5,6 +5,7 @@ import org.springframework.context.ApplicationContextAware;
 
 import com.philemonworks.selfdiagnose.DiagnosticTask;
 import com.philemonworks.selfdiagnose.SelfDiagnose;
+import com.philemonworks.selfdiagnose.TaskReference;
 
 public class SpringApplicationContextInjector {
 
@@ -14,6 +15,12 @@ public class SpringApplicationContextInjector {
             if (each instanceof ApplicationContextAware) {
                 ApplicationContextAware eachAware = (ApplicationContextAware) each;
                 eachAware.setApplicationContext(appCtx);
+            } else if (each instanceof TaskReference) {
+                TaskReference custom = (TaskReference) each;
+                // try resolving task by a lookup in the application context
+                DiagnosticTask task = (DiagnosticTask) appCtx.getBean(custom.getReference());
+                SelfDiagnose.register(task);
+                SelfDiagnose.unregister(custom);
             }
         }
     }
