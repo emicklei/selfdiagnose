@@ -100,7 +100,7 @@ public class DiagnosticTaskResult {
 	}
 	
 	public boolean wantsToBeReported() {
-		return task.reportResults && (!this.isUnknown());
+		return task.isReportResults() && (!this.isUnknown());
 	}
 	/**
 	 * Set the message explaining why the run has failed.
