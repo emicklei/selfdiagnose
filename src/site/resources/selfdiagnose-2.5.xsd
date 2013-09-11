@@ -304,7 +304,8 @@
             <xs:attribute name="comment" type="xs:string" />
             <xs:attribute name="id" type="xs:string" />   
 			<xs:attribute name="property" type="xs:string" />   
-			<xs:attribute name="pattern" type="xs:string" />    
+			<xs:attribute name="operation" type="xs:string" />
+			<xs:attribute name="pattern" type="xs:string" />
         </xs:complexType>   
     </xs:element>	
 	
@@ -329,9 +330,11 @@
 	</xs:element>
 	<xs:element name="task">
 		<xs:complexType>
+            <xs:attribute name="report" type="xs:boolean" use="optional" />
+			<xs:attribute name="comment" type="xs:string" use="optional" />
 			<xs:attribute name="class" type="xs:string" use="optional" />
-			<xs:attribute name="ref" type="xs:string" use="optional" />	
-			<xs:anyAttribute/>				
+            <xs:attribute name="ref" type="xs:string" use="optional" />
+            <xs:anyAttribute/>
 		</xs:complexType>
 	</xs:element>				
 	<xs:element name="tasks">
@@ -355,6 +358,10 @@
 				<xs:element ref="checkurlreachable"/>
 				<xs:element ref="checkvalidurl"/>
 				<xs:element ref="checkxmlcontent"/>
+				<xs:element ref="reportjvmruntimememory" />
+				<xs:element ref="reportmap" />
+				<xs:element ref="reportmavenpomproperties" />
+				<xs:element ref="reportproperties" />
 				<xs:element ref="reportjamonmonitors" />
 				<!-- vendor -->
 				<xs:element ref="checkatgcomponentproperty"/>				
@@ -364,6 +371,7 @@
 				<xs:element ref="checkspringbeanproperty" />
 				<!-- specials -->
 				<xs:element ref="task"/>
+				<xs:element ref="iterator"/>
 			</xs:choice>
 		</xs:complexType>
 	</xs:element>
