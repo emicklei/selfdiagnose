@@ -71,7 +71,11 @@ public class CustomDiagnosticTask extends DiagnosticTask {
 	}	
 	
 	public String getComment() {
-	    return task == null ? super.getComment() : task.getComment();
+		String comment = super.getComment();
+		if (comment == null && task != null) {
+			comment = task.getComment();
+		}
+		return comment;
 	}
     public String getReference() {
         return reference;
