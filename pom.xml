@@ -35,7 +35,7 @@
 	<repositories>
 		<repository>
 			<id>github.com/karlroberts/monty</id>
-			<url>https://github.com/karlroberts/monty/tree/master/embeddedrepo</url>
+			<url>https://github.com/karlroberts/monty/blob/master/embeddedrepo</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
