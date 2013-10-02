@@ -1,5 +1,6 @@
 package com.philemonworks.selfdiagnose.check.vendor;
 
+import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
@@ -8,7 +9,8 @@ import com.philemonworks.selfdiagnose.DiagnosticTask;
 import com.philemonworks.selfdiagnose.SelfDiagnose;
 
 public class SpringApplicationContextInjector {
-
+    private final static Logger LOG = Logger.getLogger(SpringApplicationContextInjector.class);
+    
     public static void inject(ApplicationContext appCtx) {
         // Iterate through all registered tasks
         for (DiagnosticTask each : SelfDiagnose.getTasks()) {
@@ -33,14 +35,19 @@ public class SpringApplicationContextInjector {
 
 	/**
 	 * If {@code task} is a {@link CustomDiagnosticTask} with a reference, inject the task from the application context.
-	 *
+	 * If no such bean is found (or problems occur) then log and ignore.
+	 * 
 	 * @param customTask a {@code CustomDiagnosticTask}
 	 */
 	private static void injectTask(CustomDiagnosticTask customTask, ApplicationContext context) {
 
 		String beanReference = customTask.getReference();
 		if (beanReference != null) {
-			customTask.setTask(context.getBean(customTask.getReference(), DiagnosticTask.class));
+		    try {
+		        customTask.setTask(context.getBean(customTask.getReference(), DiagnosticTask.class));
+		    } catch (Exception ex){
+		        LOG.error("Unable to set task from bean:" + beanReference);
+		    }
 		}
 	}
 }
