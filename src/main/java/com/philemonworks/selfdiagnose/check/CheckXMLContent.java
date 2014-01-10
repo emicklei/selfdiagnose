@@ -27,6 +27,7 @@ import com.philemonworks.selfdiagnose.DiagnosticTask;
 import com.philemonworks.selfdiagnose.DiagnosticTaskResult;
 import com.philemonworks.selfdiagnose.ExecutionContext;
 import com.philemonworks.selfdiagnose.XMLUtils;
+
 /**
  * CheckXMLContent is a Diagnostic Task that verifies the presence of an element or attribute 
  * (by evaluating an XPath) and optionally test is against a given pattern.
@@ -42,91 +43,99 @@ import com.philemonworks.selfdiagnose.XMLUtils;
 public class CheckXMLContent extends DiagnosticTask {
     private static final long serialVersionUID = 8914666406032427064L;
     private static final String PARAMETER_XPATH = "xpath";
-	private static final String PARAMETER_NAME = "name";
-	private static final String PARAMETER_URL = "url";
-	private static final String PARAMETER_PATTERN = "pattern";
-	private String name;
-	private String url;
+    private static final String PARAMETER_NAME = "name";
+    private static final String PARAMETER_URL = "url";
+    private static final String PARAMETER_PATTERN = "pattern";
+    private String name;
+    private String url;
     private String xpath;
     private String pattern;
+
     /* (non-Javadoc)
      * @see com.philemonworks.selfdiagnose.DiagnosticTask#getDescription()
      */
     public String getDescription() {
         return "Check the contents of an XML resource using an Xpath match.";
     }
-	public String getName() {
-		return name;
-	}
+
+    public String getName() {
+        return name;
+    }
+
     public String getPattern() {
-		return pattern;
-	}
+        return pattern;
+    }
 
     public String getUrl() {
-		return url;
-	}
+        return url;
+    }
 
-	public String getXpath() {
-		return xpath;
-	}
+    public String getXpath() {
+        return xpath;
+    }
 
-	/* (non-Javadoc)
+    /* (non-Javadoc)
      * @see com.philemonworks.selfdiagnose.DiagnosticTask#initializeFromAttributes(org.xml.sax.Attributes)
      */
     public void initializeFromAttributes(Attributes attributes) {
-    	super.initializeFromAttributes(attributes);
+        super.initializeFromAttributes(attributes);
         xpath = attributes.getValue(PARAMETER_XPATH);
         url = attributes.getValue(PARAMETER_URL);
         name = attributes.getValue(PARAMETER_NAME);
         pattern = attributes.getValue(PARAMETER_PATTERN);
     }
 
-	/* (non-Javadoc)
+    /* (non-Javadoc)
      * @see com.philemonworks.selfdiagnose.DiagnosticTask#run(com.philemonworks.selfdiagnose.DiagnosticTaskResult)
      */
     public void run(ExecutionContext ctx, DiagnosticTaskResult result) throws DiagnoseException {
-    	URL theURL;
-    	String value;
-    	try {
-			theURL = DiagnoseUtil.retrieveURL(ctx, name, url);
-			if (theURL == null)
-				throw new DiagnoseException("Unable to find resource [" + (name==null?url:name) + "]");
-			InputStream inputStream = theURL.openStream();
-			value = XMLUtils.valueForXPath(xpath, inputStream);
-			// make available in the context before testing against the optional pattern
-			ctx.setValue(this.getVariableName(),value);			
-			if (pattern != null && !(value.matches(pattern))) {
-				result.setFailedMessage("Xpath value [" + value + "] does not match pattern [" + pattern + "] from resource [" + theURL + "]");
-			}
-		} catch (Exception e) {
-			throw new DiagnoseException(e);
-		}
-		result.setPassedMessage("Xpath value [" + value + "] matches pattern [" + pattern + "] from resource [" + theURL + "]");
+        URL theURL;
+        String value;
+        try {
+            theURL = DiagnoseUtil.retrieveURL(ctx, name, url);
+            if (theURL == null)
+                throw new DiagnoseException("Unable to find resource [" + (name == null ? url : name) + "]");
+            InputStream inputStream = theURL.openStream();
+            value = XMLUtils.valueForXPath(xpath, inputStream);
+            // make available in the context before testing against the optional pattern
+            ctx.setValue(this.getVariableName(), value);
+            if (pattern != null) {
+                if (!(value.matches(pattern))) {
+                    result.setFailedMessage("Xpath value [" + value + "] does not match pattern [" + pattern + "] from resource [" + theURL + "]");
+                } else {
+                    result.setPassedMessage("Xpath value [" + value + "] matches pattern [" + pattern + "] from resource [" + theURL + "]");
+                }
+            } else {
+                result.setPassedMessage("Resource is found [" + theURL + "]");
+            }
+        } catch (Exception e) {
+            throw new DiagnoseException(e);
+        }
     }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setPattern(String pattern) {
-		this.pattern = pattern;
-	}
+    public void setPattern(String pattern) {
+        this.pattern = pattern;
+    }
 
-	public void setUp(ExecutionContext ctx) throws DiagnoseException {
-		super.setUp(ctx);
-		DiagnoseUtil.verifyNonEmptyString(PARAMETER_XPATH, xpath, CheckXMLContent.class);
-		if (url == null)
-			DiagnoseUtil.verifyNonEmptyString(PARAMETER_NAME, name, CheckProperty.class);
-		if (name == null)
-			DiagnoseUtil.verifyNonEmptyString(PARAMETER_URL, url, CheckProperty.class);		
-	}
+    public void setUp(ExecutionContext ctx) throws DiagnoseException {
+        super.setUp(ctx);
+        DiagnoseUtil.verifyNonEmptyString(PARAMETER_XPATH, xpath, CheckXMLContent.class);
+        if (url == null)
+            DiagnoseUtil.verifyNonEmptyString(PARAMETER_NAME, name, CheckProperty.class);
+        if (name == null)
+            DiagnoseUtil.verifyNonEmptyString(PARAMETER_URL, url, CheckProperty.class);
+    }
 
-	public void setUrl(String url) {
-		this.url = url;
-	}
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
-	public void setXpath(String xpath) {
-		this.xpath = xpath;
-	}
+    public void setXpath(String xpath) {
+        this.xpath = xpath;
+    }
 
 }
