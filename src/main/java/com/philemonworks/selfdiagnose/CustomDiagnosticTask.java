@@ -72,7 +72,7 @@ public class CustomDiagnosticTask extends DiagnosticTask {
 	
 	public String getComment() {
 		String comment = super.getComment();
-		if (comment == null && task != null) {
+		if (task != null) {
 			comment = task.getComment();
 		}
 		return comment;
