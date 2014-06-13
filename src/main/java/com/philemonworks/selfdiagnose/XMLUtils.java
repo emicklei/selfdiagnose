@@ -42,39 +42,36 @@ public class XMLUtils {
 	}
 	/**
 	 * Performs entity encoding of characters from a String
+	 * http://stackoverflow.com/questions/439298/best-way-to-encode-text-data-for-xml-in-java
 	 * @param s : String
 	 * @return String
 	 */
-	public static String encode(String s) {
-		StringBuffer result = null;
-		for (int i = 0, max = s.length(), delta = 0; i < max; i++) {
-			char c = s.charAt(i);
-			String replacement = null;
-			if (c == '&') {
-				replacement = "&amp;";
-			} else if (c == '<') {
-				replacement = "&lt;";
-			} else if (c == '\r') {
-				replacement = "&#13;";
-			} else if (c == '>') {
-				replacement = "&gt;";
-			} else if (c == '"') {
-				replacement = "&quot;";
-			} else if (c == '\'') {
-				replacement = "&apos;";
-			}
-			if (replacement != null) {
-				if (result == null) {
-					result = new StringBuffer(s);
-				}
-				result.replace(i + delta, i + delta + 1, replacement);
-				delta += (replacement.length() - 1);
-			}
-		}
-		if (result == null) {
-			return s;
-		}
-		return result.toString();
+	public static String encode(String originalUnprotectedString) {
+	    if (originalUnprotectedString == null) {
+	        return null;
+	    }
+	    boolean anyCharactersProtected = false;
+
+	    StringBuffer stringBuffer = new StringBuffer();
+	    for (int i = 0; i < originalUnprotectedString.length(); i++) {
+	        char ch = originalUnprotectedString.charAt(i);
+
+	        boolean controlCharacter = ch < 32;
+	        boolean unicodeButNotAscii = ch > 126;
+	        boolean characterWithSpecialMeaningInXML = ch == '<' || ch == '&' || ch == '>';
+
+	        if (characterWithSpecialMeaningInXML || unicodeButNotAscii || controlCharacter) {
+	            stringBuffer.append("&#" + (int) ch + ";");
+	            anyCharactersProtected = true;
+	        } else {
+	            stringBuffer.append(ch);
+	        }
+	    }
+	    if (anyCharactersProtected == false) {
+	        return originalUnprotectedString;
+	    }
+
+	    return stringBuffer.toString();	
 	}
 	
 	public static String encode(Date someDate) {
