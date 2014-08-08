@@ -45,12 +45,12 @@ public class TaskBackgroundRunner {
             boolean inTime = latch.await(timeoutInMilliseconds, TimeUnit.MILLISECONDS);
             if (!inTime) {
                 result = task.createResult();
-                result.setErrorMessage("task execution timed out after "+timeoutInMilliseconds+" milliseconds");
+                result.setFailedMessage("task execution timed out after "+timeoutInMilliseconds+" milliseconds");
                 result.setExecutionTime(timeoutInMilliseconds);                
             }
         } catch (InterruptedException e) {
             result = task.createResult();
-            result.setErrorMessage("interrupted execution");
+            result.setFailedMessage("interrupted execution");
             result.setExecutionTime(timeoutInMilliseconds); // could be less
         }
         return result;
