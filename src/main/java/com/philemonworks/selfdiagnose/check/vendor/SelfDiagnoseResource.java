@@ -34,8 +34,8 @@ public class SelfDiagnoseResource implements ApplicationContextAware{
     
     // http://localhost:9998/internal/selfdiagnose.html
     @GET
-    @Produces("text/html")
-    @Consumes("text/html")
+    @Produces("text/html,application/xml")
+    @Consumes("text/html,application/xml")
     public Response runAndReportResults(@PathParam("extension") String format, @QueryParam("format") String formatOverride) {
         DiagnoseRunReporter reporter = new HTMLReporter();
         ResponseBuilder builder = Response.ok().header("Content-Type", "text/html");     
@@ -50,15 +50,15 @@ public class SelfDiagnoseResource implements ApplicationContextAware{
     
     // http://localhost:9998/internal/selfdiagnose.xml
     @GET
-    @Consumes("application/xml")
+    @Consumes("text/html,application/xml")
     @Produces("application/xml")
-    public Response reportXMLResults() {
+    public Response reportXMLResults(@PathParam("extension") String format) {
         return this.runAndReportResults("xml",null);
     }
     
     @POST
     @Consumes("application/xml")
-    @Produces("text/html")
+    @Produces("application/xml")
     public Response runSubmittedTasks(@PathParam("extension") String format, InputStream input) {
         SelfDiagnose.flush();
         try {
@@ -66,7 +66,7 @@ public class SelfDiagnoseResource implements ApplicationContextAware{
         } catch (Exception e) {
             return Response.serverError().entity(e.getCause().getMessage()).build();
         }
-        return this.runAndReportResults("html", null);
+        return this.runAndReportResults("xml", null);
     }
     
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
