@@ -44,6 +44,10 @@ public abstract class DiagnosticTask implements Serializable {
      * Attribute that specifies whether to include the task results in the report. Defaults to {@code true}, meaning the task results will be included if known.
      */
     public static final String PARAMETER_REPORT = "report";
+    /**
+     * Attribute that specifies whether to limit the execution time of the task to timeout seconds.
+     */ 
+    public static final String PARAMETER_TIMEOUT = "timeout";
 
     /**
      * The identifier for the object that created and registered this task.
@@ -61,7 +65,12 @@ public abstract class DiagnosticTask implements Serializable {
      * Indication for whether the receiver will report the result.
      */
     private boolean reportResults = true;
-
+    /**
+     * If timeout (milliseconds) is set (>0) then this run is aborted when it takes more time to complete.
+     * The actual time to complete (again in milliseconds) is reported
+     */
+    private int timeoutInMilliseconds = 0;
+    
     /**
      * Return an object to store the results of running the receiver.
      *
@@ -130,7 +139,7 @@ public abstract class DiagnosticTask implements Serializable {
         long end = begin;
         try {
             this.setUp(ctx);
-            this.run(ctx, result);
+            this.run(ctx, result);                
             end = System.currentTimeMillis();
         } catch (DiagnoseException e) {
             result.setFailedMessage(e.getMessage());
@@ -149,7 +158,7 @@ public abstract class DiagnosticTask implements Serializable {
         result.setExecutionTime(end - begin);
         return result;
     }
-
+    
     /**
      * Run the task. If an error is detected then raise a DiagnoseException.
      * Otherwise use the result object to the report any messages when a run is completed.
@@ -180,6 +189,16 @@ public abstract class DiagnosticTask implements Serializable {
         this.setComment(attributes.getValue(PARAMETER_COMMENT));
         this.setVariableName(attributes.getValue(PARAMETER_VARIABLE));
         this.setReportResults(!"false".equals(attributes.getValue(PARAMETER_REPORT)));
+        
+        // read timeout (ms) if available
+        String timeoutOrNull = attributes.getValue(PARAMETER_TIMEOUT);
+        if (timeoutOrNull != null && !timeoutOrNull.isEmpty()) {
+            try {
+                this.setTimeoutInMilliSeconds(Integer.parseInt(timeoutOrNull));
+            } catch (NumberFormatException ex) {
+                LOGGER.error("invalid timeout attribute value:" + timeoutOrNull, ex);
+            }
+        }
     }
 
     /**
@@ -230,5 +249,16 @@ public abstract class DiagnosticTask implements Serializable {
 
     public void setReportResults(boolean reportResults) {
         this.reportResults = reportResults;
+    }
+
+    public int getTimeoutInMilliSeconds() {
+        return timeoutInMilliseconds;
+    }
+
+    public void setTimeoutInMilliSeconds(int timeoutInSeconds) {
+        this.timeoutInMilliseconds = timeoutInSeconds;
+    }
+    public boolean needsLimitedRuntime() {
+        return this.timeoutInMilliseconds > 0;
     }
 }

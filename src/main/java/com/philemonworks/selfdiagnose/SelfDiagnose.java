@@ -48,192 +48,204 @@ import com.philemonworks.selfdiagnose.output.XMLReporter;
  * @author Ernest M. Micklei
  */
 public abstract class SelfDiagnose {
-	public static final String MDC_SELFDIAGNOSE_TASK_RESULT = "selfdiagnose-task-result";
+    public static final String MDC_SELFDIAGNOSE_TASK_RESULT = "selfdiagnose-task-result";
 
-	/**
-	 * The name of the resource that holds the specification of tasks.
-	 */
-	public final static String VERSION = "2.4.5";
-	public final static String COPYRIGHT = "(c) PhilemonWorks.com";
-	public final static String CONFIG = "selfdiagnose.xml";
-	private static URL CONFIG_URL = null; // will be initialized by configure(...)
-	private final static Logger LOG = Logger.getLogger(SelfDiagnose.class);
+    /**
+     * The name of the resource that holds the specification of tasks.
+     */
+    public final static String VERSION = "2.5.8";
+    public final static String COPYRIGHT = "(c) ernestmicklei.com";
+    public final static String CONFIG = "selfdiagnose.xml";
+    private static URL CONFIG_URL = null; // will be initialized by configure(...)
+    private final static Logger LOG = Logger.getLogger(SelfDiagnose.class);
 
-	private static List<DiagnosticTask> tasks = Collections.synchronizedList(new ArrayList<DiagnosticTask>());
-	static {
-		SelfDiagnose.configure(CONFIG);
-	}
+    private static List<DiagnosticTask> tasks = Collections.synchronizedList(new ArrayList<DiagnosticTask>());
+    static {
+        SelfDiagnose.configure(CONFIG);
+    }
 
-	/**
-	 * Return the filename that is used to configure SelfDiagnose
-	 * @return
-	 */
-	public static String getConfigFilename(){
-	    if (SelfDiagnose.CONFIG_URL == null) return "unknown";
-	    String resourceName = SelfDiagnose.CONFIG_URL.getFile();
-	    return resourceName.substring(resourceName.lastIndexOf('/')+1);
-	}
-	/**
-	 * Try to configure SelfDiagnose using the XML configuration file with the
-	 * given resource name.
-	 * 
-	 * @param resourceName : String
-	 */
-	public static void configure(String resourceName) {
-		// If a configuration file can be founds then process it first.
-		Enumeration<URL> configURLs = null;
+    /**
+     * Return the filename that is used to configure SelfDiagnose
+     * @return
+     */
+    public static String getConfigFilename() {
+        if (SelfDiagnose.CONFIG_URL == null)
+            return "unknown";
+        String resourceName = SelfDiagnose.CONFIG_URL.getFile();
+        return resourceName.substring(resourceName.lastIndexOf('/') + 1);
+    }
+
+    /**
+     * Try to configure SelfDiagnose using the XML configuration file with the
+     * given resource name.
+     * 
+     * @param resourceName : String
+     */
+    public static void configure(String resourceName) {
+        // If a configuration file can be founds then process it first.
+        Enumeration<URL> configURLs = null;
         try {
             configURLs = DiagnoseUtil.findResources(resourceName, false);
         } catch (IOException e1) {
             LOG.error("Unable to collect configuration file(s)", e1);
         }
-		if (configURLs == null || !configURLs.hasMoreElements() ) {
-			LOG
-					.warn("No configuration found. SelfDiagnose will only run tasks that are registered by the application. "
-							+ "If this was not intended then make sure that the configuration ["
-							+ resourceName
-							+ "] can be found on the classpath.");
-			return;
-		}
-		tasks = Collections.synchronizedList(new ArrayList<DiagnosticTask>());
-		while (configURLs.hasMoreElements()) {
-		    URL each = configURLs.nextElement();
-		    LOG.info("Initializing from configuration [" + each.getFile() + "]");
-	        try {           
-	            configure(each.openStream());
-	        } catch (Exception e) {
-	            LOG.error("Aborted configuration of SelfDiagnose using [" + each.getFile() + "] because: " + e.toString());
-	        }
-		}
-		
-	}
-	/**
-	 * Read the configuration from the resource by URL.
-	 * @param configURL : URL
-	 */
-	public static void configure(URL configURL) {
-		if (configURL == null) {
-			LOG.info("Unable to configure because URL is not given");
-			return;
-		}
-		LOG.info("Initializing from configuration [" + configURL.getFile() + "]");
-		tasks = Collections.synchronizedList(new ArrayList());
-		CONFIG_URL = configURL;
-		try {			
-			configure(configURL.openStream());
-		} catch (Exception e) {
-			LOG.error("Aborted configuration of SelfDiagnose using [" + configURL.getFile() + "] because: " + e.toString());
-		}
-	}
-	/**
-	 * Read the configuration from an InputStream
-	 * @param is
-	 * @throws Exception
-	 */
-	public static void configure(InputStream is) throws Exception {
-	    
+        if (configURLs == null || !configURLs.hasMoreElements()) {
+            LOG.warn("No configuration found. SelfDiagnose will only run tasks that are registered by the application. " + "If this was not intended then make sure that the configuration ["
+                    + resourceName + "] can be found on the classpath.");
+            return;
+        }
+        tasks = Collections.synchronizedList(new ArrayList<DiagnosticTask>());
+        while (configURLs.hasMoreElements()) {
+            URL each = configURLs.nextElement();
+            LOG.info("Initializing from configuration [" + each.getFile() + "]");
+            try {
+                configure(each.openStream());
+            } catch (Exception e) {
+                LOG.error("Aborted configuration of SelfDiagnose using [" + each.getFile() + "] because: " + e.toString());
+            }
+        }
+
+    }
+
+    /**
+     * Read the configuration from the resource by URL.
+     * @param configURL : URL
+     */
+    public static void configure(URL configURL) {
+        if (configURL == null) {
+            LOG.info("Unable to configure because URL is not given");
+            return;
+        }
+        LOG.info("Initializing from configuration [" + configURL.getFile() + "]");
+        tasks = Collections.synchronizedList(new ArrayList());
+        CONFIG_URL = configURL;
+        try {
+            configure(configURL.openStream());
+        } catch (Exception e) {
+            LOG.error("Aborted configuration of SelfDiagnose using [" + configURL.getFile() + "] because: " + e.toString());
+        }
+    }
+
+    /**
+     * Read the configuration from an InputStream
+     * @param is
+     * @throws Exception
+     */
+    public static void configure(InputStream is) throws Exception {
+
         SAXParser p = SAXParserFactory.newInstance().newSAXParser();
         SelfDiagnoseHandler s = new SelfDiagnoseHandler();
         p.parse(is, s);
-        is.close();	    
-	}
+        is.close();
+    }
 
-	/**
-	 * Flush all registered tasks from the configuration and re-load the
-	 * configuration.
-	 */
-	public static void reloadConfiguration() {
-		LOG.info("Flushing registered diagnostic tasks by configuration");
-		SelfDiagnose.configure(CONFIG_URL);
-	}
+    /**
+     * Flush all registered tasks from the configuration and re-load the
+     * configuration.
+     */
+    public static void reloadConfiguration() {
+        LOG.info("Flushing registered diagnostic tasks by configuration");
+        SelfDiagnose.configure(CONFIG_URL);
+    }
 
-	/**
-	 * Add the argument to the global list of Diagnostic tasks.
-	 * 
-	 * @param task
-	 *            DiagnosticTask
-	 * @return DiagnosticTask
-	 */
-	public static DiagnosticTask register(DiagnosticTask task) {
-		return SelfDiagnose.register(task, DiagnoseUtil.detectRequestorClass().getName());
-	}
+    /**
+     * Add the argument to the global list of Diagnostic tasks.
+     * 
+     * @param task
+     *            DiagnosticTask
+     * @return DiagnosticTask
+     */
+    public static DiagnosticTask register(DiagnosticTask task) {
+        return SelfDiagnose.register(task, DiagnoseUtil.detectRequestorClass().getName());
+    }
 
-	/**
-	 * Add the argument to the global list of Diagnostic tasks.
-	 * 
-	 * @param task
-	 *            DiagnosticTask
-	 * @param identifier
-	 *            String
-	 * @return DiagnosticTask
-	 */
-	public static DiagnosticTask register(DiagnosticTask task, String identifier) {
-		task.setRequestor(identifier);
-		tasks.add(task);
-		return task;
-	}
+    /**
+     * Add the argument to the global list of Diagnostic tasks.
+     * 
+     * @param task
+     *            DiagnosticTask
+     * @param identifier
+     *            String
+     * @return DiagnosticTask
+     */
+    public static DiagnosticTask register(DiagnosticTask task, String identifier) {
+        task.setRequestor(identifier);
+        tasks.add(task);
+        return task;
+    }
 
-  public static DiagnoseRun runTasks() { return runTasks(new XMLReporter()); }	
+    public static DiagnoseRun runTasks() {
+        return runTasks(new XMLReporter());
+    }
 
-  
-      /**
-       * Basic method to run all registered tasks.
-       * 
-       */
-      public static DiagnoseRun runTasks(DiagnoseRunReporter reporter) {
-          return SelfDiagnose.runTasks(tasks, reporter, new ExecutionContext());
-      }
-      /**
-       * Basic method to run all registered tasks.
-       * 
-       */
-      public static DiagnoseRun runTasks(DiagnoseRunReporter reporter, ExecutionContext ctx) {
-          return SelfDiagnose.runTasks(tasks, reporter, ctx);
-      }      
-	/**
-	 * Basic method to the tasks provided 
-	 * 
-	 */
-	public static DiagnoseRun runTasks(List<DiagnosticTask> taskList, DiagnoseRunReporter reporter, ExecutionContext ctx) {
-	    DiagnoseRun run = new DiagnoseRun();
-		List<DiagnosticTaskResult> results = new ArrayList<DiagnosticTaskResult>(taskList.size());
-		for (int i = 0; i < taskList.size(); i++) {
-			DiagnosticTask each = (DiagnosticTask) taskList.get(i);
-			DiagnosticTaskResult result = each.run(ctx);
-			result.addToResults(results);
-		}
-		run.finished();
-		run.results = results;
-		reporter.report(run);
-		return run;
-	}
+    /**
+     * Basic method to run all registered tasks.
+     * 
+     */
+    public static DiagnoseRun runTasks(DiagnoseRunReporter reporter) {
+        return SelfDiagnose.runTasks(tasks, reporter, new ExecutionContext());
+    }
 
-	/**
-	 * Run all registered DiagnosticTasks and report to the LOG. After running
-	 * all tasks, some simple statistics are logged.
-	 */
-	public static void run() {
-		SelfDiagnose.runTasks(new XMLReporter());
-	}
-	/**
-	 * Flush all registered tasks
-	 */
-	public static void flush() {
-		tasks = Collections.synchronizedList(new ArrayList<DiagnosticTask>());
-	}
+    /**
+     * Basic method to run all registered tasks.
+     * 
+     */
+    public static DiagnoseRun runTasks(DiagnoseRunReporter reporter, ExecutionContext ctx) {
+        return SelfDiagnose.runTasks(tasks, reporter, ctx);
+    }
 
-	/**
-	 * Return the modifiable collection of registered Diagnostic tasks. Use at
-	 * your own risk.
-	 */
-	public static List<DiagnosticTask> getTasks() {
-		return tasks;
-	}
-	/**
-	 * Remove the previously registered task. Ignore if was not present.
-	 * @param custom
-	 */
+    /**
+     * Basic method to the tasks provided 
+     * 
+     */
+    public static DiagnoseRun runTasks(List<DiagnosticTask> taskList, DiagnoseRunReporter reporter, ExecutionContext ctx) {
+        DiagnoseRun run = new DiagnoseRun();
+        List<DiagnosticTaskResult> results = new ArrayList<DiagnosticTaskResult>(taskList.size());
+        for (int i = 0; i < taskList.size(); i++) {
+            DiagnosticTask each = (DiagnosticTask) taskList.get(i);
+            DiagnosticTaskResult result = null;
+            // see if task wants to run with a timeout
+            if (each.needsLimitedRuntime()) {
+                result = new TaskBackgroundRunner().runWithin(each, ctx, each.getTimeoutInMilliSeconds());
+            } else {
+                result = each.run(ctx);
+            }
+            result.addToResults(results);
+        }
+        run.finished();
+        run.results = results;
+        reporter.report(run);
+        return run;
+    }
+
+    /**
+     * Run all registered DiagnosticTasks and report to the LOG. After running
+     * all tasks, some simple statistics are logged.
+     */
+    public static void run() {
+        SelfDiagnose.runTasks(new XMLReporter());
+    }
+
+    /**
+     * Flush all registered tasks
+     */
+    public static void flush() {
+        tasks = Collections.synchronizedList(new ArrayList<DiagnosticTask>());
+    }
+
+    /**
+     * Return the modifiable collection of registered Diagnostic tasks. Use at
+     * your own risk.
+     */
+    public static List<DiagnosticTask> getTasks() {
+        return tasks;
+    }
+
+    /**
+     * Remove the previously registered task. Ignore if was not present.
+     * @param custom
+     */
     public static void unregister(DiagnosticTask task) {
-        tasks.remove(task);        
+        tasks.remove(task);
     }
 }

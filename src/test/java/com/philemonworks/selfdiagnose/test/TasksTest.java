@@ -21,8 +21,14 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import com.philemonworks.selfdiagnose.DiagnoseException;
+import com.philemonworks.selfdiagnose.DiagnosticTask;
 import com.philemonworks.selfdiagnose.DiagnosticTaskResult;
+import com.philemonworks.selfdiagnose.ExecutionContext;
+import com.philemonworks.selfdiagnose.SelfDiagnose;
 import com.philemonworks.selfdiagnose.check.CheckValidURL;
+import com.philemonworks.selfdiagnose.output.DiagnoseRun;
+import com.philemonworks.selfdiagnose.output.XMLReporter;
 
 public class TasksTest extends TestCase {
 	public void testValidURL() {
@@ -39,5 +45,38 @@ public class TasksTest extends TestCase {
 	}
 	public void testClassImplementsInterface(){
 		assertTrue("jndi",Map.class.isAssignableFrom(HashMap.class));
+	}
+		
+	public void testTimeoutTask() {
+	    SleepTask sleep = new SleepTask();
+	    sleep.setTimeoutInMilliSeconds(1000);
+	    SelfDiagnose.register(sleep);
+        XMLReporter reporter = new XMLReporter();
+        DiagnoseRun run = SelfDiagnose.runTasks(reporter);
+        assertTrue(!run.isOK());
+        assertTrue(run.timeMs < 2000); // safe check?
+        System.out.println(reporter.getContent());
+	}
+	
+	
+	static class SleepTask extends DiagnosticTask {
+        private static final long serialVersionUID = -5193920249800557424L;
+
+        @Override
+        public String getDescription() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public void run(ExecutionContext ctx, DiagnosticTaskResult result) throws DiagnoseException {
+            try {
+                Thread.sleep(1000*2);
+                System.out.println("awake after 2 seconds");
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }            
+        }	    
 	}
 }

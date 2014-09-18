@@ -34,162 +34,183 @@ import org.apache.log4j.Logger;
  * @author emicklei
  */
 public class DiagnosticTaskResult {
-	public static final String STATUS_PASSED = "passed";
+    public static final String STATUS_PASSED = "passed";
 
-	public static final String STATUS_FAILED = "failed";
+    public static final String STATUS_FAILED = "failed";
 
-	public static final String STATUS_ERROR = "error";
-	
-	public static final String STATUS_UNKNOWN = "unknown";
+    public static final String STATUS_ERROR = "error";
 
-	private DiagnosticTask task;
+    public static final String STATUS_UNKNOWN = "unknown";
 
-	private String status = STATUS_UNKNOWN;
+    private DiagnosticTask task;
 
-	private String message = "";
-	
-	private String comment = null;  // overrides task comment
-	
-	private long executionTime = 0;
+    private String status = STATUS_UNKNOWN;
 
-	/**
-	 * Constructor requires a DiagnosticTask to store the result of its run.
-	 * 
-	 * @param task
-	 *            DiagnosticTask
-	 */
-	public DiagnosticTaskResult(DiagnosticTask task) {
-		super();
-		this.task = task;
-	}
+    private String message = "";
 
-	/**
-	 * Indicates the outcome of the task
-	 * 
-	 * @return STATUS_PASSED || STATUS_FAILED || STATUS_ERROR
-	 */
-	public String getStatus() {
-		return status;
-	}
+    private String comment = null; // overrides task comment
 
-	/**
-	 * @return boolean true if the run has failed
-	 */
-	public boolean isError() {
-		return status.equals(STATUS_ERROR);
-	}
+    /**
+     * Number of milliseconds to run this task.
+     */
+    private long executionTime = 0;
 
-	/**
-	 * @return boolean true if the run has failed
-	 */
-	public boolean isFailed() {
-		return status.equals(STATUS_FAILED);
-	}
+    /**
+     * Constructor requires a DiagnosticTask to store the result of its run.
+     * 
+     * @param task
+     *            DiagnosticTask
+     */
+    public DiagnosticTaskResult(DiagnosticTask task) {
+        super();
+        this.task = task;
+    }
 
-	/**
-	 * @return boolean true if the run has passed
-	 */
-	public boolean isPassed() {
-		return status.equals(STATUS_PASSED);
-	}
-	/**
-	 * @return boolean true if the run has an unkown result
-	 */
-	public boolean isUnknown() {
-		return status.equals(STATUS_UNKNOWN);
-	}
-	
-	public boolean wantsToBeReported() {
-		return task.isReportResults() && (!this.isUnknown());
-	}
-	/**
-	 * Set the message explaining why the run has failed.
-	 * 
-	 * @param aMessage
-	 */
-	public void setErrorMessage(String aMessage) {
-		status = STATUS_ERROR;
-		message = aMessage;
-	}
+    /**
+     * Indicates the outcome of the task
+     * 
+     * @return STATUS_PASSED || STATUS_FAILED || STATUS_ERROR
+     */
+    public String getStatus() {
+        return status;
+    }
 
-	public String getMessage() {
-		return message;
-	}
+    /**
+     * @return boolean true if the run has failed
+     */
+    public boolean isError() {
+        return status.equals(STATUS_ERROR);
+    }
 
-	/**
-	 * Write a log entry using the logger associated with SelfDiagnose. If the
-	 * result was an error then write a verbose report.
-	 */
-	public void logReport() {
-		Logger log = Logger.getLogger(SelfDiagnose.class);
-		StringWriter w = new StringWriter();
-		this.writeMessagesOn(w);
-		if (!isPassed()) {
-			w.write(" - ");
-			w.write(DiagnoseUtil.shortName(task.getClass()));
-			w.write(" - ");
-			w.write(task.getDescription());
-		}
-		if (task.hasComment()) {
-			   w.write(" // ");
-			   w.write(task.getComment());		
-		}
-		if (isPassed()) {
-			log.info(w.toString());
-		} else {
-			log.error(w.toString());
-		}
-	}
+    /**
+     * @return boolean true if the run has failed
+     */
+    public boolean isFailed() {
+        return status.equals(STATUS_FAILED);
+    }
 
-	protected void writeMessagesOn(StringWriter writer) {
-		writer.write(message);
-	}
+    /**
+     * @return boolean true if the run has passed
+     */
+    public boolean isPassed() {
+        return status.equals(STATUS_PASSED);
+    }
 
-	/**
-	 * Return the DiagnosticTask for which the result hold the results.
-	 * 
-	 * @return DiagnosticTask
-	 */
-	public DiagnosticTask getTask() {
-		return task;
-	}
+    /**
+     * @return boolean true if the run has an unkown result
+     */
+    public boolean isUnknown() {
+        return status.equals(STATUS_UNKNOWN);
+    }
 
-	/**
-	 * Add a message to the list of reporting messages
-	 * 
-	 * @param passedMessage
-	 *            String
-	 */
-	public void setPassedMessage(String passedMessage) {
-		status = STATUS_PASSED;
-		message = passedMessage;
-	}
+    public boolean wantsToBeReported() {
+        return task.isReportResults() && (!this.isUnknown());
+    }
 
-	public void setFailedMessage(String failedMessage) {
-		status = STATUS_FAILED;
-		message = failedMessage;
-	}
+    /**
+     * Set the message explaining why the run has failed.
+     * 
+     * @param aMessage
+     */
+    public void setErrorMessage(String aMessage) {
+        status = STATUS_ERROR;
+        message = aMessage;
+    }
 
-	public long getExecutionTime() {
-		return executionTime;
-	}
+    public String getMessage() {
+        return message;
+    }
 
-	public void setExecutionTime(long executionTime) {
-		this.executionTime = executionTime;
-	}
-	/**
-	 * Dispatch method exists because of CompositeDiagnosticTaskResult.
-	 * @param results
-	 */
+    /**
+     * Write a log entry using the logger associated with SelfDiagnose. If the
+     * result was an error then write a verbose report.
+     */
+    public void logReport() {
+        Logger log = Logger.getLogger(SelfDiagnose.class);
+        StringWriter w = new StringWriter();
+        this.writeMessagesOn(w);
+        if (!isPassed()) {
+            w.write(" - ");
+            w.write(DiagnoseUtil.shortName(task.getClass()));
+            w.write(" - ");
+            w.write(task.getDescription());
+        }
+        if (task.hasComment()) {
+            w.write(" // ");
+            w.write(task.getComment());
+        }
+        if (isPassed()) {
+            log.info(w.toString());
+        } else {
+            log.error(w.toString());
+        }
+    }
+
+    protected void writeMessagesOn(StringWriter writer) {
+        writer.write(message);
+    }
+
+    /**
+     * Return the DiagnosticTask for which the result hold the results.
+     * 
+     * @return DiagnosticTask
+     */
+    public DiagnosticTask getTask() {
+        return task;
+    }
+
+    /**
+     * Add a message to the list of reporting messages
+     * 
+     * @param passedMessage
+     *            String
+     */
+    public void setPassedMessage(String passedMessage) {
+        status = STATUS_PASSED;
+        message = passedMessage;
+    }
+
+    public void setFailedMessage(String failedMessage) {
+        status = STATUS_FAILED;
+        message = failedMessage;
+    }
+
+    /**
+     * @return number of milliseconds
+     */
+    public long getExecutionTime() {
+        return executionTime;
+    }
+
+    /**
+     * Time in milliseconds
+     * @param executionTime
+     */
+    public void setExecutionTime(long executionTime) {
+        this.executionTime = executionTime;
+    }
+
+    /**
+     * Dispatch method exists because of CompositeDiagnosticTaskResult.
+     * @param results
+     */
     public void addToResults(List<DiagnosticTaskResult> results) {
-        results.add(this);        
+        results.add(this);
     }
+
     public String toString() {
-    	return super.toString() + "{status=" + status + ",message=" + message + "}";
+        return super.toString() + "{status=" + status + ",message=" + message + "}";
     }
-    public boolean hasComment() { return comment != null && !comment.equals(""); }
-    
-    public String getComment() { return comment; }
-    
-    public void setComment(String newComment) { comment = newComment; }
+
+    public boolean hasComment() {
+        return comment != null && !comment.equals("");
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String newComment) {
+        comment = newComment;
+    }
 }

@@ -11,7 +11,7 @@ public class CustomSpringTaskTest {
     @Test public void testThatACustomTaskCanbeSpringBean() {
         ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("/spring.xml");        
         SelfDiagnose.configure("with-spring-task.xml");
-        SpringApplicationContextInjector.inject(ctx); // this is wat a Controller/Resource will do
+        SpringApplicationContextInjector.inject(ctx); // this is what a Controller/Resource will do
         SelfDiagnose.run();
         Assert.assertTrue(SpringEnabledTask.RUNNED);
     }
