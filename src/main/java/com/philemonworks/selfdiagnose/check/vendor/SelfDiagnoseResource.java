@@ -46,15 +46,7 @@ public class SelfDiagnoseResource implements ApplicationContextAware{
         DiagnoseRun run = SelfDiagnose.runTasks(reporter);
         builder.header("X-SelfDiagnose-OK", run.isOK());
         return builder.entity(reporter.getContent()).build();
-    }
-    
-    // http://localhost:9998/internal/selfdiagnose.xml
-    @GET
-    @Consumes("text/html,application/xml")
-    @Produces("application/xml")
-    public Response reportXMLResults(@PathParam("extension") String format) {
-        return this.runAndReportResults("xml",null);
-    }
+    }   
     
     @POST
     @Consumes("application/xml")

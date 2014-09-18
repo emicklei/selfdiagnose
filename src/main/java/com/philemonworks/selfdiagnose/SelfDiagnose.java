@@ -53,8 +53,8 @@ public abstract class SelfDiagnose {
     /**
      * The name of the resource that holds the specification of tasks.
      */
-    public final static String VERSION = "2.5.7";
-    public final static String COPYRIGHT = "(c) PhilemonWorks.com";
+    public final static String VERSION = "2.5.8";
+    public final static String COPYRIGHT = "(c) ernestmicklei.com";
     public final static String CONFIG = "selfdiagnose.xml";
     private static URL CONFIG_URL = null; // will be initialized by configure(...)
     private final static Logger LOG = Logger.getLogger(SelfDiagnose.class);
