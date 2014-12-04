@@ -28,54 +28,59 @@ import org.xml.sax.InputSource;
 
 public class XMLUtils {
 
-	public static String valueForXPath(String xpath, InputStream inputStream)
-			throws XPathExpressionException {
-		/*
-		 * Report.systemProperty("javax.xml.parsers.DocumentBuilderFactory");
-		 * Report.systemProperty("javax.xml.parsers.SAXParserFactory");
-		 * Report.systemProperty("javax.xml.transform.TransformerFactory");
-		 */
-		XPathFactory factory = XPathFactory.newInstance();
-		InputSource is = new InputSource(inputStream);
-		XPath xp = factory.newXPath();
-		return xp.evaluate(xpath, is);
-	}
-	/**
-	 * Performs entity encoding of characters from a String
-	 * http://stackoverflow.com/questions/439298/best-way-to-encode-text-data-for-xml-in-java
-	 * @param s : String
-	 * @return String
-	 */
-	public static String encode(String originalUnprotectedString) {
-	    if (originalUnprotectedString == null) {
-	        return null;
-	    }
-	    boolean anyCharactersProtected = false;
+    public static String valueForXPath(String xpath, InputStream inputStream) throws XPathExpressionException {
+        /*
+         * Report.systemProperty("javax.xml.parsers.DocumentBuilderFactory");
+         * Report.systemProperty("javax.xml.parsers.SAXParserFactory");
+         * Report.systemProperty("javax.xml.transform.TransformerFactory");
+         */
+        XPathFactory factory = XPathFactory.newInstance();
+        InputSource is = new InputSource(inputStream);
+        XPath xp = factory.newXPath();
+        return xp.evaluate(xpath, is);
+    }
 
-	    StringBuffer stringBuffer = new StringBuffer();
-	    for (int i = 0; i < originalUnprotectedString.length(); i++) {
-	        char ch = originalUnprotectedString.charAt(i);
+    /**
+     * Performs entity encoding of characters from a String
+     * http://stackoverflow.com/questions/439298/best-way-to-encode-text-data-for-xml-in-java
+     * @param s : String
+     * @return String
+     */
+    public static String encode(String originalUnprotectedString) {
+        if (originalUnprotectedString == null) {
+            return null;
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < originalUnprotectedString.length(); i++) {
+            char c = originalUnprotectedString.charAt(i);
+            switch (c) {
+            case '<':
+                sb.append("&lt;");
+                break;
+            case '>':
+                sb.append("&gt;");
+                break;
+            case '\"':
+                sb.append("&quot;");
+                break;
+            case '&':
+                sb.append("&amp;");
+                break;
+            case '\'':
+                sb.append("&apos;");
+                break;
+            default:
+                if (c > 0x7e) {
+                    sb.append("&#" + ((int) c) + ";");
+                } else
+                    sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
 
-	        boolean controlCharacter = ch < 32;
-	        boolean unicodeButNotAscii = ch > 126;
-	        boolean characterWithSpecialMeaningInXML = ch == '<' || ch == '&' || ch == '>';
-
-	        if (characterWithSpecialMeaningInXML || unicodeButNotAscii || controlCharacter) {
-	            stringBuffer.append("&#" + (int) ch + ";");
-	            anyCharactersProtected = true;
-	        } else {
-	            stringBuffer.append(ch);
-	        }
-	    }
-	    if (anyCharactersProtected == false) {
-	        return originalUnprotectedString;
-	    }
-
-	    return stringBuffer.toString();	
-	}
-	
-	public static String encode(Date someDate) {
-	    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-d'T'HH:mm:ss.S");
-	    return df.format(someDate);
-	}
+    public static String encode(Date someDate) {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-d'T'HH:mm:ss.S");
+        return df.format(someDate);
+    }
 }

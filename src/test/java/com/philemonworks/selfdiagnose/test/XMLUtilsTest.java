@@ -33,6 +33,6 @@ public class XMLUtilsTest extends TestCase {
         }
     }
     public void testEncode(){
-    	assertEquals("&#60;&#62;&#38;", XMLUtils.encode("<>&"));
+    	assertEquals("&lt;&gt;&amp;", XMLUtils.encode("<>&"));
     }
 }
