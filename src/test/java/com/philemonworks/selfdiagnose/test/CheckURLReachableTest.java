@@ -18,26 +18,31 @@ package com.philemonworks.selfdiagnose.test;
 
 import java.net.URL;
 
+import org.junit.Ignore;
+
 import com.philemonworks.selfdiagnose.DiagnosticTaskResult;
 import com.philemonworks.selfdiagnose.check.CheckURLReachable;
 
+@Ignore
 public class CheckURLReachableTest extends BasicDiagnosticTaskTest {
-	public void testURLString(){
-		CheckURLReachable task = new CheckURLReachable();
-		task.setUrl("http://www.philemonworks.com");
-		this.run(task);
-	}
-    public void testGoogle(){
+    public void testURLString() {
+        CheckURLReachable task = new CheckURLReachable();
+        task.setUrl("http://www.philemonworks.com");
+        this.run(task);
+    }
+
+    public void testGoogle() {
         CheckURLReachable task = new CheckURLReachable();
         task.setUrl("http://www.google.com");
         task.setPattern(".*");
         DiagnosticTaskResult result = this.run(task);
         assertTrue(result.isPassed());
-    }	
-	public void testURLInContext() throws Exception {
-		CheckURLReachable task = new CheckURLReachable();
-		ctx.setValue("theurl", new URL("http://www.philemonworks.com"));
-		task.setUrl("${theurl}");
-		this.run(task);
-	}	
+    }
+
+    public void testURLInContext() throws Exception {
+        CheckURLReachable task = new CheckURLReachable();
+        ctx.setValue("theurl", new URL("http://www.philemonworks.com"));
+        task.setUrl("${theurl}");
+        this.run(task);
+    }
 }
