@@ -46,7 +46,7 @@ public abstract class DiagnosticTask implements Serializable {
     public static final String PARAMETER_REPORT = "report";
     /**
      * Attribute that specifies whether to limit the execution time of the task to timeout seconds.
-     */ 
+     */
     public static final String PARAMETER_TIMEOUT = "timeout";
 
     /**
@@ -70,7 +70,7 @@ public abstract class DiagnosticTask implements Serializable {
      * The actual time to complete (again in milliseconds) is reported
      */
     private int timeoutInMilliseconds = 0;
-    
+
     /**
      * Return an object to store the results of running the receiver.
      *
@@ -139,7 +139,7 @@ public abstract class DiagnosticTask implements Serializable {
         long end = begin;
         try {
             this.setUp(ctx);
-            this.run(ctx, result);                
+            this.run(ctx, result);
             end = System.currentTimeMillis();
         } catch (DiagnoseException e) {
             result.setFailedMessage(e.getMessage());
@@ -158,7 +158,7 @@ public abstract class DiagnosticTask implements Serializable {
         result.setExecutionTime(end - begin);
         return result;
     }
-    
+
     /**
      * Run the task. If an error is detected then raise a DiagnoseException.
      * Otherwise use the result object to the report any messages when a run is completed.
@@ -189,7 +189,7 @@ public abstract class DiagnosticTask implements Serializable {
         this.setComment(attributes.getValue(PARAMETER_COMMENT));
         this.setVariableName(attributes.getValue(PARAMETER_VARIABLE));
         this.setReportResults(!"false".equals(attributes.getValue(PARAMETER_REPORT)));
-        
+
         // read timeout (ms) if available
         String timeoutOrNull = attributes.getValue(PARAMETER_TIMEOUT);
         if (timeoutOrNull != null && !timeoutOrNull.isEmpty()) {
@@ -209,8 +209,7 @@ public abstract class DiagnosticTask implements Serializable {
      * @return String containing one or more template arguments such as {0}
      */
     public String getDefaultReportTemplate(boolean isSuccess) {
-        return this.getClass().getName() + (isSuccess ? " passed " : " failed ") +
-                "[missing getDefaultReportTemplate()]";
+        return this.getClass().getName() + (isSuccess ? " passed " : " failed ") + "[missing getDefaultReportTemplate()]";
     }
 
     /**
@@ -255,9 +254,10 @@ public abstract class DiagnosticTask implements Serializable {
         return timeoutInMilliseconds;
     }
 
-    public void setTimeoutInMilliSeconds(int timeoutInSeconds) {
-        this.timeoutInMilliseconds = timeoutInSeconds;
+    public void setTimeoutInMilliSeconds(int timeoutInMS) {
+        this.timeoutInMilliseconds = timeoutInMS;
     }
+
     public boolean needsLimitedRuntime() {
         return this.timeoutInMilliseconds > 0;
     }

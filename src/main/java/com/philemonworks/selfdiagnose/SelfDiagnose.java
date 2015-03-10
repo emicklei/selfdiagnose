@@ -1,5 +1,5 @@
 /*
- Copyright 2006 Ernest Micklei @ PhilemonWorks.com
+ Copyright 2006-2015 Ernest Micklei @ PhilemonWorks.com
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ public abstract class SelfDiagnose {
     /**
      * The name of the resource that holds the specification of tasks.
      */
-    public final static String VERSION = "2.5.9";
+    public final static String VERSION = "2.5.10";
     public final static String COPYRIGHT = "(c) ernestmicklei.com";
     public final static String CONFIG = "selfdiagnose.xml";
     private static URL CONFIG_URL = null; // will be initialized by configure(...)

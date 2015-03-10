@@ -21,6 +21,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import com.philemonworks.selfdiagnose.CustomDiagnosticTask;
 import com.philemonworks.selfdiagnose.DiagnoseException;
 import com.philemonworks.selfdiagnose.DiagnosticTask;
 import com.philemonworks.selfdiagnose.DiagnosticTaskResult;
@@ -31,35 +32,55 @@ import com.philemonworks.selfdiagnose.output.DiagnoseRun;
 import com.philemonworks.selfdiagnose.output.XMLReporter;
 
 public class TasksTest extends TestCase {
-	public void testValidURL() {
-		CheckValidURL task = new CheckValidURL();
-		task.setUrl("http://www.philemonworks.com");
-		DiagnosticTaskResult result = task.run();
-		if (result.isFailed()) fail("correct url failed");
-	}
-	public void testInvalidURL() {
-		CheckValidURL task = new CheckValidURL();
-		task.setUrl("http://www philemonworks.com");
-		DiagnosticTaskResult result = task.run();
-		if (!result.isFailed()) fail("[expected exception]");
-	}
-	public void testClassImplementsInterface(){
-		assertTrue("jndi",Map.class.isAssignableFrom(HashMap.class));
-	}
-		
-	public void testTimeoutTask() {
-	    SleepTask sleep = new SleepTask();
-	    sleep.setTimeoutInMilliSeconds(1000);
-	    SelfDiagnose.register(sleep);
+    public void testValidURL() {
+        CheckValidURL task = new CheckValidURL();
+        task.setUrl("http://www.philemonworks.com");
+        DiagnosticTaskResult result = task.run();
+        if (result.isFailed())
+            fail("correct url failed");
+    }
+
+    public void testInvalidURL() {
+        CheckValidURL task = new CheckValidURL();
+        task.setUrl("http://www philemonworks.com");
+        DiagnosticTaskResult result = task.run();
+        if (!result.isFailed())
+            fail("[expected exception]");
+    }
+
+    public void testClassImplementsInterface() {
+        assertTrue("jndi", Map.class.isAssignableFrom(HashMap.class));
+    }
+
+    public void testTimeoutTask() {
+        SleepTask sleep = new SleepTask();
+        sleep.setTimeoutInMilliSeconds(1000);
+        SelfDiagnose.flush();
+        SelfDiagnose.register(sleep);
         XMLReporter reporter = new XMLReporter();
         DiagnoseRun run = SelfDiagnose.runTasks(reporter);
         assertTrue(!run.isOK());
         assertTrue(run.timeMs < 2000); // safe check?
-        System.out.println(reporter.getContent());
-	}
-	
-	
-	static class SleepTask extends DiagnosticTask {
+    }
+
+    public void testTimeoutCustomTask() {
+        SleepTask sleep = new SleepTask();
+        CustomDiagnosticTask ct = new CustomDiagnosticTask();
+        // set task before attributes
+        ct.setTask(sleep);
+        ct.setTimeoutInMilliSeconds(1000);
+        SelfDiagnose.flush();
+        SelfDiagnose.register(sleep);
+        XMLReporter reporter = new XMLReporter();
+        DiagnoseRun run = SelfDiagnose.runTasks(reporter);
+        assertTrue(!run.isOK());
+        if (run.timeMs >= 2000) {
+            System.out.println("got " + run.timeMs + " want < 2000");
+            fail();
+        }
+    }
+
+    static class SleepTask extends DiagnosticTask {
         private static final long serialVersionUID = -5193920249800557424L;
 
         @Override
@@ -71,12 +92,13 @@ public class TasksTest extends TestCase {
         @Override
         public void run(ExecutionContext ctx, DiagnosticTaskResult result) throws DiagnoseException {
             try {
-                Thread.sleep(1000*2);
-                System.out.println("awake after 2 seconds");
+                System.out.println("[SleepTask] going to sleep for 2 seconds");
+                Thread.sleep(1000 * 2);
+                System.out.println("[SleepTask] awake after 2 seconds");
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-            }            
-        }	    
-	}
+            }
+        }
+    }
 }
