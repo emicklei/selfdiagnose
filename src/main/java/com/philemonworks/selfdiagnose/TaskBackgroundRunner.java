@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class TaskBackgroundRunner {
     // threads are removed from the pool if no longer used.
-    final ExecutorService SharedPool = Executors.newCachedThreadPool(new ThreadFactory() {
+    static final ExecutorService SharedPool = Executors.newCachedThreadPool(new ThreadFactory() {
         public Thread newThread(Runnable r) {
             Thread runner = new Thread(r);
             runner.setName("SelfDiagnose.TaskBackgroundRunner");

@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import com.philemonworks.selfdiagnose.CompositeDiagnosticTaskResult;
@@ -35,10 +34,11 @@ public class ReportMap extends CheckValueMatches {
             result.setFailedMessage(DiagnoseUtil.format("No Map set for variable {0}", this.getValue()));
             return;
         }
-        Map map = (Map) value;
+        @SuppressWarnings("unchecked")
+        Map<Object, Object> map = (Map<Object, Object>) value;
         String[] sortedKeys = new String[map.size()];
-        Set keySet = new HashSet();
-        Iterator keyIterator = map.keySet().iterator();
+        Set<Object> keySet = new HashSet<Object>();
+        Iterator<Object> keyIterator = map.keySet().iterator();
         while (keyIterator.hasNext()) {
             Object key = keyIterator.next();
             if (key instanceof String) {

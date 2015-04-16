@@ -48,7 +48,7 @@ public class HTMLReporter implements DiagnoseRunReporter {
     public void appendReportBody(DiagnoseRun run) {
         html.append("<TABLE>");
         appendTableHeader();
-        for (Iterator it = run.results.iterator(); it.hasNext();) {
+        for (Iterator<DiagnosticTaskResult> it = run.results.iterator(); it.hasNext();) {
             this.write((DiagnosticTaskResult) it.next());
         }
         html.append("</TABLE>");
@@ -69,11 +69,11 @@ public class HTMLReporter implements DiagnoseRunReporter {
         html.append(" | since:" + this.formatDate(STARTUP_TIMESTAMP));
         html.append(" report:" + this.formatDate(new Date()));
     }
-    
+
     private String formatDate(Date aDate) {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return df.format(aDate);
-    }    
+    }
 
     protected void write(DiagnosticTaskResult result) {
         if (!result.wantsToBeReported())
@@ -92,16 +92,25 @@ public class HTMLReporter implements DiagnoseRunReporter {
     protected void appendTableHeader() {
         html.append("<tr class='odd'>");
         header("Comment");
+        header("Time [ms]");
         header("Message");
         html.append("</tr>\n");
     }
 
     protected void append(DiagnosticTaskResult result) {
+        // comment
         if (result.hasComment()) {
             data(result.getComment(), null);
         } else {
             data(result.getTask().getComment(), null);
         }
+        // time
+        if (result.getExecutionTime() == 0) {
+            data(null, null);
+        } else {
+            data(Long.toString(result.getExecutionTime()), null);
+        }
+        // message
         if (result.isPassed()) {
             data(result.getMessage(), "passed");
         } else if (result.isFailed()) {
