@@ -45,7 +45,7 @@ public abstract class DiagnosticTask implements Serializable {
      */
     public static final String PARAMETER_REPORT = "report";
     /**
-     * Attribute that specifies whether to limit the execution time of the task to timeout seconds.
+     * Attribute that specifies whether to limit the execution time of the task to timeout milliseconds.
      */
     public static final String PARAMETER_TIMEOUT = "timeout";
 
@@ -88,14 +88,14 @@ public abstract class DiagnosticTask implements Serializable {
     public abstract String getDescription();
 
     /**
-     * On default, the task is the unqualified name for the class in lowercase.
+     * On default, the task is the unqualified name for the class in lower case.
      * This name must be equal to that of the complexType as defined in the XSD.
      *
      * @return String the name for this task
      */
     public String getTaskName() {
 
-        Class theClass = this.getClass();
+        Class<?> theClass = this.getClass();
         String taskName = theClass.getName();
         return taskName.substring(taskName.lastIndexOf('.') + 1).toLowerCase(Locale.ENGLISH);
     }

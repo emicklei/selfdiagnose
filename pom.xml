@@ -6,7 +6,7 @@
 	<packaging>jar</packaging>
 	<version>2.6.0</version>
 	<name>SelfDiagnose</name>
-	<url>http://selfdiagnose.sourceforge.net</url>
+	<url>http://github.com/emicklei/selfdiagnose</url>
 	<description>SelfDiagnose - library of tasks to verify an execution
 		environment at runtime</description>
 	<licenses>
@@ -23,13 +23,12 @@
 		<developer>
 			<id>ernest</id>
 			<name>Ernest Micklei</name>
-			<email>ernest.micklei@philemonworks.com</email>
 		</developer>
 	</developers>
 	<scm>
-		<connection>scm:svn:https://emicklei@selfdiagnose.svn.sourceforge.net/svnroot/selfdiagnose/trunk/
+		<connection>scm:git:https://github.com/emicklei/selfdiagnose
 		</connection>
-		<url>https://selfdiagnose.svn.sourceforge.net/svnroot/selfdiagnose/trunk/
+		<url>https://github.com/emicklei/selfdiagnose
 		</url>
 	</scm>
 	<repositories>
@@ -202,13 +201,7 @@
 	<distributionManagement>
 		<site>
 			<id>website-selfdiagnose</id>
-			<url>scp://emicklei@selfdiagnose.sourceforge.net/home/groups/s/se/selfdiagnose/htdocs
-			</url>
+			<url>https://github.com/emicklei/selfdiagnose</url>
 		</site>
-		<repository>
-			<uniqueVersion>false</uniqueVersion>
-			<id>googlecode</id>
-			<url>svn:https://emicklei.googlecode.com/svn/repo</url>
-		</repository>
 	</distributionManagement>
 </project>

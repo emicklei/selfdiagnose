@@ -52,7 +52,7 @@ public class DiagnoseUtil {
      *            Task class
      * @throws DiagnoseException
      */
-    public static void verifyNonEmptyString(String variableName, Object value, Class owner) throws DiagnoseException {
+    public static void verifyNonEmptyString(String variableName, Object value, Class<?> owner) throws DiagnoseException {
         DiagnoseUtil.verifyNotNull(variableName, value, owner);
         if (!(value instanceof String))
             throw new DiagnoseException(owner.getName() + " parameter [" + variableName + "] must be a String.");
@@ -72,7 +72,7 @@ public class DiagnoseUtil {
      *            Task class
      * @throws DiagnoseException
      */
-    public static void verifyNotNull(String variableName, Object value, Class owner) throws DiagnoseException {
+    public static void verifyNotNull(String variableName, Object value, Class<?> owner) throws DiagnoseException {
         if (value == null)
             throw new DiagnoseException(owner.getName() + " parameter [" + variableName + "] cannot be null.");
     }
@@ -84,7 +84,7 @@ public class DiagnoseUtil {
      *            Class
      * @return String name of the Class
      */
-    public static String shortName(Class someClass) {
+    public static String shortName(Class<?> someClass) {
         String fullName = someClass.getName();
         return fullName.substring(fullName.lastIndexOf('.') + 1);
     }
@@ -103,7 +103,7 @@ public class DiagnoseUtil {
      * @throws DiagnoseException
      */
     public static Object perform(Object receiver, String methodName, Object[] arguments) throws DiagnoseException {
-        Class[] types = argumentTypesFrom(arguments);
+        Class<?>[] types = argumentTypesFrom(arguments);
         Object result;
         try {
             result = perform(receiver, methodName, arguments, types);
@@ -125,7 +125,8 @@ public class DiagnoseUtil {
      * @throws DiagnoseException
      */
     public static Object perform(Object receiver, String methodName, Object[] arguments, Class[] types) throws DiagnoseException {
-        if ("this".equals(methodName)) return receiver;
+        if ("this".equals(methodName))
+            return receiver;
         Object result = null;
         try {
             Class methodClass = receiver.getClass();
@@ -155,9 +156,9 @@ public class DiagnoseUtil {
      * @return
      * @throws DiagnoseException
      */
-    public static Object newInstance(Class instanceClass, Object[] constructorArguments) throws DiagnoseException {
+    public static Object newInstance(Class<?> instanceClass, Object[] constructorArguments) throws DiagnoseException {
         try {
-            Constructor constructor = instanceClass.getConstructor(argumentTypesFrom(constructorArguments));
+            Constructor<?> constructor = instanceClass.getConstructor(argumentTypesFrom(constructorArguments));
             return constructor.newInstance(constructorArguments);
         } catch (SecurityException e) {
             throw new DiagnoseException("SecurityException constructing " + instanceClass, e);
@@ -175,8 +176,8 @@ public class DiagnoseUtil {
 
     }
 
-    public static Class[] argumentTypesFrom(Object[] arguments) {
-        Class[] types = new Class[arguments.length];
+    public static Class<?>[] argumentTypesFrom(Object[] arguments) {
+        Class<?>[] types = new Class[arguments.length];
         for (int t = 0; t < arguments.length; t++)
             types[t] = arguments[t].getClass();
         return types;
@@ -190,8 +191,8 @@ public class DiagnoseUtil {
      * @return Class
      * @throws DiagnoseException
      */
-    public static Class classForName(String className) throws ClassNotFoundException {
-        Class loaded = null;
+    public static Class<?> classForName(String className) throws ClassNotFoundException {
+        Class<?> loaded = null;
         try {
             loaded = Thread.currentThread().getContextClassLoader().loadClass(className);
         } catch (ClassNotFoundException ex) {
@@ -273,12 +274,13 @@ public class DiagnoseUtil {
             return url;
         return DiagnoseUtil.class.getClassLoader().getResource(resource);
     }
+
     public static Enumeration<URL> findResources(String resource, boolean useContextClassLoaderOnly) throws IOException {
         Enumeration<URL> url = Thread.currentThread().getContextClassLoader().getResources(resource);
         if (useContextClassLoaderOnly || (url != null))
             return url;
         return DiagnoseUtil.class.getClassLoader().getResources(resource);
-    }    
+    }
 
     public static String format(String template, String param0) {
         return format(template, param0, "");
@@ -329,7 +331,8 @@ public class DiagnoseUtil {
      * @return getter or this
      */
     public static String getPropertyAccessMethodName(String property) {
-        if ("this".equals(property)) return "this";
+        if ("this".equals(property))
+            return "this";
         return "get" + property.substring(0, 1).toUpperCase(Locale.ENGLISH) + property.substring(1);
     }
 
