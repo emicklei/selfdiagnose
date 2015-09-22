@@ -34,7 +34,7 @@ public class TaskBackgroundRunner {
             public void run() {
                 DiagnosticTaskResult actualResult = task.run(ctx);
                 // do not overwrite a timeout result
-                if (TaskBackgroundRunner.this.result != null) {
+                if (TaskBackgroundRunner.this.result == null) {
                     TaskBackgroundRunner.this.result = actualResult;
                 }
                 latch.countDown();
@@ -51,6 +51,11 @@ public class TaskBackgroundRunner {
             result = task.createResult();
             result.setFailedMessage("interrupted execution");
             result.setExecutionTime(timeoutInMilliseconds); // could be less
+        }
+        // if result was not set for some reason then create it with a failure
+        if (result == null) {
+            result = task.createResult();
+            result.setFailedMessage("unexpected empty result in background runner");
         }
         return result;
     }
