@@ -4,6 +4,7 @@ import java.sql.Connection;
 
 import javax.sql.DataSource;
 
+import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.xml.sax.Attributes;
@@ -24,6 +25,7 @@ import com.philemonworks.selfdiagnose.ExecutionContext;
  *
  */
 public class CheckSpringDatasourceConnectable extends DiagnosticTask implements ApplicationContextAware {
+    private final static Logger log = Logger.getLogger(CheckSpringDatasourceConnectable.class);    
     private static final long serialVersionUID = 3161059124031362279L;
     private static final String PARAMETER_NAME = "name";
     private String datasourceName;
@@ -76,6 +78,7 @@ public class CheckSpringDatasourceConnectable extends DiagnosticTask implements 
                         "No connection could be create using the Datasource [{0}]",datasourceName));
             }
         } catch (Exception ex){
+            log.error("failed to get connection",ex);
             result.setFailedMessage(ex.getMessage());
         }
     }
