@@ -26,10 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.philemonworks.selfdiagnose.output.DiagnoseRun;
-import com.philemonworks.selfdiagnose.output.DiagnoseRunReporter;
-import com.philemonworks.selfdiagnose.output.HTMLReporter;
-import com.philemonworks.selfdiagnose.output.XMLReporter;
+import com.philemonworks.selfdiagnose.output.*;
 
 /**
  * SelfDiagnoseServlet is a server component that can run and report on all registered diagnostic tasks.<br/>
@@ -141,6 +138,8 @@ public class SelfDiagnoseServlet extends HttpServlet {
 			return new HTMLReporter();
 		if ("xml".equals(format))
 			return new XMLReporter();
+		if ("json".equals(format))
+			return new JSONReporter();
 		throw new IllegalArgumentException("Unkown format for reporting:" + format);
 	}
 

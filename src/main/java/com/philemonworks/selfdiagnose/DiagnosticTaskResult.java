@@ -19,6 +19,8 @@ package com.philemonworks.selfdiagnose;
 import java.io.StringWriter;
 import java.util.List;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import org.apache.log4j.Logger;
 
 /**
@@ -42,17 +44,31 @@ public class DiagnosticTaskResult {
 
     public static final String STATUS_UNKNOWN = "unknown";
 
-    private DiagnosticTask task;
+    private final DiagnosticTask task;
 
+    @Expose
+    private final String taskName;
+
+    @Expose
+    private final String requestor;
+
+    @Expose
+    private final String severity;
+
+    @Expose
     private String status = STATUS_UNKNOWN;
 
+    @Expose
     private String message = "";
 
+    @Expose
     private String comment = null; // overrides task comment
 
     /**
      * Number of milliseconds to run this task.
      */
+    @Expose
+    @SerializedName("duration")
     private long executionTime = 0;
 
     /**
@@ -63,7 +79,15 @@ public class DiagnosticTaskResult {
      */
     public DiagnosticTaskResult(DiagnosticTask task) {
         super();
+
+        if(task == null) {
+            throw new IllegalArgumentException("task cannot be null");
+        }
+
         this.task = task;
+        this.taskName =  task.getTaskName();
+        this.requestor = task.getRequestor();
+        this.severity = task.getSeverity();
     }
 
     /**
@@ -207,10 +231,15 @@ public class DiagnosticTaskResult {
     }
 
     public String getComment() {
-        return comment;
+        return hasComment() ? comment : task.getComment();
     }
 
     public void setComment(String newComment) {
         comment = newComment;
     }
+
+    public String getSeverity() {
+        return severity;
+    }
+
 }

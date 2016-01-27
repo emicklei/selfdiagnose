@@ -16,14 +16,32 @@
 */
 package com.philemonworks.selfdiagnose.test;
 
+import com.philemonworks.selfdiagnose.DiagnosticTask;
+import com.philemonworks.selfdiagnose.Severity;
 import com.philemonworks.selfdiagnose.check.CheckXMLContent;
 
 public class CheckXMLContentTest extends BasicDiagnosticTaskTest {
-	public void testSimple(){
-		CheckXMLContent task = new CheckXMLContent();
-		task.setName("checkxmlcontenttest.xml");
-		task.setXpath("data/item/@name");
-		task.setPattern("object");
-		this.run(task);
-	}
+    public void testSimple() {
+        CheckXMLContent task = new CheckXMLContent();
+        task.setName("checkxmlcontenttest.xml");
+        task.setXpath("data/item/@name");
+        task.setPattern("object");
+        this.run(task);
+    }
+
+    public void testValidTaskSeverity() {
+        DiagnosticTask task = new CheckXMLContent();
+        task.setSeverity("critical");
+        assertEquals(Severity.CRITICAL.name(), task.getSeverity());
+    }
+
+    public void testInvalidTaskSeverity() {
+        DiagnosticTask task = new CheckXMLContent();
+        try {
+            task.setSeverity("invalid");
+            fail("IllegalArgumentException should be thrown because enum invalid doesn't exist for Severity");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+    }
 }
