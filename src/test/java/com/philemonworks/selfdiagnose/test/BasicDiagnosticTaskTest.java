@@ -16,12 +16,11 @@
 */
 package com.philemonworks.selfdiagnose.test;
 
-import junit.framework.TestCase;
-
 import com.philemonworks.selfdiagnose.DiagnoseUtil;
 import com.philemonworks.selfdiagnose.DiagnosticTask;
 import com.philemonworks.selfdiagnose.DiagnosticTaskResult;
 import com.philemonworks.selfdiagnose.ExecutionContext;
+import junit.framework.TestCase;
 
 public abstract class BasicDiagnosticTaskTest extends TestCase {  
 	public ExecutionContext ctx;

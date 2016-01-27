@@ -44,14 +44,6 @@ public class DiagnosticTaskResult {
 
     public static final String STATUS_UNKNOWN = "unknown";
 
-    public static final String SEVERITY_OK = "ok";
-
-    public static final String SEVERITY_WARNING = "warning";
-
-    public static final String SEVERITY_CRITICAL = "critical";
-
-    public static final String SEVERITY_UNKNOWN = "unknown";
-
     private final DiagnosticTask task;
 
     @Expose
@@ -61,10 +53,10 @@ public class DiagnosticTaskResult {
     private final String requestor;
 
     @Expose
-    private String status = STATUS_UNKNOWN;
+    private final String severity;
 
     @Expose
-    private String severity = SEVERITY_CRITICAL;
+    private String status = STATUS_UNKNOWN;
 
     @Expose
     private String message = "";
@@ -95,6 +87,7 @@ public class DiagnosticTaskResult {
         this.task = task;
         this.taskName =  task.getTaskName();
         this.requestor = task.getRequestor();
+        this.severity = task.getSeverity();
     }
 
     /**
@@ -198,13 +191,11 @@ public class DiagnosticTaskResult {
      */
     public void setPassedMessage(String passedMessage) {
         status = STATUS_PASSED;
-        severity = SEVERITY_OK;
         message = passedMessage;
     }
 
     public void setFailedMessage(String failedMessage) {
         status = STATUS_FAILED;
-        severity = SEVERITY_CRITICAL;
         message = failedMessage;
     }
 
@@ -249,10 +240,6 @@ public class DiagnosticTaskResult {
 
     public String getSeverity() {
         return severity;
-    }
-
-    public void setSeverity(String severity) {
-        this.severity = severity;
     }
 
 }

@@ -32,6 +32,7 @@ import org.xml.sax.Attributes;
 public abstract class DiagnosticTask implements Serializable {
     private static final long serialVersionUID = -1320140869670492598L;
     private static final Logger LOGGER = Logger.getLogger(SelfDiagnose.class);
+
     /**
      * The attribute that names the variable where results are stored.
      */
@@ -48,6 +49,10 @@ public abstract class DiagnosticTask implements Serializable {
      * Attribute that specifies whether to limit the execution time of the task to timeout milliseconds.
      */
     public static final String PARAMETER_TIMEOUT = "timeout";
+    /**
+     * Attribute that specifies the task severity.
+     */
+    public static final String PARAMETER_SEVERITY = "severity";
 
     /**
      * The identifier for the object that created and registered this task.
@@ -70,6 +75,11 @@ public abstract class DiagnosticTask implements Serializable {
      * The actual time to complete (again in milliseconds) is reported
      */
     private int timeoutInMilliseconds = 0;
+    /**
+     * Used to indicate whether a task has critical or warning severity when a check fails.
+     * By default, severity is set to critical.
+     */
+    private String severity = Severity.CRITICAL.name();
 
     /**
      * Return an object to store the results of running the receiver.
@@ -187,6 +197,7 @@ public abstract class DiagnosticTask implements Serializable {
      */
     public void initializeFromAttributes(Attributes attributes) {
         this.setComment(attributes.getValue(PARAMETER_COMMENT));
+        this.setSeverity(attributes.getValue(PARAMETER_SEVERITY));
         this.setVariableName(attributes.getValue(PARAMETER_VARIABLE));
         this.setReportResults(!"false".equals(attributes.getValue(PARAMETER_REPORT)));
 
@@ -260,5 +271,17 @@ public abstract class DiagnosticTask implements Serializable {
 
     public boolean needsLimitedRuntime() {
         return this.timeoutInMilliseconds > 0;
+    }
+
+    public String getSeverity() {
+        return severity;
+    }
+
+    /**
+     * Make sure that severity is set correctly within the allowed values, see {@link Severity} enumeration.
+     * @param severity
+     */
+    public void setSeverity(String severity) {
+        this.severity = severity != null ? Severity.valueOf(severity.toUpperCase()).name() : Severity.CRITICAL.name();
     }
 }
