@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.HttpHeaders;
 
+import com.philemonworks.selfdiagnose.output.*;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -15,10 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.philemonworks.selfdiagnose.SelfDiagnose;
-import com.philemonworks.selfdiagnose.output.DiagnoseRun;
-import com.philemonworks.selfdiagnose.output.DiagnoseRunReporter;
-import com.philemonworks.selfdiagnose.output.HTMLReporter;
-import com.philemonworks.selfdiagnose.output.XMLReporter;
 
 @Controller
 public class SelfDiagnoseController implements ApplicationContextAware {
@@ -39,6 +36,10 @@ public class SelfDiagnoseController implements ApplicationContextAware {
              "xml".equalsIgnoreCase(format) ||
             (acceptOrNull != null && "application/xml".equalsIgnoreCase(acceptOrNull))) {
             reporter = new XMLReporter();
+        } else if (".json".equalsIgnoreCase(extension) ||
+                "json".equalsIgnoreCase(format) ||
+                (acceptOrNull != null && "application/json".equalsIgnoreCase(acceptOrNull))) {
+            reporter = new JSONReporter();
         }
         DiagnoseRun run = SelfDiagnose.runTasks(reporter);
         response.setHeader("X-SelfDiagnose-OK", Boolean.toString(run.isOK()));

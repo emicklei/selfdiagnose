@@ -10,6 +10,7 @@
  */
 package com.philemonworks.selfdiagnose.test;
 
+import com.philemonworks.selfdiagnose.output.JSONReporter;
 import junit.framework.TestCase;
 
 import com.philemonworks.selfdiagnose.Check;
@@ -53,6 +54,13 @@ public class SelfDiagnoseReporterTest extends TestCase {
         assertNotNull(reporter.getContentType());
         SelfDiagnose.runTasks(reporter);
         System.out.println("---------REPORT FROM XML TEST ----------");
+        System.out.println(reporter.getContent());
+    }
+    public void testJSON() {
+        JSONReporter reporter = new JSONReporter();
+        assertNotNull(reporter.getContentType());
+        SelfDiagnose.runTasks(reporter);
+        System.out.println("---------REPORT FROM JSON TEST ----------");
         System.out.println(reporter.getContent());
     }
     public void testXMLWithXSL() {

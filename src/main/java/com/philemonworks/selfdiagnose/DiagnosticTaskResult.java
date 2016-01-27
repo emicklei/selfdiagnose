@@ -19,6 +19,8 @@ package com.philemonworks.selfdiagnose;
 import java.io.StringWriter;
 import java.util.List;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import org.apache.log4j.Logger;
 
 /**
@@ -42,17 +44,39 @@ public class DiagnosticTaskResult {
 
     public static final String STATUS_UNKNOWN = "unknown";
 
-    private DiagnosticTask task;
+    public static final String SEVERITY_OK = "ok";
 
+    public static final String SEVERITY_WARNING = "warning";
+
+    public static final String SEVERITY_CRITICAL = "critical";
+
+    public static final String SEVERITY_UNKNOWN = "unknown";
+
+    private final DiagnosticTask task;
+
+    @Expose
+    private final String taskName;
+
+    @Expose
+    private final String requestor;
+
+    @Expose
     private String status = STATUS_UNKNOWN;
 
+    @Expose
+    private String severity = SEVERITY_CRITICAL;
+
+    @Expose
     private String message = "";
 
+    @Expose
     private String comment = null; // overrides task comment
 
     /**
      * Number of milliseconds to run this task.
      */
+    @Expose
+    @SerializedName("duration")
     private long executionTime = 0;
 
     /**
@@ -63,7 +87,14 @@ public class DiagnosticTaskResult {
      */
     public DiagnosticTaskResult(DiagnosticTask task) {
         super();
+
+        if(task == null) {
+            throw new IllegalArgumentException("task cannot be null");
+        }
+
         this.task = task;
+        this.taskName =  task.getTaskName();
+        this.requestor = task.getRequestor();
     }
 
     /**
@@ -167,11 +198,13 @@ public class DiagnosticTaskResult {
      */
     public void setPassedMessage(String passedMessage) {
         status = STATUS_PASSED;
+        severity = SEVERITY_OK;
         message = passedMessage;
     }
 
     public void setFailedMessage(String failedMessage) {
         status = STATUS_FAILED;
+        severity = SEVERITY_CRITICAL;
         message = failedMessage;
     }
 
@@ -207,10 +240,19 @@ public class DiagnosticTaskResult {
     }
 
     public String getComment() {
-        return comment;
+        return hasComment() ? comment : task.getComment();
     }
 
     public void setComment(String newComment) {
         comment = newComment;
     }
+
+    public String getSeverity() {
+        return severity;
+    }
+
+    public void setSeverity(String severity) {
+        this.severity = severity;
+    }
+
 }
