@@ -47,6 +47,7 @@ public class DiagnosticTaskResult {
     private final DiagnosticTask task;
 
     @Expose
+    @SerializedName("task")
     private final String taskName;
 
     @Expose
