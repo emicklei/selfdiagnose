@@ -12,7 +12,7 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- 
+
  */
 package com.philemonworks.selfdiagnose;
 
@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
  * <li>Error means: execution task failed (because of Exception)</li>
  * <li>Unknown means: result is not set and therefore not reported</li>
  * </ul>
- * 
+ *
  * @author emicklei
  */
 public class DiagnosticTaskResult {
@@ -54,7 +54,7 @@ public class DiagnosticTaskResult {
     private final String requestor;
 
     @Expose
-    private final String severity;
+    private String severity;
 
     @Expose
     private String status = STATUS_UNKNOWN;
@@ -74,7 +74,7 @@ public class DiagnosticTaskResult {
 
     /**
      * Constructor requires a DiagnosticTask to store the result of its run.
-     * 
+     *
      * @param task
      *            DiagnosticTask
      */
@@ -93,7 +93,7 @@ public class DiagnosticTaskResult {
 
     /**
      * Indicates the outcome of the task
-     * 
+     *
      * @return STATUS_PASSED || STATUS_FAILED || STATUS_ERROR
      */
     public String getStatus() {
@@ -134,7 +134,7 @@ public class DiagnosticTaskResult {
 
     /**
      * Set the message explaining why the run has failed.
-     * 
+     *
      * @param aMessage
      */
     public void setErrorMessage(String aMessage) {
@@ -177,7 +177,7 @@ public class DiagnosticTaskResult {
 
     /**
      * Return the DiagnosticTask for which the result hold the results.
-     * 
+     *
      * @return DiagnosticTask
      */
     public DiagnosticTask getTask() {
@@ -186,7 +186,7 @@ public class DiagnosticTaskResult {
 
     /**
      * Add a message to the list of reporting messages
-     * 
+     *
      * @param passedMessage
      *            String
      */
@@ -243,4 +243,7 @@ public class DiagnosticTaskResult {
         return severity;
     }
 
+    public void setSeverity(Severity severity) {
+        this.severity = severity.name();
+    }
 }
