@@ -12,9 +12,13 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
 */
 package com.philemonworks.selfdiagnose.output;
+
+import com.philemonworks.selfdiagnose.DiagnosticTaskResult;
+import com.philemonworks.selfdiagnose.SelfDiagnose;
+import com.philemonworks.selfdiagnose.Severity;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,12 +29,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 
-import com.philemonworks.selfdiagnose.DiagnosticTaskResult;
-import com.philemonworks.selfdiagnose.SelfDiagnose;
-
 /**
  * HTMLReporter is to produce an HTML report for a DiagnoseRun.
- * 
+ *
  * @author ernestmicklei
  */
 public class HTMLReporter implements DiagnoseRunReporter {
@@ -46,10 +47,10 @@ public class HTMLReporter implements DiagnoseRunReporter {
     }
 
     public void appendReportBody(DiagnoseRun run) {
-        html.append("<TABLE>");
+        html.append("<TABLE class='report'>");
         appendTableHeader();
         for (Iterator<DiagnosticTaskResult> it = run.results.iterator(); it.hasNext();) {
-            this.write((DiagnosticTaskResult) it.next());
+            this.write(it.next());
         }
         html.append("</TABLE>");
         appendLinkBar(run);
@@ -65,7 +66,7 @@ public class HTMLReporter implements DiagnoseRunReporter {
         html.append(run.getTotalsLine());
         html.append(" | <a href='http://selfdiagnose.sourceforge.net' target='_blank'>SelfDiagnose</a>");
         html.append(" | " + SelfDiagnose.VERSION);
-        html.append(" | <a href='?format=xml'>XML</a>");
+        html.append(" | <a href='?format=xml'>XML</a> <a href='?format=json'>JSON</a>");
         html.append(" | since:" + this.formatDate(STARTUP_TIMESTAMP));
         html.append(" report:" + this.formatDate(new Date()));
     }
@@ -76,52 +77,61 @@ public class HTMLReporter implements DiagnoseRunReporter {
     }
 
     protected void write(DiagnosticTaskResult result) {
-        if (!result.wantsToBeReported())
+        if (!result.wantsToBeReported()) {
             return;
-        String rowClass;
-        if (odd)
-            rowClass = "odd";
-        else
-            rowClass = "even";
-        html.append("<tr class=\"" + rowClass + "\">");
+        }
+
+        String rowClass = rowClass(odd, result);
+
+        html.append("<tr class='" + rowClass + "'>");
         append(result);
         html.append("</tr>\n");
+
         odd = !odd;
     }
 
     protected void appendTableHeader() {
-        html.append("<tr class='odd'>");
+        html.append("<tr class='header'>");
         header("Comment");
-        header("Time [ms]");
+        header("Result");
         header("Message");
+        header("Severity");
+        header("Time [ms]");
         html.append("</tr>\n");
     }
 
     protected void append(DiagnosticTaskResult result) {
         // comment
         if (result.hasComment()) {
-            data(result.getComment(), null);
+            data(result.getComment());
         } else {
-            data(result.getTask().getComment(), null);
+            data(result.getTask().getComment());
         }
+
+        // result + message
+        if (result.isPassed()) {
+            data("OK");
+        } else if (result.isFailed()) {
+            data("FAILED");
+        } else if (result.isError()) {
+            data("ERROR");
+        }
+
+        data(result.getMessage());
+
+        // severity
+        data(toSeverityLabel(result));
+
         // time
         if (result.getExecutionTime() == 0) {
-            data(null, null);
+            data(null);
         } else {
-            data(Long.toString(result.getExecutionTime()), null);
-        }
-        // message
-        if (result.isPassed()) {
-            data(result.getMessage(), "passed");
-        } else if (result.isFailed()) {
-            data("[FAILED] " + result.getMessage(), "failed");
-        } else if (result.isError()) {
-            data("[ERROR] " + result.getMessage(), "error");
+            data(Long.toString(result.getExecutionTime()));
         }
     }
 
-    protected void data(String content, String cssClass) {
-        html.append(cssClass == null ? "<td>" : "<td class='" + cssClass + "'>");
+    protected void data(String content) {
+        html.append("<td>");
         html.append(content == null ? "" : content);
         html.append("</td>");
     }
@@ -134,7 +144,7 @@ public class HTMLReporter implements DiagnoseRunReporter {
 
     protected void beginHTML() {
         html.append("<HTML>\n");
-        html.append("<BODY>\n");
+        html.append("<HEAD>\n");
         html.append("<STYLE>");
         try {
             InputStream is = this.getClass().getResourceAsStream("/report.css");
@@ -145,6 +155,8 @@ public class HTMLReporter implements DiagnoseRunReporter {
         } catch (IOException ex) {
         } // too bad
         html.append("</STYLE>");
+        html.append("</HEAD>\n");
+        html.append("<BODY>\n");
     }
 
     protected void endHTML() {
@@ -158,4 +170,33 @@ public class HTMLReporter implements DiagnoseRunReporter {
     public String getContentType() {
         return "text/html";
     }
+
+    private String rowClass(boolean odd, DiagnosticTaskResult result) {
+        StringBuilder css = new StringBuilder();
+
+        css.append(odd ? "odd" : "even")
+            .append(" ");
+
+        if (result.isPassed()) {
+            css.append("passed");
+        } else if (result.isFailed()) {
+            css.append("failed");
+        } else if (result.isError()) {
+            css.append("error");
+        }
+
+        css.append(" ")
+            .append(result.getSeverity().name().toLowerCase());
+
+        return css.toString();
+    }
+
+    private String toSeverityLabel(final DiagnosticTaskResult result) {
+        if(result.getSeverity() == Severity.NONE) {
+            return "";
+        } else {
+            return result.getSeverity().name().toLowerCase();
+        }
+    }
+
 }
