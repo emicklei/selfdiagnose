@@ -16,15 +16,14 @@
 */
 package com.philemonworks.selfdiagnose.test;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.philemonworks.selfdiagnose.*;
-import junit.framework.TestCase;
-
 import com.philemonworks.selfdiagnose.check.CheckValidURL;
 import com.philemonworks.selfdiagnose.output.DiagnoseRun;
 import com.philemonworks.selfdiagnose.output.XMLReporter;
+import junit.framework.TestCase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class TasksTest extends TestCase {
     public void testValidURL() {
@@ -49,12 +48,12 @@ public class TasksTest extends TestCase {
 
     public void testTimeoutTask() {
         SleepTask sleep = new SleepTask();
-        sleep.setTimeoutInMilliSeconds(1000);
+        sleep.setTimeoutInMilliSeconds(100);
 
         DiagnoseRun run = runSingleTask(sleep);
 
         assertTrue(!run.isOK());
-        assertTrue(run.timeMs < 1500);
+        assertTrue(run.timeMs < 150);
     }
 
     public void testTimeoutCustomTask() {
@@ -62,12 +61,12 @@ public class TasksTest extends TestCase {
         CustomDiagnosticTask ct = new CustomDiagnosticTask();
         // set task before attributes
         ct.setTask(sleep);
-        ct.setTimeoutInMilliSeconds(1000);
+        ct.setTimeoutInMilliSeconds(100);
 
         DiagnoseRun run = runSingleTask(sleep);
 
         assertTrue(!run.isOK());
-        assertTrue(run.timeMs < 1500);
+        assertTrue(run.timeMs < 150);
     }
 
     public void testDefaultTaskSeverity() {
@@ -75,8 +74,7 @@ public class TasksTest extends TestCase {
     }
 
     public void testCustomTaskSeverity() {
-        testCustomTaskSeverity(Severity.UNKNOWN);
-        testCustomTaskSeverity(Severity.OK);
+        testCustomTaskSeverity(Severity.NONE);
         testCustomTaskSeverity(Severity.WARNING);
         testCustomTaskSeverity(Severity.CRITICAL);
     }
@@ -91,7 +89,7 @@ public class TasksTest extends TestCase {
         DiagnoseRun runResult = runSingleTask(task);
         DiagnosticTaskResult taskResult = runResult.results.get(0);
 
-        assertEquals(taskResult.getSeverity(), expectedSeverity.name());
+        assertEquals(taskResult.getSeverity(), expectedSeverity);
     }
 
     private DiagnoseRun runSingleTask(final DiagnosticTask task) {
@@ -111,9 +109,9 @@ public class TasksTest extends TestCase {
         @Override
         public void run(ExecutionContext ctx, DiagnosticTaskResult result) throws DiagnoseException {
             try {
-                System.out.println("[SleepTask] going to sleep for 2 seconds");
-                Thread.sleep(1000 * 2);
-                System.out.println("[SleepTask] awake after 2 seconds");
+                System.out.println("[SleepTask] going to sleep for 200ms");
+                Thread.sleep(100 * 2);
+                System.out.println("[SleepTask] awake after 200ms");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

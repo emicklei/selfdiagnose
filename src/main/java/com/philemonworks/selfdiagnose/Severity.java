@@ -4,8 +4,7 @@ package com.philemonworks.selfdiagnose;
  * Describes possible values for Severity.
  */
 public enum Severity {
-    OK,
+    NONE,
     WARNING,
-    CRITICAL,
-    UNKNOWN;
+    CRITICAL;
 }

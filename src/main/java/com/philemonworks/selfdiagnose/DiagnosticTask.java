@@ -12,15 +12,15 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
 */
 package com.philemonworks.selfdiagnose;
 
-import java.io.Serializable;
-import java.util.Locale;
-
 import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;
+
+import java.io.Serializable;
+import java.util.Locale;
 
 /**
  * DiagnosticTask is the abstract class for all tasks that can be registered with SelfDiagnose. Typically tasks are
@@ -79,7 +79,7 @@ public abstract class DiagnosticTask implements Serializable {
      * Used to indicate whether a task has critical or warning severity when a check fails.
      * By default, severity is set to critical.
      */
-    private String severity = Severity.CRITICAL.name();
+    private Severity severity = Severity.CRITICAL;
 
     /**
      * Return an object to store the results of running the receiver.
@@ -197,7 +197,7 @@ public abstract class DiagnosticTask implements Serializable {
      */
     public void initializeFromAttributes(Attributes attributes) {
         this.setComment(attributes.getValue(PARAMETER_COMMENT));
-        this.setSeverity(attributes.getValue(PARAMETER_SEVERITY));
+        this.setSeverity(attributeToSeverity(attributes));
         this.setVariableName(attributes.getValue(PARAMETER_VARIABLE));
         this.setReportResults(!"false".equals(attributes.getValue(PARAMETER_REPORT)));
 
@@ -273,7 +273,7 @@ public abstract class DiagnosticTask implements Serializable {
         return this.timeoutInMilliseconds > 0;
     }
 
-    public String getSeverity() {
+    public Severity getSeverity() {
         return severity;
     }
 
@@ -281,7 +281,17 @@ public abstract class DiagnosticTask implements Serializable {
      * Make sure that severity is set correctly within the allowed values, see {@link Severity} enumeration.
      * @param severity
      */
-    public void setSeverity(String severity) {
-        this.severity = severity != null ? Severity.valueOf(severity.toUpperCase()).name() : Severity.CRITICAL.name();
+    public void setSeverity(Severity severity) {
+        if(severity == null) {
+            throw new NullPointerException("severity == NULL");
+        }
+        this.severity = severity;
+    }
+
+    private static Severity attributeToSeverity(Attributes attributes) {
+        String value = attributes.getValue(PARAMETER_SEVERITY);
+        return value == null ?
+                    Severity.CRITICAL :
+                    Severity.valueOf(value.toUpperCase());
     }
 }

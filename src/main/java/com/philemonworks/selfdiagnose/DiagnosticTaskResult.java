@@ -16,12 +16,12 @@
  */
 package com.philemonworks.selfdiagnose;
 
-import java.io.StringWriter;
-import java.util.List;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.apache.log4j.Logger;
+
+import java.io.StringWriter;
+import java.util.List;
 
 /**
  * DiagnosticTaskResult hold information about the execution of a DiagnosticTask
@@ -54,7 +54,7 @@ public class DiagnosticTaskResult {
     private final String requestor;
 
     @Expose
-    private String severity;
+    private Severity severity;
 
     @Expose
     private String status = STATUS_UNKNOWN;
@@ -239,11 +239,11 @@ public class DiagnosticTaskResult {
         comment = newComment;
     }
 
-    public String getSeverity() {
+    public Severity getSeverity() {
         return severity;
     }
 
     public void setSeverity(Severity severity) {
-        this.severity = severity.name();
+        this.severity = severity;
     }
 }
