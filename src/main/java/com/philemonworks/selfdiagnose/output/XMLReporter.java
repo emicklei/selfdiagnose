@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
 */
 package com.philemonworks.selfdiagnose.output;
 
@@ -30,7 +30,7 @@ import com.philemonworks.selfdiagnose.XMLUtils;
 /**
  * XMLReporter creates an XML document (String) with all the results of running SelfDiagnose.
  * The document conforms to the selfdiagnose.xsd.
- * 
+ *
  * @author ernestmicklei
  *
  */
@@ -70,6 +70,8 @@ public class XMLReporter implements DiagnoseRunReporter {
         xml.append(result.getTask().getRequestor());
         xml.append("\"\n\t\t\tduration=\"");
         xml.append((String.valueOf(result.getExecutionTime())));
+        xml.append("\"\n\t\t\tseverity=\"");
+        xml.append((String.valueOf(result.getSeverity())));
         xml.append("\" />\n");
     }
 
