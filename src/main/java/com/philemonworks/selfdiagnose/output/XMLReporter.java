@@ -16,16 +16,10 @@
 */
 package com.philemonworks.selfdiagnose.output;
 
-import java.util.Date;
-import java.util.Iterator;
+import com.philemonworks.selfdiagnose.*;
 
 import javax.servlet.http.HttpServletRequest;
-
-import com.philemonworks.selfdiagnose.DiagnoseUtil;
-import com.philemonworks.selfdiagnose.DiagnosticTaskResult;
-import com.philemonworks.selfdiagnose.SelfDiagnose;
-import com.philemonworks.selfdiagnose.SelfDiagnoseServlet;
-import com.philemonworks.selfdiagnose.XMLUtils;
+import java.util.Iterator;
 
 /**
  * XMLReporter creates an XML document (String) with all the results of running SelfDiagnose.
@@ -46,7 +40,7 @@ public class XMLReporter implements DiagnoseRunReporter {
     }
 
     public void report(DiagnoseRun run) {
-        beginXML();
+        beginXML(run);
         for (Iterator<DiagnosticTaskResult> it = run.results.iterator(); it.hasNext();) {
             this.report((DiagnosticTaskResult) it.next());
         }
@@ -62,7 +56,10 @@ public class XMLReporter implements DiagnoseRunReporter {
         xml.append(result.getStatus());
         xml.append("\"\n\t\t\tmessage=\"");
         xml.append(XMLUtils.encode(result.getMessage()));
-        if (result.getTask().hasComment()) {
+        if(result.hasComment()) {
+            xml.append("\"\n\t\t\tcomment=\"");
+            xml.append(XMLUtils.encode(result.getComment()));
+        } else if (result.getTask().hasComment()) {
             xml.append("\"\n\t\t\tcomment=\"");
             xml.append(XMLUtils.encode(result.getTask().getComment()));
         }
@@ -75,12 +72,12 @@ public class XMLReporter implements DiagnoseRunReporter {
         xml.append("\" />\n");
     }
 
-    public void beginXML() {
+    public void beginXML(DiagnoseRun run) {
         xml.append("<?xml version=\"1.0\" ?>\n");
         this.checkForStylesheet();
         xml.append("<selfdiagnose ");
         xml.append("run=\"");
-        xml.append(DiagnoseUtil.format(new Date()));
+        xml.append(DiagnoseUtil.format(run.endDateTime));
         xml.append("\" ");
         if (SelfDiagnoseServlet.getCurrentRequest() != null) {
             xml.append("context=\"");

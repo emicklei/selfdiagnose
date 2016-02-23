@@ -12,26 +12,30 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
 */
 package com.philemonworks.selfdiagnose.output;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 import com.philemonworks.selfdiagnose.DiagnosticTaskResult;
 import com.philemonworks.selfdiagnose.SelfDiagnose;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
 public class DiagnoseRun {
     public List<DiagnosticTaskResult> results = new ArrayList<DiagnosticTaskResult>();
     public long timeMs = System.currentTimeMillis();
+
+    public Date endDateTime;
 
     /**
      * Run has finished. Compute the execution time.
      */
     public void finished() {
         timeMs = System.currentTimeMillis() - timeMs;
+        endDateTime = new Date();
     }
 
     public int howManyTasks() {

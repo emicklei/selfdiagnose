@@ -16,8 +16,6 @@
  */
 package com.philemonworks.selfdiagnose;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import org.apache.log4j.Logger;
 
 import java.io.StringWriter;
@@ -46,30 +44,21 @@ public class DiagnosticTaskResult {
 
     private final DiagnosticTask task;
 
-    @Expose
-    @SerializedName("task")
     private final String taskName;
 
-    @Expose
     private final String requestor;
 
-    @Expose
     private Severity severity;
 
-    @Expose
     private String status = STATUS_UNKNOWN;
 
-    @Expose
     private String message = "";
 
-    @Expose
     private String comment = null; // overrides task comment
 
     /**
      * Number of milliseconds to run this task.
      */
-    @Expose
-    @SerializedName("duration")
     private long executionTime = 0;
 
     /**
