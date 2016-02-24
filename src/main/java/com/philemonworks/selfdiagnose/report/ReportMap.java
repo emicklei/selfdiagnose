@@ -1,29 +1,21 @@
 package com.philemonworks.selfdiagnose.report;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
-import com.philemonworks.selfdiagnose.CompositeDiagnosticTaskResult;
-import com.philemonworks.selfdiagnose.DiagnoseException;
-import com.philemonworks.selfdiagnose.DiagnoseUtil;
-import com.philemonworks.selfdiagnose.DiagnosticTaskResult;
-import com.philemonworks.selfdiagnose.ExecutionContext;
+import com.philemonworks.selfdiagnose.*;
 import com.philemonworks.selfdiagnose.check.CheckValueMatches;
+
+import java.util.*;
 
 /**
  * ReportProperties can dump the key value pairs of a Map object
- * 
+ *
  * &lt;reportmap value="${myMap}" comment="my.map"/&gt;
- * 
+ *
  * @author ernestmicklei
  */
 public class ReportMap extends CheckValueMatches {
     private static final long serialVersionUID = 2022702301493132046L;
 
-    public String getDescription() {
+     public String getDescription() {
         return "Reports the key=value pairs of a Map object";
     }
 
@@ -64,6 +56,8 @@ public class ReportMap extends CheckValueMatches {
                 }
             }
             localResult.setPassedMessage(DiagnoseUtil.format("{0} = {1}", each, valueString));
+            localResult.setSeverity(Severity.NONE);
+
             comResult.addResult(localResult);
         }
     }
@@ -71,7 +65,7 @@ public class ReportMap extends CheckValueMatches {
     /**
      * This method is redefined such that the run method will get a composed
      * result for its argument.
-     * 
+     *
      * @return CompositeDiagnosticTaskResult
      */
     public DiagnosticTaskResult createResult() {

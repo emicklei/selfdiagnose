@@ -13,10 +13,15 @@ import java.util.Date;
 public class ReportJamonMonitors extends DiagnosticTask {
     private static final long serialVersionUID = 4764469767469398343L;
 
+    public ReportJamonMonitors() {
+        setSeverity(Severity.NONE);
+    }
+
     @Override
     public String getDescription() {
         return "JamonAPI Report";
     }
+
     @Override
     public void run(ExecutionContext ctx, DiagnosticTaskResult result) throws DiagnoseException {
         MonitorComposite monco = MonitorFactory.getRootMonitor();
@@ -44,12 +49,12 @@ public class ReportJamonMonitors extends DiagnosticTask {
     private String composeRow(Monitor each) {
         StringBuilder sb = new StringBuilder();
         append("hits", this.padded(Math.round(each.getHits())), sb);
-        append("avg", this.padded(each.getAvg()), sb);
-        append("stddev", this.padded(each.getStdDev()), sb);
-        append("min", this.padded(each.getMin()), sb);
-        append("max", this.padded(each.getMax()), sb);
-        append("first", this.formatDate(each.getFirstAccess()), sb);
-        append("last", this.formatDate(each.getLastAccess()), sb);
+        append(" | avg", this.padded(each.getAvg()), sb);
+        append(" | stddev", this.padded(each.getStdDev()), sb);
+        append(" | min", this.padded(each.getMin()), sb);
+        append(" | max", this.padded(each.getMax()), sb);
+        append(" | first", this.formatDate(each.getFirstAccess()), sb);
+        append(" | last", this.formatDate(each.getLastAccess()), sb);
         return sb.toString();
     }
 

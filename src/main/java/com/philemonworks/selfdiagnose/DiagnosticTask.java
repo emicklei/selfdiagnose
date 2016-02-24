@@ -197,9 +197,17 @@ public abstract class DiagnosticTask implements Serializable {
      */
     public void initializeFromAttributes(Attributes attributes) {
         this.setComment(attributes.getValue(PARAMETER_COMMENT));
-        this.setSeverity(attributeToSeverity(attributes));
         this.setVariableName(attributes.getValue(PARAMETER_VARIABLE));
         this.setReportResults(!"false".equals(attributes.getValue(PARAMETER_REPORT)));
+
+        String severity = attributes.getValue(PARAMETER_SEVERITY);
+        if (severity != null && !severity.isEmpty()) {
+            try {
+                this.setSeverity(Severity.valueOf(severity.toUpperCase()));
+            } catch (Exception ex) {
+                LOGGER.error("invalid severity attribute value: " + severity, ex);
+            }
+        }
 
         // read timeout (ms) if available
         String timeoutOrNull = attributes.getValue(PARAMETER_TIMEOUT);
@@ -207,7 +215,7 @@ public abstract class DiagnosticTask implements Serializable {
             try {
                 this.setTimeoutInMilliSeconds(Integer.parseInt(timeoutOrNull));
             } catch (NumberFormatException ex) {
-                LOGGER.error("invalid timeout attribute value:" + timeoutOrNull, ex);
+                LOGGER.error("invalid timeout attribute value: " + timeoutOrNull, ex);
             }
         }
     }
@@ -288,10 +296,4 @@ public abstract class DiagnosticTask implements Serializable {
         this.severity = severity;
     }
 
-    private static Severity attributeToSeverity(Attributes attributes) {
-        String value = attributes.getValue(PARAMETER_SEVERITY);
-        return value == null ?
-                    Severity.CRITICAL :
-                    Severity.valueOf(value.toUpperCase());
-    }
 }
