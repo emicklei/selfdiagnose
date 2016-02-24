@@ -14,4 +14,4 @@ SelfDiagnose provides a collection of diagnostic tasks that check some external 
 
 [Full Documentation](http://selfdiagnose.sourceforge.net/)
 
-&copy; 2004-2015. Ernest Micklei, Apache License 2.0
+&copy; 2004-2016. ernestmicklei.com, Apache License 2.0
