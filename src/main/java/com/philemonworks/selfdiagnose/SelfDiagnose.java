@@ -12,10 +12,17 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- 
+
  */
 package com.philemonworks.selfdiagnose;
 
+import com.philemonworks.selfdiagnose.output.DiagnoseRun;
+import com.philemonworks.selfdiagnose.output.DiagnoseRunReporter;
+import com.philemonworks.selfdiagnose.output.XMLReporter;
+import org.apache.log4j.Logger;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -23,15 +30,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
-
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
-import org.apache.log4j.Logger;
-
-import com.philemonworks.selfdiagnose.output.DiagnoseRun;
-import com.philemonworks.selfdiagnose.output.DiagnoseRunReporter;
-import com.philemonworks.selfdiagnose.output.XMLReporter;
 
 /**
  * SelfDiagnose is the component that keeps a registration of DiagnosticTasks
@@ -44,7 +42,7 @@ import com.philemonworks.selfdiagnose.output.XMLReporter;
  * <strong>selfdiagnose.xml</strong> that conforms to the
  * <strong>selfdiagnose.xsd</strong></li>
  * </ul>
- * 
+ *
  * @author Ernest M. Micklei
  */
 public abstract class SelfDiagnose {
@@ -53,7 +51,7 @@ public abstract class SelfDiagnose {
     /**
      * The name of the resource that holds the specification of tasks.
      */
-    public final static String VERSION = "2.7.3";
+    public final static String VERSION = "2.8.0";
     public final static String COPYRIGHT = "(c) ernestmicklei.com";
     public final static String CONFIG = "selfdiagnose.xml";
     private static URL CONFIG_URL = null; // will be initialized by configure(...)
@@ -78,7 +76,7 @@ public abstract class SelfDiagnose {
     /**
      * Try to configure SelfDiagnose using the XML configuration file with the
      * given resource name.
-     * 
+     *
      * @param resourceName : String
      */
     public static void configure(String resourceName) {
@@ -150,7 +148,7 @@ public abstract class SelfDiagnose {
 
     /**
      * Add the argument to the global list of Diagnostic tasks.
-     * 
+     *
      * @param task
      *            DiagnosticTask
      * @return DiagnosticTask
@@ -161,7 +159,7 @@ public abstract class SelfDiagnose {
 
     /**
      * Add the argument to the global list of Diagnostic tasks.
-     * 
+     *
      * @param task
      *            DiagnosticTask
      * @param identifier
@@ -180,7 +178,7 @@ public abstract class SelfDiagnose {
 
     /**
      * Basic method to run all registered tasks.
-     * 
+     *
      */
     public static DiagnoseRun runTasks(DiagnoseRunReporter reporter) {
         return SelfDiagnose.runTasks(tasks, reporter, new ExecutionContext());
@@ -188,15 +186,15 @@ public abstract class SelfDiagnose {
 
     /**
      * Basic method to run all registered tasks.
-     * 
+     *
      */
     public static DiagnoseRun runTasks(DiagnoseRunReporter reporter, ExecutionContext ctx) {
         return SelfDiagnose.runTasks(tasks, reporter, ctx);
     }
 
     /**
-     * Basic method to the tasks provided 
-     * 
+     * Basic method to the tasks provided
+     *
      */
     public static DiagnoseRun runTasks(List<DiagnosticTask> taskList, DiagnoseRunReporter reporter, ExecutionContext ctx) {
         DiagnoseRun run = new DiagnoseRun();

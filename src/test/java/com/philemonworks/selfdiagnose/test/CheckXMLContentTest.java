@@ -12,12 +12,11 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
 */
 package com.philemonworks.selfdiagnose.test;
 
 import com.philemonworks.selfdiagnose.DiagnosticTask;
-import com.philemonworks.selfdiagnose.Severity;
 import com.philemonworks.selfdiagnose.check.CheckXMLContent;
 
 public class CheckXMLContentTest extends BasicDiagnosticTaskTest {
@@ -29,18 +28,12 @@ public class CheckXMLContentTest extends BasicDiagnosticTaskTest {
         this.run(task);
     }
 
-    public void testValidTaskSeverity() {
-        DiagnosticTask task = new CheckXMLContent();
-        task.setSeverity("critical");
-        assertEquals(Severity.CRITICAL.name(), task.getSeverity());
-    }
-
     public void testInvalidTaskSeverity() {
         DiagnosticTask task = new CheckXMLContent();
         try {
-            task.setSeverity("invalid");
+            task.setSeverity(null);
             fail("IllegalArgumentException should be thrown because enum invalid doesn't exist for Severity");
-        } catch (IllegalArgumentException e) {
+        } catch (NullPointerException e) {
             // expected
         }
     }

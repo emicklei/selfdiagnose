@@ -1,20 +1,16 @@
 package com.philemonworks.selfdiagnose.report;
 
+import com.philemonworks.selfdiagnose.*;
+import com.philemonworks.selfdiagnose.check.CheckValueMatches;
+
 import java.util.Arrays;
 import java.util.Properties;
 
-import com.philemonworks.selfdiagnose.CompositeDiagnosticTaskResult;
-import com.philemonworks.selfdiagnose.DiagnoseException;
-import com.philemonworks.selfdiagnose.DiagnoseUtil;
-import com.philemonworks.selfdiagnose.DiagnosticTaskResult;
-import com.philemonworks.selfdiagnose.ExecutionContext;
-import com.philemonworks.selfdiagnose.check.CheckValueMatches;
-
 /**
  * ReportProperties can dump the key value pairs of a Properties object
- * 
+ *
  * &lt;reportproperties value="${myProperties}" comment="my.properties"/&gt;
- * 
+ *
  * @author ernestmicklei
  */
 public class ReportProperties extends CheckValueMatches {
@@ -37,9 +33,11 @@ public class ReportProperties extends CheckValueMatches {
 		System.arraycopy(props.keySet().toArray(), 0, sortedKeys, 0, sortedKeys.length);
 		Arrays.sort(sortedKeys);
 		for (int i=0;i<sortedKeys.length;i++) {
-			String each = sortedKeys[i];			
+			String each = sortedKeys[i];
 			DiagnosticTaskResult localResult = new DiagnosticTaskResult(this);
 			localResult.setPassedMessage(DiagnoseUtil.format("{0} = {1}",each,props.getProperty(each)));
+			localResult.setSeverity(Severity.NONE);
+
 			comResult.addResult(localResult);
 		}
 	}
@@ -49,5 +47,5 @@ public class ReportProperties extends CheckValueMatches {
 	 */
 	public DiagnosticTaskResult createResult(){
 		return new CompositeDiagnosticTaskResult(this);
-	}	
+	}
 }
