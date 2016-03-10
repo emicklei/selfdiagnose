@@ -37,7 +37,6 @@ import java.util.Iterator;
 public class HTMLReporter implements DiagnoseRunReporter {
     protected StringBuffer html = new StringBuffer();
     private boolean odd = true;
-    public static final String BASIC_DATA = "";
     public static final Date STARTUP_TIMESTAMP = new Date(ManagementFactory.getRuntimeMXBean().getStartTime());
 
     public void report(DiagnoseRun run) {
