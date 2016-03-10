@@ -24,7 +24,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.management.ManagementFactory;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
@@ -37,7 +36,6 @@ import java.util.Iterator;
 public class HTMLReporter implements DiagnoseRunReporter {
     protected StringBuffer html = new StringBuffer();
     private boolean odd = true;
-    public static final Date STARTUP_TIMESTAMP = new Date(ManagementFactory.getRuntimeMXBean().getStartTime());
 
     public void report(DiagnoseRun run) {
         beginHTML();
@@ -66,7 +64,7 @@ public class HTMLReporter implements DiagnoseRunReporter {
         html.append(" | <a href='http://selfdiagnose.sourceforge.net' target='_blank'>SelfDiagnose</a>");
         html.append(" | " + SelfDiagnose.VERSION);
         html.append(" | <a href='?format=xml'>XML</a> <a href='?format=json'>JSON</a>");
-        html.append(" | since:" + this.formatDate(STARTUP_TIMESTAMP));
+        html.append(" | since:" + this.formatDate(Startup.TIMESTAMP));
         html.append(" report:" + this.formatDate(new Date()));
     }
 
