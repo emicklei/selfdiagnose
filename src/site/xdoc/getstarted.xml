@@ -32,7 +32,7 @@
 							Make sure the ognl-{version 2.6.11 or
 							higher}.jar is on the same classpath.
 							(see Open Symphony Object Graph Navigation Language).
-						</li>						
+						</li>
 						<li>
 							Add the SelfDiagnoseServlet to your Web
 							Deployment Descriptor:
@@ -48,9 +48,9 @@
 	<servlet-class>
 	  com.philemonworks.selfdiagnose.SelfDiagnoseServlet
 	</servlet-class>
-</servlet> 	  
+</servlet>
 
-<!-- SelfDiagnose - Mapping -->	  	  
+<!-- SelfDiagnose - Mapping -->
 <servlet-mapping>
 	<servlet-name>SelfDiagnoseServlet</servlet-name>
 	<url-pattern>/selfdiagnose/*</url-pattern>
@@ -71,11 +71,11 @@
 					classpath.
 					<source>
 						<![CDATA[
-<?xml version="1.0" ?>				
-<selfdiagnose 
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:noNamespaceSchemaLocation="http://selfdiagnose.sourceforge.net/selfdiagnose-2.4.xsd">
-	
+<?xml version="1.0" ?>
+<selfdiagnose
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://selfdiagnose.sourceforge.net/selfdiagnose-2.8.xsd">
+
 	<tasks>
 		<checksystemproperty property="java.version" />
 	</tasks>

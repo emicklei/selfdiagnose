@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<selfdiagnose 
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:noNamespaceSchemaLocation="http://selfdiagnose.sourceforge.net/selfdiagnose.xsd">
-	
+<selfdiagnose
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://selfdiagnose.sourceforge.net/selfdiagnose-2.8.xsd">
+
 	<tasks>
 		<!-- CHECK CONFIG BESTANDEN -->
 		<checkjndibinding name="url/config/ubs_userBeheerService/config" class="java.net.URL" var="config"/>
@@ -26,5 +26,6 @@
 		<checkwebspherejmslistenerport name="ubs_userBeheerServiceLp"/>
 		<!-- CHECK MAIL SERVICE -->
 		<checkjndibinding name="mail/MailService"/>
+
 	</tasks>
 </selfdiagnose>

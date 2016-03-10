@@ -7,13 +7,13 @@
   <body>
 
     <section name="selfdiagnose.xml (example)">
-      <source><![CDATA[ 
+      <source><![CDATA[
 <?xml version="1.0" ?>
 
-<selfdiagnose 
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:noNamespaceSchemaLocation="http://selfdiagnose.sourceforge.net/selfdiagnose-2.4.xsd">
-	
+<selfdiagnose
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://selfdiagnose.sourceforge.net/selfdiagnose-2.8.xsd">
+
 	<tasks>
 		<checkresourceproperty name="some.properties" key="some" comment="explain this check"/>
 	</tasks>
