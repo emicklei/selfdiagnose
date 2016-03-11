@@ -112,7 +112,7 @@ public class JSONReporterTest extends TestCase {
     }
 
     private String toJson(DiagnoseRun run, String results) {
-        return "{\"selfdiagnose\":{\"version\":\""+ SelfDiagnose.VERSION +"\"},\"run\":\"" + DiagnoseUtil.format(run.endDateTime) + "\",\"results\":[" + results + "]}";
+        return "{\"selfdiagnose\":{\"version\":\""+ SelfDiagnose.VERSION +"\"},\"run\":\"" + DiagnoseUtil.format(run.endDateTime) + "\",\"since\":\"" + DiagnoseUtil.format(Startup.TIMESTAMP) + "\",\"results\":[" + results + "]}";
     }
 
     private String report(DiagnoseRun run) {
