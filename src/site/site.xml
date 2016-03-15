@@ -5,18 +5,12 @@
     <src>images/logo.png</src>
     <href>http://selfdiagnose.sourceforge.net</href>
   </bannerLeft>
-  <bannerRight>
-	<name>PhilemonWorks</name>
-    <src>images/logo_small.jpg</src>
-    <href>http://www.philemonworks.com</href>
-  </bannerRight>
   <!-- skin>
     <groupId>org.apache.maven.skins</groupId>
     <artifactId>maven-stylus-skin</artifactId>
   </skin -->
 	<body>
 		<links>
-			<item name="PhilemonWorks" href="http://www.philemonworks.com"/>
 			<item name="GitHub" href="https://github.com/emicklei/selfdiagnose"/>
 		</links>
 
