@@ -10,12 +10,25 @@
         </author>
     </properties>
     <body>
+        <section name="Documentation being moved">
+            <i>
+                The documentation of SelfDiagnose is currently being moved from this old site to the GitHub wiki pages. The GitHub wiki will be up to date but the this documentation may still be more complete.
+            </i>
+            <p/>
+
+            <i>
+                <a href="https://github.com/emicklei/selfdiagnose/wiki">New documentation</a>
+            </i>
+        </section>
         <section name="Introduction">
             SelfDiagnose is a library of diagnotistic tasks that can
             verify the availability of external resources required for
-            the execution of a J2EE web application.
+            the execution of a Java web application.
             <p/>
-            
+
+
+            <p/>
+
             <strong>
                 How does it help?
             </strong>
@@ -25,7 +38,7 @@
             tests to verify that all systems are working together and
             provide the application functionality.
             <p/>
-            
+
             Although your application is properly
             <a href="http://www.junit.org">
                 JUnit
@@ -35,7 +48,7 @@
             the Web container should accept incoming requests, database
             connections can be established, log files are writeable, etc.
             <p/>
-            
+
             Depending on your level of automation in deployment,
             problems in the configuration of your environment will
             prevent the application from working as expected. And even
@@ -45,7 +58,7 @@
             information about possible causes of application problems
             that are related to the availability of external resources.
             <p/>
-            
+
             <strong>
                 How does it work?
             </strong>
@@ -53,7 +66,7 @@
             SelfDiagnose provides a collection of diagnostic tasks that
             check some external or internal aspect required by the
             application.
-            
+
             For instance, the task
             <strong>
                 CheckURLReachable
@@ -68,7 +81,7 @@
                 CheckDatabaseTableExists
             </strong>
             simply does what it says.
-            
+
             Using a simple XML configuration, you specifiy which tasks
             should run. Running the tasks is requested through a servlet
             that responds with a report.
@@ -78,7 +91,7 @@
                 Get Started
             </a>
         </section>
-        
+
         <section name="Task Selection Guide">
             Find the task to check the availability or configuration of your resource.
             To use a task, enter the declaration in the
@@ -97,7 +110,7 @@
                             <a href="apidocs/com/philemonworks/selfdiagnose/check/CheckDirectoryAccessible.html">
                                 CheckDirectoryAccessible
                             </a>
-                            
+
                         </td>
                         <td width="33%">
                             &lt;checkdirectoryaccessible name="/home/user" read="true" write="false" /&gt;
@@ -111,7 +124,7 @@
                             <a href="apidocs/com/philemonworks/selfdiagnose/check/CheckFileContainsString.html">
                                 CheckFileContainsString
                             </a>
-                            
+
                         </td>
                         <td width="33%">
                             &lt;checkfilecontainsstring name="environment.properties" string="smtp.xs4all.nl" /&gt;
@@ -126,7 +139,7 @@
                             <a href="apidocs/com/philemonworks/selfdiagnose/check/CheckPropertyValuesAreJavaTypes.html">
                                 CheckPropertyValuesAreJavaTypes
                             </a>
-                            
+
                         </td>
                         <td width="33%">
                             &lt;checkpropertyvaluesarejavatypes name="some.properties" filter=".*[.]class" /&gt;
@@ -140,7 +153,7 @@
                             <a href="apidocs/com/philemonworks/selfdiagnose/check/CheckResourceAccessible.html">
                                 CheckResourceAccessible
                             </a>
-                            
+
                         </td>
                         <td width="33%">
                             &lt;checkresourceaccessible name="application.properties" /&gt;
@@ -158,7 +171,7 @@
                             <a href="apidocs/com/philemonworks/selfdiagnose/check/CheckJNDIBinding.html">
                                 CheckJNDIBinding
                             </a>
-                            
+
                         </td>
                         <td width="33%">
                             &lt;checkjndibinding name="jdbc/mydb" /&gt;
@@ -185,15 +198,15 @@
                             <a href="apidocs/com/philemonworks/selfdiagnose/check/CheckDatabaseTableExists.html">
                                 CheckDatabaseTableExists
                             </a>
-                            
+
                         </td>
                         <td width="33%">
                             &lt; checkdatabasetableexists name="BUZ.CUSTOMERS" datasource="BusinessDs" /&gt;
                         </td>
                         <td width="43%">
-                            Verifies whether a database schema has a definition for a table. 
+                            Verifies whether a database schema has a definition for a table.
 							This task requires a datasource. It uses the basic COUNT(*) query to detect table presence.
-							If found then the number of records is reported. 
+							If found then the number of records is reported.
                         </td>
                     </tr>
                 </table>
@@ -205,7 +218,7 @@
                             <a href="apidocs/com/philemonworks/selfdiagnose/check/CheckJNDIBinding.html">
                                 CheckJNDIBinding
                             </a>
-                            
+
                         </td>
                         <td width="33%">
                             &lt; checkjndibinding name="jms/Orders" /&gt;
@@ -229,7 +242,7 @@
                             <a href="apidocs/com/philemonworks/selfdiagnose/check/CheckHttpRequestHeader.html">
                                 CheckHttpRequestHeader
                             </a>
-                            
+
                         </td>
                         <td width="33%">
                             &lt; checkhttprequestheader header="Content-Type" protocol="http" pattern="text*" /&gt;
@@ -243,7 +256,7 @@
                             <a href="apidocs/com/philemonworks/selfdiagnose/check/CheckURLReachable.html">
                                 CheckURLReachable
                             </a>
-                            
+
                         </td>
                         <td width="33%">
                             &lt; checkurlreachable url="http://www.philemonworks.com" /&gt;
@@ -257,7 +270,7 @@
                             <a href="apidocs/com/philemonworks/selfdiagnose/check/CheckValidURL.html">
                                 CheckValidURL
                             </a>
-                            
+
                         </td>
                         <td width="33%">
                             &lt; checkvalidurl url="http://www.nu.nl" /&gt;
@@ -271,7 +284,7 @@
                             <a href="apidocs/com/philemonworks/selfdiagnose/check/CheckXMLContent.html">
                                 CheckXMLContent
                             </a>
-                            
+
                         </td>
                         <td width="33%">
                             &lt; checkxmlcontent url="${variable with URL value}" xpath="/root/child" pattern="childvalue" /&gt;
@@ -289,7 +302,7 @@
                             <a href="apidocs/com/philemonworks/selfdiagnose/maven/ReportMavenPOMProperties.html">
                                 ReportMavenPOMProperties
                             </a>
-                            
+
                         </td>
                         <td width="33%">
                             &lt; reportmavenpomproperties name="/META-INF/maven/package/app/pom.properties" /&gt;
@@ -297,13 +310,13 @@
                         <td width="43%">
                             Reports information written by a Maven build.
                         </td>
-                    </tr>                
+                    </tr>
                     <tr>
                         <td width="23%">
                             <a href="apidocs/com/philemonworks/selfdiagnose/check/CheckClassLoadable.html">
                                 CheckClassLoadable
                             </a>
-                            
+
                         </td>
                         <td width="33%">
                             &lt;checkclassloadable name="org.xml.sax.Attributes" /&gt;
@@ -347,12 +360,12 @@
                         <td width="33%">
                             &lt;checkvaluematches value="${country_names[0]}" pattern="NL" /&gt;
                         </td>
-                        <td width="43%">                            
+                        <td width="43%">
 							The value is specified by an expression that refers to objects available in the execution context.
 							The pattern attribute speficy the regular expression that is used to perform the match against the value.
 							If a variable is specified then store the element into the execution context using the variable name.
                         </td>
-                    </tr>	
+                    </tr>
                     <tr>
                         <td width="23%">
                             <a href="apidocs/com/philemonworks/selfdiagnose/check/CheckResourceBundleKey.html">
@@ -365,7 +378,7 @@
                         <td width="43%">
                             Verifies the existence of a given key for a given resource.
                         </td>
-                    </tr>	
+                    </tr>
                     <tr>
                         <td width="23%">
                             <a href="apidocs/com/philemonworks/selfdiagnose/check/CheckResourceProperty.html">
@@ -378,7 +391,7 @@
                         <td width="43%">
                             Verifies the availability of a property in a resource.
                         </td>
-                    </tr>					
+                    </tr>
                     <tr>
                         <td width="23%">
                             <a href="apidocs/com/philemonworks/selfdiagnose/check/CheckMBeanProperty.html">
@@ -391,7 +404,7 @@
                         <td width="43%">
                             CheckMBeanProperty is a DiagnosticTask that checks a property and matches its (String) value to a regular expression pattern.
                         </td>
-                    </tr>                    
+                    </tr>
                 </table>
             </subsection>
             <subsection name="Reporting">
@@ -403,7 +416,7 @@
                             </a>
                         </td>
                         <td width="33%">
-                            &lt;reportmavenpomproperties 
+                            &lt;reportmavenpomproperties
  								comment="Maven POM properties"
 								name="/META-INF/maven/com.yours.appp/myapp/pom.properties" /&gt;
                         </td>
@@ -424,7 +437,7 @@
                         <td width="43%">
                             ReportJVMRuntimeMemory is a task that reports the current JVM memory consumption.
                         </td>
-                    </tr>   
+                    </tr>
                     <tr>
                         <td width="23%">
                             <a href="apidocs/com/philemonworks/selfdiagnose/report/ReportProperties.html">
@@ -454,7 +467,7 @@
                             This object must be available in the execution context of the tasks.
                             Use a context variable to put a Properties in that context. Here by the name "myMap".
                         </td>
-                    </tr> 
+                    </tr>
                     <tr>
                         <td width="23%">
                             <a href="apidocs/com/philemonworks/selfdiagnose/report/vendor/ReportJamonMonitors.html">
@@ -468,7 +481,7 @@
                             ReportJamonMonitors reports for each Monitor its main statistics values (hits,max,min,avg,last).
                         </td>
                     </tr>
-				</table>            
+				</table>
             </subsection>
             <subsection name="Third party (vendor)">
                 <table>
@@ -477,10 +490,10 @@
                             <a href="apidocs/com/philemonworks/selfdiagnose/check/vendor/CheckAtgComponentProperty.html">
                                 CheckAtgComponentProperty
                             </a>
-                            
+
                         </td>
                         <td width="33%">
-                           		&lt;checkatgcomponentproperty 
+                           		&lt;checkatgcomponentproperty
 			component="/atg/dynamo/Configuration"
 			property="siteHttpServerName" /&gt;
                         </td>
@@ -493,7 +506,7 @@
                             <a href="apidocs/com/philemonworks/selfdiagnose/check/vendor/CheckEndecaService.html">
                                 CheckEndecaService
                             </a>
-                            
+
                         </td>
                         <td width="33%">
                             &lt;checkendecaservice host="10.10.10.1" port="8000" query="N=0" /&gt;
@@ -502,13 +515,13 @@
                             Checks the availability of an Endeca service by running a query.
 							It reports the results of this query by count and execution time.
                         </td>
-                    </tr>					
+                    </tr>
                     <tr>
                         <td width="23%">
                             <a href="apidocs/com/philemonworks/selfdiagnose/check/vendor/CheckWebSphereJMSListenerPort.html">
                                 CheckWebSphereJMSListenerPort
                             </a>
-                            
+
                         </td>
                         <td width="33%">
                             &lt;checkwebspherejmslistenerport name="sli_caseStatusService-ontvangenBLIBerichtLp" /&gt;
@@ -522,13 +535,13 @@
                             <a href="apidocs/com/philemonworks/selfdiagnose/check/vendor/CheckSpringBeanProperty.html">
                                 CheckSpringBeanProperty
                             </a>
-                            
+
                         </td>
                         <td width="33%">
                             &lt;checkspringbeanproperty id="myBean" property="myFieldOrOperation" pattern="*.*"/&gt;
                         </td>
                         <td width="43%">
-                            Checks the value of a property from an object that is available in the Spring ApplicationContext. 
+                            Checks the value of a property from an object that is available in the Spring ApplicationContext.
                         </td>
                     </tr>
                     <tr>
@@ -536,17 +549,17 @@
                             <a href="apidocs/com/philemonworks/selfdiagnose/check/vendor/CheckSpringDatasourceConnectable.html">
                                 CheckSpringDatasourceConnectable
                             </a>
-                            
+
                         </td>
                         <td width="33%">
                             &lt;checkspringdatasourceconnectable name="myDatasource" /&gt;
                         </td>
                         <td width="43%">
-                            Access a Datasource from the application context and uses that to check that a connection can be created (and closed) 
+                            Access a Datasource from the application context and uses that to check that a connection can be created (and closed)
                         </td>
-                    </tr>                                      
+                    </tr>
                 </table>
-            </subsection>			
+            </subsection>
         </section>
     </body>
 </document>

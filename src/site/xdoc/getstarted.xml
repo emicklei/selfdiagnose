@@ -20,19 +20,7 @@
 			<subsection name="Installing SelfDiagnose">
 				<p>
 					<ol>
-						<li>
-							Add selfdiagnose-{version}.jar to the
-							classpath of the (web)application
-						</li>
-						<li>
-							Make sure the log4j-{version 1.2.8 or
-							higher}.jar is on the same classpath
-						</li>
-						<li>
-							Make sure the ognl-{version 2.6.11 or
-							higher}.jar is on the same classpath.
-							(see Open Symphony Object Graph Navigation Language).
-						</li>
+						<li>Add selfdiagnose to your dependencies. See the <a href="maven.html">Maven</a> page for more information on that.</li>
 						<li>
 							Add the SelfDiagnoseServlet to your Web
 							Deployment Descriptor:

@@ -13,69 +13,60 @@
   <!-- skin>
     <groupId>org.apache.maven.skins</groupId>
     <artifactId>maven-stylus-skin</artifactId>
-  </skin -->  
+  </skin -->
 	<body>
 		<links>
 			<item name="PhilemonWorks" href="http://www.philemonworks.com"/>
-			<item name="Log4j" href="http://logging.apache.org/"/>
+			<item name="GitHub" href="https://github.com/emicklei/selfdiagnose"/>
 		</links>
-		
+
 		<menu name="SelfDiagnose">
-			<item name="Home" href="index.html"/>	
-			<item name="Recent Changes" href="changes-report.html" />	
+			<item name="Home" href="index.html"/>
 			<item name="Getting Started" href="getstarted.html" />
-			<item name="Reporting" href="reporting.html"/>	
-			<item name="Maven Dependency" href="maven.html"/>			
-			<item name="Downloads" href="http://sourceforge.net/project/showfiles.php?group_id=171389" target="_blank" />
-			<item name="XML Schema 1.1" href="selfdiagnose.xsd"  target="_blank" />
-			<item name="XML Schema 2.0" href="selfdiagnose-2.0.xsd"  target="_blank" />
-			<item name="XML Schema 2.1" href="selfdiagnose-2.1.xsd"  target="_blank" />
-			<item name="XML Schema 2.3" href="selfdiagnose-2.3.xsd"  target="_blank" />
-			<item name="XML Schema 2.4" href="selfdiagnose-2.4.xsd"  target="_blank" />
-			<item name="Presentation (PPT)" href="SelfDiagnose.ppt"  target="_blank" />
-			<item name="Presentation (PDF)" href="SelfDiagnose.pdf"  target="_blank" />
+			<item name="Maven" href="maven.html"/>
+			<item name="Reporting" href="reporting.html"/>
+			<item name="Custom Tasks" href="customtasks.html"/>
 		</menu>
-				
+
 		<menu name="Tasks" >
-			<item 
-				name="Check tasks" 
+			<item
+				name="Check tasks"
 				href="apidocs/com/philemonworks/selfdiagnose/check/package-summary.html"
-				target="_blank" />	
-			<item 
-				name="Report tasks" 
+				target="_blank" />
+			<item
+				name="Report tasks"
 				href="apidocs/com/philemonworks/selfdiagnose/check/report/package-summary.html"
 				target="_blank" />
-			<item 
-				name="Vendor tasks" 
+			<item
+				name="Vendor tasks"
 				href="apidocs/com/philemonworks/selfdiagnose/check/vendor/package-summary.html"
-				target="_blank" />	
-					
+				target="_blank" />
 		</menu>
-		
-		<menu name="Advanced Use">
-			<item name="Context Variables" href="contextvariables.html"/>
-			<item name="Custom Tasks" href="customtasks.html"/>			
-			<item name="Task Iteration" href="iterator.html"/>			
-		</menu>		
-		
-		<menu name="Example Reports">
-			<item name="HTML report" href="cae-selfdiagnose.html" target="_blank"/>
-			<item name="XML report (with xsl)" href="selfdiagnose-report-xml.xml"  target="_blank" />									
-		</menu> 
-		
-		<menu name="Example Configurations">		    
+
+		<menu name="XML Schemas" >
+			<item name="XML Schema 2.4" href="selfdiagnose-2.4.xsd"  target="_blank" />
+			<item name="XML Schema 2.5" href="selfdiagnose-2.5.xsd"  target="_blank" />
+			<item name="XML Schema 2.8" href="selfdiagnose-2.8.xsd"  target="_blank" />
+		</menu>
+
+		<menu name="Example Configurations">
             <item name="controller.xml" href="example-springcontroller.html"/>
             <item name="resource.xml" href="example-springresource.html"/>
 			<item name="web.xml" href="example-webdescriptor.html"/>
-			<item name="selfdiagnose.jsp" href="example-jsp.html"/>	
-			<item name="selfdiagnose.xsl" href="selfdiagnose.xsl" target="_blank"/>						
+			<item name="selfdiagnose.jsp" href="example-jsp.html"/>
+			<item name="selfdiagnose.xsl" href="selfdiagnose.xsl" target="_blank"/>
 			<item name="selfdiagnose.xml" href="example-configuration.html"/>
 			<item name="selfdiagnose.xml (using vars)" href="selfdiagnose_ubs.xml" target="_blank" />
 			<item name="log4j.xml" href="example-log4j-xml.html"/>
-			<item name="log4j.properties" href="example-log4j.html"/>								
-		</menu> 		
-		
-		${reports} 
+			<item name="log4j.properties" href="example-log4j.html"/>
+		</menu>
+
+		<menu name="Presentations" >
+			<item name="Presentation (PPT)" href="SelfDiagnose.ppt"  target="_blank" />
+			<item name="Presentation (PDF)" href="SelfDiagnose.pdf"  target="_blank" />
+		</menu>
+
+		${reports}
 
 	</body>
 </project>

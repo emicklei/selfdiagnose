@@ -8,41 +8,21 @@
   <body>
 	<section name="Maven 2 installation">
 		<p>
-			The selfdiagnose package is not (yet) available in the default Maven distribution repository (ibiblio).
-			Until then, maven builders can install the package themselves and include the dependency in their pom.
+			The selfdiagnose package is available in the Maven central repository.
 		</p>
-		<subsection name="Installation (2.4)">
-		<p>
-				<source><![CDATA[
-mvn install:install-file -DgroupId=com.philemonworks -DartifactId=selfdiagnose -Dversion=2.4 -Dpackaging=jar -DgeneratePom=true -Dfile=<ABSOLUTE_PATH>/selfdiagnose-1.0-rc10.jar
-				]]></source>			
-		</p>
-		</subsection>
-		
+
 		<subsection name="Dependencies">
 		<p>
 				<source><![CDATA[
 <dependency>
 	<groupId>com.philemonworks</groupId>
 	<artifactId>selfdiagnose</artifactId>
-	<version>2.4</version>	
-</dependency>	
-				]]></source>			
+	<version>${version}</version>
+</dependency>
+				]]></source>
 		</p>
-		</subsection>	
-		
-        <subsection name="Repository">
-        <p>
-                <source><![CDATA[
-<repository>
-    <id>selfdiagnose-repo</id>
-    <name>Repository for SelfDiagnose</name>
-    <url>http://emicklei.googlecode.com/svn/repo</url>
-</repository> 
-                ]]></source>            
-        </p>
-        </subsection>		
-			
+		</subsection>
+
 	</section>
 	 </body>
 </document>
