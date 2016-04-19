@@ -51,19 +51,21 @@ public abstract class SelfDiagnose {
     /**
      * The name of the resource that holds the specification of tasks.
      */
-    public final static String VERSION = "2.8.0";
+    public final static String VERSION = "2.8.2";
     public final static String COPYRIGHT = "(c) ernestmicklei.com";
     public final static String CONFIG = "selfdiagnose.xml";
     private static URL CONFIG_URL = null; // will be initialized by configure(...)
     private final static Logger LOG = Logger.getLogger(SelfDiagnose.class);
 
     private static List<DiagnosticTask> tasks = Collections.synchronizedList(new ArrayList<DiagnosticTask>());
+
     static {
         SelfDiagnose.configure(CONFIG);
     }
 
     /**
      * Return the filename that is used to configure SelfDiagnose
+     *
      * @return
      */
     public static String getConfigFilename() {
@@ -107,6 +109,7 @@ public abstract class SelfDiagnose {
 
     /**
      * Read the configuration from the resource by URL.
+     *
      * @param configURL : URL
      */
     public static void configure(URL configURL) {
@@ -126,6 +129,7 @@ public abstract class SelfDiagnose {
 
     /**
      * Read the configuration from an InputStream
+     *
      * @param is
      * @throws Exception
      */
@@ -149,8 +153,7 @@ public abstract class SelfDiagnose {
     /**
      * Add the argument to the global list of Diagnostic tasks.
      *
-     * @param task
-     *            DiagnosticTask
+     * @param task DiagnosticTask
      * @return DiagnosticTask
      */
     public static DiagnosticTask register(DiagnosticTask task) {
@@ -160,10 +163,8 @@ public abstract class SelfDiagnose {
     /**
      * Add the argument to the global list of Diagnostic tasks.
      *
-     * @param task
-     *            DiagnosticTask
-     * @param identifier
-     *            String
+     * @param task       DiagnosticTask
+     * @param identifier String
      * @return DiagnosticTask
      */
     public static DiagnosticTask register(DiagnosticTask task, String identifier) {
@@ -178,7 +179,6 @@ public abstract class SelfDiagnose {
 
     /**
      * Basic method to run all registered tasks.
-     *
      */
     public static DiagnoseRun runTasks(DiagnoseRunReporter reporter) {
         return SelfDiagnose.runTasks(tasks, reporter, new ExecutionContext());
@@ -186,7 +186,6 @@ public abstract class SelfDiagnose {
 
     /**
      * Basic method to run all registered tasks.
-     *
      */
     public static DiagnoseRun runTasks(DiagnoseRunReporter reporter, ExecutionContext ctx) {
         return SelfDiagnose.runTasks(tasks, reporter, ctx);
@@ -194,7 +193,6 @@ public abstract class SelfDiagnose {
 
     /**
      * Basic method to the tasks provided
-     *
      */
     public static DiagnoseRun runTasks(List<DiagnosticTask> taskList, DiagnoseRunReporter reporter, ExecutionContext ctx) {
         DiagnoseRun run = new DiagnoseRun();
@@ -241,6 +239,7 @@ public abstract class SelfDiagnose {
 
     /**
      * Remove the previously registered task. Ignore if was not present.
+     *
      * @param custom
      */
     public static void unregister(DiagnosticTask task) {
