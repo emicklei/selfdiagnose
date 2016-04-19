@@ -48,7 +48,7 @@ public class ExecutionContext {
     public Object getValue(String expression) throws DiagnoseException {
         try {
             Map ctx = Ognl.createDefaultContext(values);
-            Ognl.setClassResolver(ctx, new OgnlRestrictedClassResolver());
+            Ognl.setClassResolver(ctx, new RestrictedClassResolver());
             return Ognl.getValue(Ognl.parseExpression(expression), ctx, (Object) values, null);
         } catch (OgnlException e) {
             throw new DiagnoseException("Unable to evaluate expression [" + expression + "]", e);
