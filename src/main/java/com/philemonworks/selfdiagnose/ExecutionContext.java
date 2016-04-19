@@ -19,63 +19,71 @@ package com.philemonworks.selfdiagnose;
 import java.util.HashMap;
 import java.util.Map;
 
-import ognl.Ognl;
-import ognl.OgnlException;
+import ognl.*;
 
 public class ExecutionContext {
-	private Map values = new HashMap();
+    private Map values = new HashMap();
 
-	/**
-	 * Store the value for a variable unless no variable was specified (== null)
-	 * @param variableName : String || null
-	 * @param newValue : Object
-	 * @throws DiagnoseException
-	 */
-	public void setValue(String variableName, Object newValue) throws DiagnoseException {
-		// only store the value if a variable name was specified
-		if (variableName != null)
-			values.put(variableName, newValue);
-	}
-	/**
-	 * Return the stored value for a variable. Null is allowed for the value.
-	 * Throws an exception if this value is not available
-	 * @param expression : String
-	 * @return Object
-	 * @throws DiagnoseException
-	 */
-	public Object getValue(String expression) throws DiagnoseException {
+    /**
+     * Store the value for a variable unless no variable was specified (== null)
+     *
+     * @param variableName : String || null
+     * @param newValue     : Object
+     * @throws DiagnoseException
+     */
+    public void setValue(String variableName, Object newValue) throws DiagnoseException {
+        // only store the value if a variable name was specified
+        if (variableName != null)
+            values.put(variableName, newValue);
+    }
+
+    /**
+     * Return the stored value for a variable. Null is allowed for the value.
+     * Throws an exception if this value is not available
+     *
+     * @param expression : String
+     * @return Object
+     * @throws DiagnoseException
+     */
+    public Object getValue(String expression) throws DiagnoseException {
         try {
-            return Ognl.getValue(expression, values);
+            Map ctx = Ognl.createDefaultContext(values);
+            Ognl.setClassResolver(ctx, new OgnlRestrictedClassResolver());
+            return Ognl.getValue(Ognl.parseExpression(expression), ctx, (Object) values, null);
         } catch (OgnlException e) {
-            throw new DiagnoseException("Unable to evaluate expression ["+expression+"]",e);
+            throw new DiagnoseException("Unable to evaluate expression [" + expression + "]", e);
         }
-	}
-	/**
-	 * The argument is either a value or an expression.
-	 * Expressions are specified using the syntax ${myexpression}
-	 * Return the stored value for a variable.
-	 * @param valueOrExpression
-	 * @return Object
-	 * @throws DiagnoseException
-	 */
-	public Object resolveValue(String valueOrExpression) throws DiagnoseException {
-		if (valueOrExpression == null) return null; // should not happen?
-		if (valueOrExpression.startsWith("${")) {
-			String var = valueOrExpression.substring(2,valueOrExpression.length()-1);
-			return this.getValue(var);
-		}
-		return valueOrExpression;
-	}
-	/**
-	 * Checks and makes sure the return value is a String
-	 * @param valueOrExpression : String
-	 * @return String
-	 * @throws DiagnoseException
-	 */
-	public String resolveString(String valueOrExpression) throws DiagnoseException {
-		Object value = this.resolveValue(valueOrExpression);
-		if (!(value instanceof String))
-			throw new DiagnoseException("String value expected for ["+valueOrExpression+"] but value is ["+value+"]");
-		return (String)value;
-	}	
+    }
+
+    /**
+     * The argument is either a value or an expression.
+     * Expressions are specified using the syntax ${myexpression}
+     * Return the stored value for a variable.
+     *
+     * @param valueOrExpression
+     * @return Object
+     * @throws DiagnoseException
+     */
+    public Object resolveValue(String valueOrExpression) throws DiagnoseException {
+        if (valueOrExpression == null) return null; // should not happen?
+        if (valueOrExpression.startsWith("${")) {
+            String var = valueOrExpression.substring(2, valueOrExpression.length() - 1);
+            return this.getValue(var);
+        }
+        return valueOrExpression;
+    }
+
+    /**
+     * Checks and makes sure the return value is a String
+     *
+     * @param valueOrExpression : String
+     * @return String
+     * @throws DiagnoseException
+     */
+    public String resolveString(String valueOrExpression) throws DiagnoseException {
+        Object value = this.resolveValue(valueOrExpression);
+        if (!(value instanceof String))
+            throw new DiagnoseException("String value expected for [" + valueOrExpression + "] but value is [" + value + "]");
+        return (String) value;
+    }
 }
