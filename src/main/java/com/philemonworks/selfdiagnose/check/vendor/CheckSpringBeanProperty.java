@@ -18,9 +18,12 @@ import com.philemonworks.selfdiagnose.check.CheckProperty;
  * 	&lt;checkspringbeanproperty id="myBean" property="someField" /&gt;
  * 	&lt;checkspringbeanproperty id="myBean" operation="someMethod" /&gt;
  * 	&lt;checkspringbeanproperty name="myBean" property="someField" pattern="[a-z-0-9]*" /&gt;
- * 
+ *
  *  &lt;-- make the bean available by variable "myBeanVar" to the execution context of SelfDiagnose --&gt;
  * 	&lt;checkspringbeanproperty id="myBean" var="myBeanVar" /&gt;
+ *
+ *  &lt;-- Only do the check if the bean is in a certain profile. Can be multiple profiles comma separated (using OR principle). --&gt;
+ * 	&lt;checkspringbeanproperty id="myBean" profile="nameOfTheProfile" /&gt;
  * </pre>
  */
 public class CheckSpringBeanProperty extends CheckProperty implements ApplicationContextAware {
@@ -28,10 +31,12 @@ public class CheckSpringBeanProperty extends CheckProperty implements Applicatio
 	protected static final String PARAMETER_NAME = "name";
 	protected static final String PARAMETER_OPERATION = "operation";
 	protected static final String PARAMETER_ID = "id";
+    protected static final String PARAMETER_PROFILE = "profile";
 	
 	private String id;
 	private String name;
 	private String operation;
+    private String profile;
 	
 	// For accessing Spring beans by name or id
 	private ApplicationContext applicationContext;
@@ -51,7 +56,8 @@ public class CheckSpringBeanProperty extends CheckProperty implements Applicatio
 		this.setId(attributes.getValue(PARAMETER_ID));
 		this.setName(attributes.getValue(PARAMETER_NAME));	
 		this.setOperation(attributes.getValue(PARAMETER_OPERATION));
-	}	
+        this.setProfile(attributes.getValue(PARAMETER_PROFILE));
+	}
 	
 	public void setUp(ExecutionContext ctx) throws DiagnoseException {
 		super.setUp(ctx);
@@ -68,6 +74,12 @@ public class CheckSpringBeanProperty extends CheckProperty implements Applicatio
 		    result.setErrorMessage("No Spring ApplicationContext available");
 		    return; 
 		}
+
+        if (!SpringProfileUtil.profileIsActive(this.applicationContext, this.profile)) {
+            result.setPassedMessage(DiagnoseUtil.format("Spring bean [{0}] ignored. Not in profile(s) [{1}]", (id == null ? name : id ), this.profile));
+            return;
+        }
+
 		Object bean = null;
 		String beanName = "";
 		if (id != null) {
@@ -79,7 +91,7 @@ public class CheckSpringBeanProperty extends CheckProperty implements Applicatio
 		}
 		if (null == bean) {
 			result.setFailedMessage(DiagnoseUtil.format(
-					"Spring bean [{1}] not found", (id == null ? name : id )));
+					"Spring bean [{0}] not found", (id == null ? name : id )));
 			return;
 		}		
 		Object value = DiagnoseUtil.perform(bean,this.methodName());
@@ -130,7 +142,16 @@ public class CheckSpringBeanProperty extends CheckProperty implements Applicatio
         this.operation = operation;
     }
 
+    public String getProfile() {
+        return profile;
+    }
+
+    public void setProfile(String profile) {
+        this.profile = profile;
+    }
+
     public void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
-    }    
+    }
+
 }

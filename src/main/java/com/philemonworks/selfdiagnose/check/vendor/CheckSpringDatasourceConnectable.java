@@ -1,26 +1,23 @@
 package com.philemonworks.selfdiagnose.check.vendor;
 
-import java.sql.Connection;
-
-import javax.sql.DataSource;
-
+import com.philemonworks.selfdiagnose.*;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.xml.sax.Attributes;
 
-import com.philemonworks.selfdiagnose.DiagnoseException;
-import com.philemonworks.selfdiagnose.DiagnoseUtil;
-import com.philemonworks.selfdiagnose.DiagnosticTask;
-import com.philemonworks.selfdiagnose.DiagnosticTaskResult;
-import com.philemonworks.selfdiagnose.ExecutionContext;
+import javax.sql.DataSource;
+import java.sql.Connection;
 
 /**
  * CheckSpringDatasourceConnectable is a diagnostic task that access a Datasource
  * from the application context and uses that to verify that a connection can be created (and closed).
  * 
  * &lt;checkspringdatasourceconnectable name="" /&gt;
- * 
+ *
+ *  &lt;-- Only do the check if the datasource is in a certain profile. Can be multiple profiles comma separated (using OR principle). --&gt;
+ * 	&lt;checkspringdatasourceconnectable name="myBean" profile="nameOfTheProfile" /&gt;
+ *
  * @author emicklei
  *
  */
@@ -28,7 +25,9 @@ public class CheckSpringDatasourceConnectable extends DiagnosticTask implements 
     private final static Logger log = Logger.getLogger(CheckSpringDatasourceConnectable.class);    
     private static final long serialVersionUID = 3161059124031362279L;
     private static final String PARAMETER_NAME = "name";
+    private static final String PARAMETER_PROFILE = "profile";
     private String datasourceName;
+    private String profile;
     
     // For accessing Spring beans by name or id
     private ApplicationContext applicationContext;
@@ -47,6 +46,7 @@ public class CheckSpringDatasourceConnectable extends DiagnosticTask implements 
         // store variable if specified
         super.initializeFromAttributes(attributes);
         this.setDatasourceName(attributes.getValue(PARAMETER_NAME));
+        this.setProfile(attributes.getValue(PARAMETER_PROFILE));
     }
     
     public void setUp(ExecutionContext ctx) throws DiagnoseException {
@@ -60,11 +60,17 @@ public class CheckSpringDatasourceConnectable extends DiagnosticTask implements 
             result.setErrorMessage("No Spring ApplicationContext available");
             return; 
         }
+
+        if (!SpringProfileUtil.profileIsActive(this.applicationContext, this.profile)) {
+            result.setPassedMessage(DiagnoseUtil.format("Datasource [{0}] ignored. Not in profile(s) [{1}]", this.datasourceName, this.profile));
+            return;
+        }
+
         DataSource bean = null;
         bean = (DataSource)this.applicationContext.getBean(this.datasourceName);        
         if (null == bean) {
             result.setFailedMessage(DiagnoseUtil.format(
-                    "Spring datasource [{1}] not found", datasourceName));
+                    "Spring datasource [{0}] not found", datasourceName));
             return;
         }        
         try {
@@ -90,7 +96,15 @@ public class CheckSpringDatasourceConnectable extends DiagnosticTask implements 
     public void setDatasourceName(String datasourceName) {
         this.datasourceName = datasourceName;
     }
-    
+
+    public String getProfile() {
+        return profile;
+    }
+
+    public void setProfile(String profile) {
+        this.profile = profile;
+    }
+
     public void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }    
