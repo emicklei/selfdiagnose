@@ -28,26 +28,29 @@ import com.philemonworks.selfdiagnose.SelfDiagnose;
 @Path("/internal/selfdiagnose{extension}")
 @Service("SelfDiagnoseResource")
 public class SelfDiagnoseResource implements ApplicationContextAware{
-    
+
     // http://localhost:9998/internal/selfdiagnose.html
     @GET
     @Produces("text/html,application/xml,application/json")
     @Consumes("text/html,application/xml")
     public Response runAndReportResults(@PathParam("extension") String format, @QueryParam("format") String formatOverride) {
-        DiagnoseRunReporter reporter = new HTMLReporter();
-        ResponseBuilder builder = Response.ok().header("Content-Type", "text/html");     
+        DiagnoseRunReporter reporter;
+        ResponseBuilder builder = Response.ok();
         if (".xml".equals(format) || "xml".equals(formatOverride)) {
             reporter = new XMLReporter();
-            builder.header("Content-Type", "application/xml");    
+            builder.header("Content-Type", "application/xml");
         } else if (".json".equals(format) || "json".equals(formatOverride)) {
             reporter = new JSONReporter();
             builder.header("Content-Type", "application/json");
+        } else {
+            reporter = new HTMLReporter();
+            builder.header("Content-Type", "text/html");
         }
         DiagnoseRun run = SelfDiagnose.runTasks(reporter);
         builder.header("X-SelfDiagnose-OK", run.isOK());
         return builder.entity(reporter.getContent()).build();
-    }   
-    
+    }
+
     @POST
     @Consumes("application/xml")
     @Produces("application/xml")
@@ -60,8 +63,8 @@ public class SelfDiagnoseResource implements ApplicationContextAware{
         }
         return this.runAndReportResults(format, null);
     }
-    
+
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         SpringApplicationContextInjector.inject(applicationContext);
-    }    
+    }
 }
