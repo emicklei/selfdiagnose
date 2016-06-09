@@ -22,12 +22,15 @@ import com.philemonworks.selfdiagnose.SelfDiagnose;
 
 /**
  * SelfDiagnoseResource provides a REST interface to the SelfDiagnose tool.
+ *
  * @author ernestmicklei
  */
 
 @Path("/internal/selfdiagnose{extension}")
 @Service("SelfDiagnoseResource")
-public class SelfDiagnoseResource implements ApplicationContextAware{
+public class SelfDiagnoseResource implements ApplicationContextAware {
+
+    private boolean remoteConfigurationAllowed = false;
 
     // http://localhost:9998/internal/selfdiagnose.html
     @GET
@@ -55,6 +58,9 @@ public class SelfDiagnoseResource implements ApplicationContextAware{
     @Consumes("application/xml")
     @Produces("application/xml")
     public Response runSubmittedTasks(@PathParam("extension") String format, InputStream input) {
+        if (!this.remoteConfigurationAllowed) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
         SelfDiagnose.flush();
         try {
             SelfDiagnose.configure(input);
