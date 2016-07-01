@@ -51,7 +51,7 @@ public abstract class SelfDiagnose {
     /**
      * The name of the resource that holds the specification of tasks.
      */
-    public final static String VERSION = "2.8.5";
+    public final static String VERSION = "2.8.6";
     public final static String COPYRIGHT = "(c) ernestmicklei.com";
     public final static String CONFIG = "selfdiagnose.xml";
     private static URL CONFIG_URL = null; // will be initialized by configure(...)
