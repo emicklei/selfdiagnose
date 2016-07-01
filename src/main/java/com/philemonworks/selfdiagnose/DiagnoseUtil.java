@@ -307,7 +307,7 @@ public class DiagnoseUtil {
      * Use XSD datetime format without zone indication
      */
     public static String format(Date dateTime) {
-        String dot = new SimpleDateFormat("yyyy-MM-dd.HH:mm:ss").format(new Date());
+        String dot = new SimpleDateFormat("yyyy-MM-dd.HH:mm:ss").format(dateTime);
         return dot.replaceAll("[.]", "T");
     }
 
