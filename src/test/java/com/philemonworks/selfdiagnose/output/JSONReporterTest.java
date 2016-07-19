@@ -3,6 +3,8 @@ package com.philemonworks.selfdiagnose.output;
 import com.philemonworks.selfdiagnose.*;
 import junit.framework.TestCase;
 
+import java.util.Date;
+
 public class JSONReporterTest extends TestCase {
 
     private JSONReporter reporter = new JSONReporter();
@@ -37,9 +39,9 @@ public class JSONReporterTest extends TestCase {
         DiagnoseRun run = toDiagnoseRun(result1, result2, result3);
 
         String expected = toJson(run,
-            "{\"task\":\"jsonreportertest$testtask\",\"status\":\"failed\",\"comment\":\"Test1\",\"message\":\"Failed1\",\"duration\":10,\"requestor\":\"me\",\"severity\":\"WARNING\"}," +
-            "{\"task\":\"jsonreportertest$testtask\",\"status\":\"passed\",\"comment\":\"Test2\",\"message\":\"OK2\",\"duration\":20,\"requestor\":\"you\",\"severity\":\"NONE\"}," +
-            "{\"task\":\"jsonreportertest$testtask\",\"status\":\"error\",\"comment\":\"Test3\",\"message\":\"Error3\",\"duration\":30,\"requestor\":\"{unknown}\",\"severity\":\"CRITICAL\"}");
+                "{\"task\":\"jsonreportertest$testtask\",\"status\":\"failed\",\"comment\":\"Test1\",\"message\":\"Failed1\",\"duration\":10,\"requestor\":\"me\",\"severity\":\"WARNING\"}," +
+                        "{\"task\":\"jsonreportertest$testtask\",\"status\":\"passed\",\"comment\":\"Test2\",\"message\":\"OK2\",\"duration\":20,\"requestor\":\"you\",\"severity\":\"NONE\"}," +
+                        "{\"task\":\"jsonreportertest$testtask\",\"status\":\"error\",\"comment\":\"Test3\",\"message\":\"Error3\",\"duration\":30,\"requestor\":\"{unknown}\",\"severity\":\"CRITICAL\"}");
 
         assertEquals(expected, report(run));
     }
@@ -101,18 +103,18 @@ public class JSONReporterTest extends TestCase {
         assertEquals(expected, report(run));
     }
 
-    private DiagnoseRun toDiagnoseRun(final DiagnosticTaskResult ... results) {
+    private DiagnoseRun toDiagnoseRun(final DiagnosticTaskResult... results) {
         DiagnoseRun run = new DiagnoseRun();
 
-        for(int i = 0; i < results.length; i++) {
+        for (int i = 0; i < results.length; i++) {
             run.results.add(results[i]);
         }
-
+        run.endDateTime = new Date();
         return run;
     }
 
     private String toJson(DiagnoseRun run, String results) {
-        return "{\"selfdiagnose\":{\"version\":\""+ SelfDiagnose.VERSION +"\"},\"run\":\"" + DiagnoseUtil.format(run.endDateTime) + "\",\"since\":\"" + DiagnoseUtil.format(Startup.TIMESTAMP) + "\",\"results\":[" + results + "]}";
+        return "{\"selfdiagnose\":{\"version\":\"" + SelfDiagnose.VERSION + "\"},\"run\":\"" + DiagnoseUtil.format(run.endDateTime) + "\",\"since\":\"" + DiagnoseUtil.format(Startup.TIMESTAMP) + "\",\"results\":[" + results + "]}";
     }
 
     private String report(DiagnoseRun run) {
