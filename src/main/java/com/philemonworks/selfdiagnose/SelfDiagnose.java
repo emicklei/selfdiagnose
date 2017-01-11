@@ -53,7 +53,7 @@ public abstract class SelfDiagnose {
     /**
      * The name of the resource that holds the specification of tasks.
      */
-    public final static String VERSION = "2.8.7";
+    public final static String VERSION = "2.8.8";
     public final static String COPYRIGHT = "(c) ernestmicklei.com";
     public final static String CONFIG = "selfdiagnose.xml";
     private static URL CONFIG_URL = null; // will be initialized by configure(...)
@@ -199,6 +199,13 @@ public abstract class SelfDiagnose {
     /**
      * Basic method to run all registered tasks.
      */
+    public static DiagnoseRun runTasks(DiagnoseRunReporter reporter, Integer timeout) {
+        return SelfDiagnose.runTasks(tasks, reporter, new ExecutionContext(), timeout);
+    }
+
+    /**
+     * Basic method to run all registered tasks.
+     */
     public static DiagnoseRun runTasks(DiagnoseRunReporter reporter, ExecutionContext ctx) {
         return SelfDiagnose.runTasks(tasks, reporter, ctx, null);
     }
@@ -243,7 +250,7 @@ public abstract class SelfDiagnose {
     private static List<DiagnosticTaskResult> createErrorResult(String message) {
         List<DiagnosticTaskResult> result = new ArrayList<DiagnosticTaskResult>(1);
         final ReportStaticMessageTask task = new ReportStaticMessageTask(false, message, "System Error Message");
-        
+
         result.add(task.run());
         return result;
     }
@@ -295,7 +302,7 @@ public abstract class SelfDiagnose {
                     // Probably because future is cancelled. Don't continue scheduling/executing new tasks
                     return results;
                 }
-                
+
                 DiagnosticTask each = (DiagnosticTask) taskList.get(i);
                 DiagnosticTaskResult result = null;
                 // see if task wants to run with a timeout

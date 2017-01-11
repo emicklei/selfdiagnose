@@ -36,7 +36,7 @@ public class SelfDiagnoseResource implements ApplicationContextAware {
     @GET
     @Produces("text/html,application/xml,application/json")
     @Consumes("text/html,application/xml")
-    public Response runAndReportResults(@PathParam("extension") String format, @QueryParam("format") String formatOverride) {
+    public Response runAndReportResults(@PathParam("extension") String format, @QueryParam("format") String formatOverride, @QueryParam("timeoutMS") Integer timeout) {
         DiagnoseRunReporter reporter;
         ResponseBuilder builder = Response.ok();
         if (".xml".equals(format) || "xml".equals(formatOverride)) {
@@ -49,7 +49,7 @@ public class SelfDiagnoseResource implements ApplicationContextAware {
             reporter = new HTMLReporter();
             builder.header("Content-Type", "text/html");
         }
-        DiagnoseRun run = SelfDiagnose.runTasks(reporter);
+        DiagnoseRun run = SelfDiagnose.runTasks(reporter, timeout);
         builder.header("X-SelfDiagnose-OK", run.isOK());
         return builder.entity(reporter.getContent()).build();
     }
@@ -67,7 +67,7 @@ public class SelfDiagnoseResource implements ApplicationContextAware {
         } catch (Exception e) {
             return Response.serverError().entity(e.getCause().getMessage()).build();
         }
-        return this.runAndReportResults(format, null);
+        return this.runAndReportResults(format, null, null);
     }
 
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
