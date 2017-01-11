@@ -16,6 +16,7 @@
  */
 package com.philemonworks.selfdiagnose;
 
+import com.philemonworks.selfdiagnose.check.ReportStaticMessageTask;
 import com.philemonworks.selfdiagnose.output.DiagnoseRun;
 import com.philemonworks.selfdiagnose.output.DiagnoseRunReporter;
 import com.philemonworks.selfdiagnose.output.XMLReporter;
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.concurrent.*;
 
 /**
  * SelfDiagnose is the component that keeps a registration of DiagnosticTasks
@@ -58,6 +60,16 @@ public abstract class SelfDiagnose {
     private final static Logger LOG = Logger.getLogger(SelfDiagnose.class);
 
     private static List<DiagnosticTask> tasks = Collections.synchronizedList(new ArrayList<DiagnosticTask>());
+
+    // threads are removed from the pool if no longer used.
+    static final ExecutorService SharedPool = Executors.newCachedThreadPool(new ThreadFactory() {
+        public Thread newThread(Runnable r) {
+            Thread runner = new Thread(r);
+            runner.setDaemon(true);
+            runner.setName("SelfDiagnose.SelfDiagnoseTimoutRunner");
+            return runner;
+        }
+    });
 
     static {
         SelfDiagnose.configure(CONFIG);
@@ -181,37 +193,59 @@ public abstract class SelfDiagnose {
      * Basic method to run all registered tasks.
      */
     public static DiagnoseRun runTasks(DiagnoseRunReporter reporter) {
-        return SelfDiagnose.runTasks(tasks, reporter, new ExecutionContext());
+        return SelfDiagnose.runTasks(tasks, reporter, new ExecutionContext(), null);
     }
 
     /**
      * Basic method to run all registered tasks.
      */
     public static DiagnoseRun runTasks(DiagnoseRunReporter reporter, ExecutionContext ctx) {
-        return SelfDiagnose.runTasks(tasks, reporter, ctx);
+        return SelfDiagnose.runTasks(tasks, reporter, ctx, null);
     }
 
     /**
      * Basic method to the tasks provided
      */
     public static DiagnoseRun runTasks(List<DiagnosticTask> taskList, DiagnoseRunReporter reporter, ExecutionContext ctx) {
-        DiagnoseRun run = new DiagnoseRun();
-        List<DiagnosticTaskResult> results = new ArrayList<DiagnosticTaskResult>(taskList.size());
-        for (int i = 0; i < taskList.size(); i++) {
-            DiagnosticTask each = (DiagnosticTask) taskList.get(i);
-            DiagnosticTaskResult result = null;
-            // see if task wants to run with a timeout
-            if (each.needsLimitedRuntime()) {
-                result = new TaskBackgroundRunner().runWithin(each, ctx, each.getTimeoutInMilliSeconds());
-            } else {
-                result = each.run(ctx);
+        return runTasks(taskList, reporter, ctx, null);
+    }
+
+    public static DiagnoseRun runTasks(final DiagnoseRunReporter reporter, final ExecutionContext ctx, final Integer timeout) {
+        return runTasks(tasks, reporter, ctx, timeout);
+    }
+
+    public static DiagnoseRun runTasks(final List<DiagnosticTask> taskList, final DiagnoseRunReporter reporter, final ExecutionContext ctx, final Integer timeout) {
+        TaskRunner resultTask = new TaskRunner(taskList, ctx);
+        List<DiagnosticTaskResult> results = null;
+        if (timeout == null) {
+            results = resultTask.call();
+        } else {
+            final Future<List<DiagnosticTaskResult>> future = SharedPool.submit(resultTask);
+            try {
+                results = future.get(timeout, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
+                results = createErrorResult("Interrupted while checking");
+            } catch (ExecutionException e) {
+                throw (RuntimeException) e.getCause(); // because task itself doesn't throw CheckedExceptions
+            } catch (TimeoutException e) {
+                future.cancel(true);
+                results = createErrorResult("Could not execute all SelfDiagnose tasks within specified limit of " + timeout + " ms.");
             }
-            result.addToResults(results);
         }
-        run.finished();
+
+        DiagnoseRun run = new DiagnoseRun();
         run.results = results;
+        run.finished();
         reporter.report(run);
         return run;
+    }
+
+    private static List<DiagnosticTaskResult> createErrorResult(String message) {
+        List<DiagnosticTaskResult> result = new ArrayList<DiagnosticTaskResult>(1);
+        final ReportStaticMessageTask task = new ReportStaticMessageTask(false, message, "System Error Message");
+        
+        result.add(task.run());
+        return result;
     }
 
     /**
@@ -239,10 +273,40 @@ public abstract class SelfDiagnose {
 
     /**
      * Remove the previously registered task. Ignore if was not present.
-     *
-     * @param custom
      */
     public static void unregister(DiagnosticTask task) {
         tasks.remove(task);
+    }
+
+    private static class TaskRunner implements Callable<List<DiagnosticTaskResult>> {
+        private final List<DiagnosticTask> taskList;
+        private final ExecutionContext ctx;
+
+        public TaskRunner(List<DiagnosticTask> taskList, ExecutionContext ctx) {
+            this.taskList = taskList;
+            this.ctx = ctx;
+        }
+
+        @Override
+        public List<DiagnosticTaskResult> call() {
+            List<DiagnosticTaskResult> results = new ArrayList<DiagnosticTaskResult>(taskList.size());
+            for (int i = 0; i < taskList.size(); i++) {
+                if (Thread.interrupted()) {
+                    // Probably because future is cancelled. Don't continue scheduling/executing new tasks
+                    return results;
+                }
+                
+                DiagnosticTask each = (DiagnosticTask) taskList.get(i);
+                DiagnosticTaskResult result = null;
+                // see if task wants to run with a timeout
+                if (each.needsLimitedRuntime()) {
+                    result = new TaskBackgroundRunner().runWithin(each, ctx, each.getTimeoutInMilliSeconds());
+                } else {
+                    result = each.run(ctx);
+                }
+                result.addToResults(results);
+            }
+            return results;
+        }
     }
 }
