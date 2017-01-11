@@ -16,17 +16,16 @@
 */
 package com.philemonworks.selfdiagnose;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.URL;
+import com.philemonworks.selfdiagnose.output.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import com.philemonworks.selfdiagnose.output.*;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.URL;
 
 /**
  * SelfDiagnoseServlet is a server component that can run and report on all registered diagnostic tasks.<br/>
@@ -115,6 +114,7 @@ public class SelfDiagnoseServlet extends HttpServlet {
         if (format == null)
             format = "html";
         DiagnoseRunReporter reporter = getReporter(format);
+        Integer timeout = getTimeout(req);
         String content = "?";
         try {
             // bring request available to thread
@@ -124,7 +124,8 @@ public class SelfDiagnoseServlet extends HttpServlet {
                 ctx.setValue("servletcontext", this.getServletContext());
             } catch (Exception ex) {
             } // bummer
-            DiagnoseRun run = SelfDiagnose.runTasks(reporter, ctx);
+            DiagnoseRun run;
+            run = SelfDiagnose.runTasks(reporter, ctx, timeout);
             resp.setHeader("X-SelfDiagnose-OK", Boolean.toString(run.isOK()));
             content = reporter.getContent();
         } finally {
@@ -148,6 +149,22 @@ public class SelfDiagnoseServlet extends HttpServlet {
         if ("json".equals(format))
             return new JSONReporter();
         throw new IllegalArgumentException("Unkown format for reporting:" + format);
+    }
+
+    /**
+     * Read the timeout in ms from the request, if any.
+     *
+     * @return the timeout for the selfdiagnose task in milliseconds,
+     * or null if no timeout is applicable, or the timeout < 1 ms.
+     * @throws NumberFormatException if the timeout value is not a number.
+     */
+    protected Integer getTimeout(HttpServletRequest req) {
+        String timeout = req.getParameter("timeoutMS");
+        if (timeout != null) {
+            int timeoutMS = Integer.valueOf(timeout);
+            return timeoutMS > 0 ? timeoutMS : null;
+        }
+        return null;
     }
 
     /**
