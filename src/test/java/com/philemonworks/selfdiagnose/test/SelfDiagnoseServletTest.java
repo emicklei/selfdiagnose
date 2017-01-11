@@ -69,5 +69,5 @@ public class SelfDiagnoseServletTest extends TestCase {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-    }    
+    }
 }

@@ -1,3 +1,5 @@
+### 2.8.8
+- Added timeout option to selfdiagnose call
 ### 2.8.7
 - changed msg of environment property checker
 ### 2.8.6

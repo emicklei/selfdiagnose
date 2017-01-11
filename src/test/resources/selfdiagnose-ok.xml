@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<!-- DOCTYPE selfdiagnose PUBLIC
+    "-//SelfDiagnose/SelfDiagnose Configuration DTD 1.0//EN"
+    "http://www.philemonworks.com/dtd/selfdiagnose-1.0.dtd" -->
+<!-- declaration is commented for sake of local testing -->
+
+<!-- Some checks which run ok-->
+<selfdiagnose>
+    <tasks>
+        <checkresourceaccessible name="log4j.properties"/>
+        <checkclassloadable name="org.apache.log4j.Logger"/>
+    </tasks>
+</selfdiagnose>
