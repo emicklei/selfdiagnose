@@ -4,6 +4,7 @@ import com.philemonworks.selfdiagnose.*;
 import com.philemonworks.selfdiagnose.check.CheckProperty;
 import com.philemonworks.selfdiagnose.check.CheckResourceProperty;
 
+import javax.servlet.ServletContext;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,8 +44,8 @@ public class ReportMavenPOMProperties extends CheckResourceProperty {
         String buildtime = null;
         try {
           Object servletContext = ctx.getValue("servletcontext");
-          if (servletContext != null) {
-              is = (InputStream)DiagnoseUtil.perform(servletContext, "getResourceAsStream", new String[]{ this.getName() });
+          if (servletContext != null && servletContext instanceof ServletContext) {
+             is = ((ServletContext) servletContext).getResourceAsStream(this.getName());
           }
           if (is == null) {
               is = this.getClass().getResourceAsStream(this.getName());

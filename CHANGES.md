@@ -1,3 +1,5 @@
+### 2.8.8
+- replaced usage of reflection method with a cast to the correct type in ReportMavenPOMProperties
 ### 2.8.7
 - changed msg of environment property checker
 ### 2.8.6
