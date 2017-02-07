@@ -30,6 +30,8 @@ public class JSONReporter implements DiagnoseRunReporter {
                 .field("selfdiagnose", JSON_SELFDIAGNOSE)
                 .field("run", run.endDateTime)
                 .field("since", Startup.TIMESTAMP)
+                .field("checks", run.howManyTasks())
+                .field("failures", run.howManyNotPassed())
                 .field("results", toResultsJson(run));
 
         this.content = jsonRoot.toJson();
