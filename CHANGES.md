@@ -1,3 +1,5 @@
+### 2.9.0
+- adds "checks" and "failures" attributes to JSON and XML reporter, just like HTML
 ### 2.8.8
 - replaced usage of reflection method with a cast to the correct type in ReportMavenPOMProperties
 ### 2.8.7

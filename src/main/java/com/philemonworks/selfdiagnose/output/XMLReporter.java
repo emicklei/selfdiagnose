@@ -82,6 +82,12 @@ public class XMLReporter implements DiagnoseRunReporter {
         xml.append("since=\"");
         xml.append(DiagnoseUtil.format(Startup.TIMESTAMP));
         xml.append("\" ");
+        xml.append("checks=\"");
+        xml.append(run.howManyTasks());
+        xml.append("\" ");
+        xml.append("failures=\"");
+        xml.append(run.howManyNotPassed());
+        xml.append("\" ");
         if (SelfDiagnoseServlet.getCurrentRequest() != null) {
             xml.append("context=\"");
             xml.append(SelfDiagnoseServlet.getCurrentRequest().getContextPath());
