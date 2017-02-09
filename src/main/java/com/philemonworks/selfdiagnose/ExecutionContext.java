@@ -29,9 +29,8 @@ public class ExecutionContext {
      *
      * @param variableName : String || null
      * @param newValue     : Object
-     * @throws DiagnoseException
      */
-    public void setValue(String variableName, Object newValue) throws DiagnoseException {
+    public void setValue(String variableName, Object newValue) {
         // only store the value if a variable name was specified
         if (variableName != null)
             values.put(variableName, newValue);

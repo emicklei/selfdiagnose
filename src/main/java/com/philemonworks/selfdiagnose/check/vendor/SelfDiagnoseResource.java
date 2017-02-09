@@ -2,6 +2,7 @@ package com.philemonworks.selfdiagnose.check.vendor;
 
 import java.io.InputStream;
 
+import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -12,13 +13,14 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import com.philemonworks.selfdiagnose.ExecutionContext;
 import com.philemonworks.selfdiagnose.output.*;
-import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 
 import com.philemonworks.selfdiagnose.SelfDiagnose;
+import org.springframework.web.context.ServletContextAware;
 
 /**
  * SelfDiagnoseResource provides a REST interface to the SelfDiagnose tool.
@@ -28,9 +30,10 @@ import com.philemonworks.selfdiagnose.SelfDiagnose;
 
 @Path("/internal/selfdiagnose{extension}")
 @Service("SelfDiagnoseResource")
-public class SelfDiagnoseResource implements ApplicationContextAware {
+public class SelfDiagnoseResource implements ApplicationContextAware, ServletContextAware {
 
     private boolean remoteConfigurationAllowed = false;
+    private ServletContext servletContext;
 
     // http://localhost:9998/internal/selfdiagnose.html
     @GET
@@ -49,7 +52,9 @@ public class SelfDiagnoseResource implements ApplicationContextAware {
             reporter = new HTMLReporter();
             builder.header("Content-Type", "text/html");
         }
-        DiagnoseRun run = SelfDiagnose.runTasks(reporter);
+        ExecutionContext executionContext = new ExecutionContext();
+        executionContext.setValue("servletcontext", servletContext);
+        DiagnoseRun run = SelfDiagnose.runTasks(reporter, executionContext);
         builder.header("X-SelfDiagnose-OK", run.isOK());
         return builder.entity(reporter.getContent()).build();
     }
@@ -70,7 +75,13 @@ public class SelfDiagnoseResource implements ApplicationContextAware {
         return this.runAndReportResults(format, null);
     }
 
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) {
         SpringApplicationContextInjector.inject(applicationContext);
+    }
+
+    @Override
+    public void setServletContext(ServletContext servletContext) {
+        this.servletContext = servletContext;
     }
 }
