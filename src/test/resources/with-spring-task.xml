@@ -6,6 +6,6 @@
 
 <selfdiagnose>
     <tasks>
-        <task ref="spring-enabled-task" />      
+        <task ref="spring-enabled-task" comment="comment" severity="WARNING"/>
     </tasks>
 </selfdiagnose>

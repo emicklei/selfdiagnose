@@ -20,7 +20,7 @@ package com.philemonworks.selfdiagnose;
  * CustomDiagnosticTask is a wrapper on a custom defined DiagnosticTask.
  * If the custom task could be created and initialized at configuration time then all messages are delegated to the task.
  * If the custom task could not be created then this class provides the error message with the reason every it is asked to run.
- * 
+ *
  * @author Ernest Micklei
  */
 public class CustomDiagnosticTask extends DiagnosticTask {
@@ -71,6 +71,12 @@ public class CustomDiagnosticTask extends DiagnosticTask {
     }
 
     public void setTask(DiagnosticTask task) {
+        if (task == null) return;
+        // copy attributes set by config
+        task.setComment(this.getComment());
+        task.setSeverity(this.getSeverity());
+        task.setTimeoutInMilliSeconds(this.getTimeoutInMilliSeconds());
+        task.setVariableName(this.getVariableName());
         this.task = task;
     }
 
@@ -103,6 +109,14 @@ public class CustomDiagnosticTask extends DiagnosticTask {
         super.setComment(comment);
         if (this.task != null) {
             this.task.setComment(comment);
+        }
+    }
+
+    @Override
+    public void setSeverity(Severity s) {
+        super.setSeverity(s);
+        if (this.task != null) {
+            this.task.setSeverity(s);
         }
     }
 }
