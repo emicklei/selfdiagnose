@@ -47,7 +47,7 @@ public class TasksTest extends TestCase {
     }
 
     public void testTimeoutTask() {
-        SleepTask sleep = new SleepTask();
+        SleepTask sleep = new SleepTask(100 * 2);
         sleep.setTimeoutInMilliSeconds(100);
 
         DiagnoseRun run = runSingleTask(sleep);
@@ -57,7 +57,7 @@ public class TasksTest extends TestCase {
     }
 
     public void testTimeoutCustomTask() {
-        SleepTask sleep = new SleepTask();
+        SleepTask sleep = new SleepTask(100 * 2);
         CustomDiagnosticTask ct = new CustomDiagnosticTask();
         // set task before attributes
         ct.setTask(sleep);
@@ -96,26 +96,6 @@ public class TasksTest extends TestCase {
         SelfDiagnose.flush();
         SelfDiagnose.register(task);
         return SelfDiagnose.runTasks(new XMLReporter());
-    }
-
-    static class SleepTask extends DiagnosticTask {
-        private static final long serialVersionUID = -5193920249800557424L;
-
-        @Override
-        public String getDescription() {
-            return null;
-        }
-
-        @Override
-        public void run(ExecutionContext ctx, DiagnosticTaskResult result) throws DiagnoseException {
-            try {
-                System.out.println("[SleepTask] going to sleep for 200ms");
-                Thread.sleep(100 * 2);
-                System.out.println("[SleepTask] awake after 200ms");
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     static class CustomSeverityTask extends DiagnosticTask {
