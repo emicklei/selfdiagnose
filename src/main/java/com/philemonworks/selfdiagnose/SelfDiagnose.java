@@ -59,6 +59,8 @@ public abstract class SelfDiagnose {
 
     private static List<DiagnosticTask> tasks = Collections.synchronizedList(new ArrayList<DiagnosticTask>());
 
+    private static final TaskBackgroundRunner BACKGROUND_RUNNER = new TaskBackgroundRunner(100);
+
     static {
         SelfDiagnose.configure(CONFIG);
     }
@@ -202,7 +204,7 @@ public abstract class SelfDiagnose {
             DiagnosticTaskResult result = null;
             // see if task wants to run with a timeout
             if (each.needsLimitedRuntime()) {
-                result = new TaskBackgroundRunner().runWithin(each, ctx, each.getTimeoutInMilliSeconds());
+                result = BACKGROUND_RUNNER.runWithin(each, ctx, each.getTimeoutInMilliSeconds());
             } else {
                 result = each.run(ctx);
             }

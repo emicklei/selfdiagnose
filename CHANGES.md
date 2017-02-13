@@ -1,3 +1,5 @@
+### 2.10.0
+- Prevent `java.lang.OutOfMemoryError: unable to create new native thread` that might happen if diagnostic tasks do not complete within a timeout period
 ### 2.9.0
 - adds "checks" and "failures" attributes to JSON and XML reporter, just like HTML
 ### 2.8.8
