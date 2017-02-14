@@ -6,7 +6,7 @@
 
 <selfdiagnose>
     <tasks>
-        <checkurlreachable url="http://www.github.com" var="phw" comment='personal blog'/>
+        <checkurlreachable url="http://www.github.com" timeout="200" var="phw" comment='personal blog'/>
         <checkurlreachable url="${phw}" var="phw2"/>
         <checkbeanproperty bean="${phw2}" property="protocol" pattern="http" var="protocol"/>
 
