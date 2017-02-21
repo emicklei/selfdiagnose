@@ -9,7 +9,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 /**
  * Suite of unit tests for {@link TaskBackgroundRunner}.
@@ -25,7 +26,7 @@ public class TaskBackgroundRunnerTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         // `ExecutorService` that is very close to the one that will be used in production
-        executor = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new SynchronousQueue<Runnable>());
+        executor = new ThreadPoolExecutor(1, 1, 0L, MILLISECONDS, new SynchronousQueue<Runnable>());
     }
 
     @Override
@@ -62,19 +63,8 @@ public class TaskBackgroundRunnerTest extends TestCase {
         // then
         assertTrue(slowTaskRun.isFailed());
 
-        // given
-        final SuccessfulTask normalTask = new SuccessfulTask("passing check");
-        normalTask.setTimeoutInMilliSeconds(100);
-
-        // when
-
-        // give JVM a few cycles to switch threads and interrupt cancelled task
-        Thread.sleep(10);
-        // schedule the next task
-        final DiagnosticTaskResult normalTaskRun = runner.runWithin(normalTask, context, normalTask.getTimeoutInMilliSeconds());
-
-        // then
-        assertTrue(normalTaskRun.isPassed());
+        // long-running task must be interrupted (we might need to wait a little)
+        assertTrue(slowTask.getInterruptedSignal().await(100, MILLISECONDS));
     }
 
     public void testTaskShouldFailIfThereAreNoMoreThreadsLeftInThePool() throws InterruptedException {
@@ -83,24 +73,28 @@ public class TaskBackgroundRunnerTest extends TestCase {
 
         // given
         final SleepTask slowTask = new SleepTask(100 * 10);
-        slowTask.setTimeoutInMilliSeconds(100);
+        slowTask.setTimeoutInMilliSeconds(100 * 3);
 
         // when
 
-        // all threads in the pool are blocked by long-running tasks
+        // start a long-running task from another tread
         Executors.newSingleThreadExecutor().submit(new Runnable() {
             @Override
             public void run() {
                 runner.runWithin(slowTask, context, slowTask.getTimeoutInMilliSeconds());
             }
         });
-        // give JVM a few cycles to switch threads and start the task
-        Thread.sleep(10);
+
+        // then
+
+        // all threads in the pool (just 1 in our case) must be occupied by long-running tasks
+        assertTrue(slowTask.getStartedSignal().await(100, MILLISECONDS));
 
         // given
         final SuccessfulTask normalTask = new SuccessfulTask("passing check");
         normalTask.setTimeoutInMilliSeconds(100);
 
+        // when
         final DiagnosticTaskResult normalTaskRun = runner.runWithin(normalTask, context, normalTask.getTimeoutInMilliSeconds());
 
         // then
