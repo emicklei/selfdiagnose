@@ -104,6 +104,14 @@
                 <version>1.8</version>
             </extension>
         </extensions>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering> <!-- Needed for adding the version in the file "selfdiagnose.version" -->
+            </resource>
+        </resources>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
