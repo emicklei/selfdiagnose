@@ -26,10 +26,7 @@ import javax.xml.parsers.SAXParserFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 
 /**
  * SelfDiagnose is the component that keeps a registration of DiagnosticTasks
@@ -51,7 +48,7 @@ public abstract class SelfDiagnose {
     /**
      * The name of the resource that holds the specification of tasks.
      */
-    public final static String VERSION = "2.9.2";
+    public final static String VERSION = getCurrentVersion();
     public final static String COPYRIGHT = "(c) ernestmicklei.com";
     public final static String CONFIG = "selfdiagnose.xml";
     private static URL CONFIG_URL = null; // will be initialized by configure(...)
@@ -217,6 +214,31 @@ public abstract class SelfDiagnose {
     }
 
     /**
+     * Reads the version from the file "pom.properties". The build version number is put in this file during
+     * the maven build. This method prevents mistakes by (not) updating both the pom.xml and the VERSION constant
+     * in this class.
+     * @return The current version.
+     */
+    private static String getCurrentVersion() {
+        String result = "Unknown";
+        InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("META-INF/maven/com.philemonworks/selfdiagnose/pom.properties");
+        if (in != null) {
+            try {
+                Properties properties = new Properties();
+                properties.load(in);
+                result = properties.getProperty("version", "Unknown");
+            } catch (IOException ignore) {
+            } finally {
+                try {
+                   in.close();
+                } catch (IOException ignore) {
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
      * Run all registered DiagnosticTasks and report to the LOG. After running
      * all tasks, some simple statistics are logged.
      */
@@ -242,7 +264,7 @@ public abstract class SelfDiagnose {
     /**
      * Remove the previously registered task. Ignore if was not present.
      *
-     * @param custom
+     * @param task
      */
     public static void unregister(DiagnosticTask task) {
         tasks.remove(task);
