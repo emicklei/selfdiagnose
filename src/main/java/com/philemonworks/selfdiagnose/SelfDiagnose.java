@@ -214,22 +214,25 @@ public abstract class SelfDiagnose {
     }
 
     /**
-     * Reads the version from the file "selfdiagnose.version". The build version number is put in this file during
+     * Reads the version from the file "pom.properties". The build version number is put in this file during
      * the maven build. This method prevents mistakes by (not) updating both the pom.xml and the VERSION constant
      * in this class.
      * @return The current version.
      */
     private static String getCurrentVersion() {
-        String result;
-        InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("selfdiagnose.version");
-        try {
-            Scanner s = new Scanner(in).useDelimiter("\\A");
-            result = s.hasNext() ? s.next() : "Unknown";
-        } finally {
+        String result = "Unknown";
+        InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("META-INF/maven/com.philemonworks/selfdiagnose/pom.properties");
+        if (in != null) {
             try {
-                in.close();
+                Properties properties = new Properties();
+                properties.load(in);
+                result = properties.getProperty("version", "Unknown");
             } catch (IOException ignore) {
-                result = "Unknown";
+            } finally {
+                try {
+                   in.close();
+                } catch (IOException ignore) {
+                }
             }
         }
         return result;
