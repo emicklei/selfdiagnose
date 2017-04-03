@@ -73,10 +73,21 @@ public class CustomDiagnosticTask extends DiagnosticTask {
     public void setTask(DiagnosticTask task) {
         if (task == null) return;
         // copy attributes set by config
-        task.setComment(this.getComment());
-        task.setSeverity(this.getSeverity());
-        task.setTimeoutInMilliSeconds(this.getTimeoutInMilliSeconds());
-        task.setVariableName(this.getVariableName());
+
+        String comment = this.getComment();
+        if (!(comment == null || comment.isEmpty())) {
+            task.setComment(this.getComment());
+        }
+        if (!this.isDefaultSeverity()) {
+            task.setSeverity(this.getSeverity());
+        }
+        if (this.getTimeoutInMilliSeconds() > 0) {
+            task.setTimeoutInMilliSeconds(this.getTimeoutInMilliSeconds());
+        }
+        String variableName = this.getVariableName();
+        if (!(variableName == null || variableName.isEmpty())) {
+            task.setVariableName(this.getVariableName());
+        }
         this.task = task;
     }
 

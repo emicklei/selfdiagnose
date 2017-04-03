@@ -80,6 +80,10 @@ public abstract class DiagnosticTask implements Serializable {
      * By default, severity is set to critical.
      */
     private Severity severity = Severity.CRITICAL;
+    /**
+     * Used to detect if the severity has been explicitly specified.
+     */
+    private boolean defaultSeverity = true;
 
     /**
      * Return an object to store the results of running the receiver.
@@ -285,6 +289,10 @@ public abstract class DiagnosticTask implements Serializable {
         return severity;
     }
 
+    public boolean isDefaultSeverity() {
+        return defaultSeverity;
+    }
+
     /**
      * Make sure that severity is set correctly within the allowed values, see {@link Severity} enumeration.
      * @param severity
@@ -294,6 +302,7 @@ public abstract class DiagnosticTask implements Serializable {
             throw new NullPointerException("severity == NULL");
         }
         this.severity = severity;
+        this.defaultSeverity = false;
     }
 
 }
