@@ -1,3 +1,6 @@
+### 2.10.1
+- Read version from pom.properties
+- fix problem with override task config
 ### 2.10.0
 - Prevent `java.lang.OutOfMemoryError: unable to create new native thread` that might happen if diagnostic tasks do not complete within a timeout period
 ### 2.9.0
