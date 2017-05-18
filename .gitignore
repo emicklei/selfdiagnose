@@ -6,3 +6,4 @@
 .idea/*
 .svn/*
 target/*
+dependency-reduced-pom.xml
