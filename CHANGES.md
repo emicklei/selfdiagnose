@@ -1,3 +1,5 @@
+### 2.11.0
+- OGNL and Javassist are now shaded into selfdiagnose. This solves dependency conflict issues.
 ### 2.10.1
 - Read version from pom.properties
 - fix problem with override task config
