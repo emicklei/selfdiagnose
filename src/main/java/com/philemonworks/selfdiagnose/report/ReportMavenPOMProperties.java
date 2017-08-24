@@ -3,12 +3,13 @@ package com.philemonworks.selfdiagnose.report;
 import com.philemonworks.selfdiagnose.*;
 import com.philemonworks.selfdiagnose.check.CheckProperty;
 import com.philemonworks.selfdiagnose.check.CheckResourceProperty;
+import com.philemonworks.selfdiagnose.report.util.MavenPomPropertiesUtil;
+import com.philemonworks.selfdiagnose.report.util.exception.ErrorMessageException;
+import com.philemonworks.selfdiagnose.report.util.exception.FailedMessageException;
 
-import javax.servlet.ServletContext;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.util.Properties;
 
 /**
  * ReportMavenPOMProperties is a task that reports the Maven build properties
@@ -20,6 +21,7 @@ import java.io.InputStreamReader;
  *  name="/META-INF/maven/com.yours.appp/myapp/pom.properties"
  * /&gt;
  * </pre>
+ *
  * @author ernestmicklei
  */
 public class ReportMavenPOMProperties extends CheckResourceProperty {
@@ -39,63 +41,27 @@ public class ReportMavenPOMProperties extends CheckResourceProperty {
     }
 
     public void run(ExecutionContext ctx, DiagnosticTaskResult result) throws DiagnoseException {
-        InputStream is = null;
         String version = null;
         String buildtime = null;
+
+        Properties properties;
         try {
-          Object servletContext = ctx.getValue("servletcontext");
-          if (servletContext != null && servletContext instanceof ServletContext) {
-             is = ((ServletContext) servletContext).getResourceAsStream(this.getName());
-          }
-          if (is == null) {
-              is = this.getClass().getResourceAsStream(this.getName());
-          }
-          // if needed retry using system resource
-          if (is == null) {
-              is = ClassLoader.getSystemResourceAsStream(this.getName());
-          }
-          // if needed retry using contextClassLoader
-          if (is == null) {
-              is = Thread.currentThread().getContextClassLoader().getResourceAsStream(this.getName());
-          }
-          if (is != null) {
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            String line;
-            int linenumber = 0;
-            while ((line = br.readLine()) != null) {
-              linenumber++;
-              if (linenumber == 2 && line.startsWith("#")) {
-                buildtime = line.substring(1);
-              }
-              if (line.startsWith("version=")) {
-                version = line.substring(8);
-              }
-            }
-          } else {
-             result.setFailedMessage("Could not find version properties file (tried all classloaders i know of): [" + this.getName() + "]");
-             return;
-          }
-        } catch (final IOException e) {
-            result.setErrorMessage("Could not load version properties file");
-            return;
-        } finally {
-          if (is != null) {
-            try {
-              is.close();
-            } catch (final IOException e) {
-                result.setErrorMessage("Could not close input stream");
-                return;
-            }
-          }
+            properties = MavenPomPropertiesUtil.readMavenPomPropertiesFile(ctx, this.getName());
+            version = properties.getProperty("version");
+            buildtime = properties.getProperty("buildtime");
+        } catch (FailedMessageException e) {
+            result.setFailedMessage(e.getMessage());
+        } catch (ErrorMessageException e) {
+            result.setErrorMessage(e.getMessage());
         }
 
         if (version == null || version.length() == 0) {
-          version = "unknown";
+            version = "unknown";
         }
         if (buildtime == null || version.length() == 0) {
-          buildtime = "an unknown time";
+            buildtime = "an unknown time";
         }
-        result.setPassedMessage("Version=" + version + " build=" +  buildtime + " from [" + getName() + "]");
+        result.setPassedMessage("Version=" + version + " build=" + buildtime + " from [" + getName() + "]");
     }
 
 }
