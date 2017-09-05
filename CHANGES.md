@@ -1,3 +1,9 @@
+### 2.12.1
+- Fix CheckListingOnHostPort
+- Warnings do not count for total failures
+### 2.12.0
+- Added CheckListingOnHostPort
+- Added CheckEnvironmentProperty
 ### 2.11.0
 - OGNL and Javassist are now shaded into selfdiagnose. This solves dependency conflict issues.
 ### 2.10.1

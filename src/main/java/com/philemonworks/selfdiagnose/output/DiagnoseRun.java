@@ -18,6 +18,7 @@ package com.philemonworks.selfdiagnose.output;
 
 import com.philemonworks.selfdiagnose.DiagnosticTaskResult;
 import com.philemonworks.selfdiagnose.SelfDiagnose;
+import com.philemonworks.selfdiagnose.Severity;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -48,11 +49,14 @@ public class DiagnoseRun {
 
     public int howManyNotPassed() {
         int noTasksFailed = 0;
-        for (Iterator<DiagnosticTaskResult> iterator = results.iterator(); iterator.hasNext();) {
+        for (Iterator<DiagnosticTaskResult> iterator = results.iterator(); iterator.hasNext(); ) {
             DiagnosticTaskResult result = (DiagnosticTaskResult) iterator.next();
-            boolean failed = result.isError() || result.isFailed();
-            if (failed)
+            if (result.isError()) {
                 noTasksFailed++;
+                // if the severity is warning then it does not count as failed
+            } else if (result.isFailed() && result.getSeverity() != Severity.WARNING) {
+                noTasksFailed++;
+            }
         }
         return noTasksFailed;
     }
