@@ -20,22 +20,41 @@ public class ReportProperties extends CheckValueMatches {
 		return "Reports the key=value pairs of a Properties object";
 	}
 
+	private Properties injectedProperties= null; // if null then read from execution context using value parameter.
+
+    // set the properties to override the execution context lookup using the value parameter.
+    public void setProperties(Properties props) {
+        this.injectedProperties = props;
+    }
+
 	public void run(ExecutionContext ctx, DiagnosticTaskResult result)
 			throws DiagnoseException {
 		CompositeDiagnosticTaskResult comResult = (CompositeDiagnosticTaskResult) result;
-		Object value = ctx.resolveValue(this.getValue());
-		if (value == null) {
-			result.setFailedMessage(DiagnoseUtil.format("No properties set for variable {0}",this.getValue()));
-			return;
+		Properties props = this.injectedProperties;
+		if (props == null) { // get it from the execution context
+			Object value = ctx.resolveValue(this.getValue());
+			if (value == null) {
+				result.setFailedMessage(DiagnoseUtil.format("No properties set for variable {0}", this.getValue()));
+				return;
+			}
+			props = (Properties) value;
 		}
-		Properties props = (Properties)value;
 		String[] sortedKeys = new String[props.size()];
 		System.arraycopy(props.keySet().toArray(), 0, sortedKeys, 0, sortedKeys.length);
 		Arrays.sort(sortedKeys);
+		int maxWidth = 0;
+        for (int i=0;i<sortedKeys.length;i++) {
+            String each = sortedKeys[i];
+            maxWidth = Math.max(maxWidth,each.length());
+        }
 		for (int i=0;i<sortedKeys.length;i++) {
 			String each = sortedKeys[i];
 			DiagnosticTaskResult localResult = new DiagnosticTaskResult(this);
-			localResult.setPassedMessage(DiagnoseUtil.format("{0} = {1}",each,props.getProperty(each)));
+			String padded = each;
+			while (padded.length() != maxWidth) {
+			    padded = " " + padded;
+            }
+			localResult.setPassedMessage(DiagnoseUtil.format("{0} = {1}",padded,props.getProperty(each)));
 			localResult.setSeverity(Severity.NONE);
 
 			comResult.addResult(localResult);

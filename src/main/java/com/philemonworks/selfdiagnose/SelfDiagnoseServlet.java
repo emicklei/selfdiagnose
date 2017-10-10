@@ -109,6 +109,10 @@ public class SelfDiagnoseServlet extends HttpServlet {
         }
         String alternateConfig = req.getParameter("config");
         if (alternateConfig != null) {
+            if (!this.remoteConfigurationAllowed) {
+                resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+                return;
+            }            
             SelfDiagnose.configure(new URL(alternateConfig));
         }
         String format = req.getParameter("format");
