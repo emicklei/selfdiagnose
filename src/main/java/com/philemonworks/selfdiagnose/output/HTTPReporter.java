@@ -29,7 +29,7 @@ import java.util.Date;
 import java.util.Iterator;
 
 /**
- * HTMLReporter is to produce an HTTP report for a DiagnoseRun.
+ * HTTPReporter is to produce an simple HTTP report for a DiagnoseRun.
  *
  */
 public class HTTPReporter implements DiagnoseRunReporter {
