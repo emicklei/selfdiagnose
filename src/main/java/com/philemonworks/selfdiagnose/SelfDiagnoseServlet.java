@@ -16,17 +16,18 @@
 */
 package com.philemonworks.selfdiagnose;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.URL;
+import com.philemonworks.selfdiagnose.output.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import com.philemonworks.selfdiagnose.output.*;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.URL;
 
 /**
  * SelfDiagnoseServlet is a server component that can run and report on all registered diagnostic tasks.<br/>
@@ -56,6 +57,13 @@ public class SelfDiagnoseServlet extends HttpServlet {
     }
 
     /**
+     * @return HttpServletRequest the current request
+     */
+    public static HttpServletRequest getCurrentRequest() {
+        return (HttpServletRequest) requestHolder.get();
+    }
+
+    /**
      * Store the current request in a threadlocal variable.
      *
      * @param request HttpServletRequest
@@ -63,14 +71,6 @@ public class SelfDiagnoseServlet extends HttpServlet {
     public static void setCurrentRequest(HttpServletRequest request) {
         requestHolder.set(request);
     }
-
-    /**
-     * @return HttpServletRequest the current request
-     */
-    public static HttpServletRequest getCurrentRequest() {
-        return (HttpServletRequest) requestHolder.get();
-    }
-
 
     public static String getWebApplicationName() {
         if (getCurrentRequest() == null) return "Not applicable";
@@ -112,8 +112,31 @@ public class SelfDiagnoseServlet extends HttpServlet {
             if (!this.remoteConfigurationAllowed) {
                 resp.sendError(HttpServletResponse.SC_FORBIDDEN);
                 return;
-            }            
+            }
             SelfDiagnose.configure(new URL(alternateConfig));
+        }
+        String status = req.getParameter("status");
+        if (status != null) {
+            DiagnoseRunReporter reporter = getReporter("http");
+            try {
+                // bring request available to thread
+                SelfDiagnoseServlet.setCurrentRequest(req);
+                ExecutionContext ctx = new ExecutionContext();
+                try {
+                    ctx.setValue("servletcontext", this.getServletContext());
+                } catch (Exception ex) {
+                } // bummer
+                if (!SelfDiagnose.runTasks(reporter, ctx).isOK()) {
+                    throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR).build());
+                }
+                resp.setContentType(reporter.getContentType());
+                resp.setContentLength(reporter.getContent().length());
+                resp.getWriter().print(reporter.getContent());
+            } finally {
+                // remove request from thread
+                SelfDiagnoseServlet.setCurrentRequest(null);
+            }
+            return;
         }
         String format = req.getParameter("format");
         if (format == null)
@@ -151,6 +174,8 @@ public class SelfDiagnoseServlet extends HttpServlet {
             return new XMLReporter();
         if ("json".equals(format))
             return new JSONReporter();
+        if ("http".equals(format))
+            return new HTTPReporter();
         throw new IllegalArgumentException("Unkown format for reporting:" + format);
     }
 
