@@ -23,8 +23,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
@@ -127,7 +125,8 @@ public class SelfDiagnoseServlet extends HttpServlet {
                 } catch (Exception ex) {
                 } // bummer
                 if (!SelfDiagnose.runTasks(reporter, ctx).isOK()) {
-                    throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR).build());
+                    resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    return;
                 }
                 resp.setContentType(reporter.getContentType());
                 resp.setContentLength(reporter.getContent().length());
