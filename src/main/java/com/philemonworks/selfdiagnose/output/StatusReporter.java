@@ -29,10 +29,10 @@ import java.util.Date;
 import java.util.Iterator;
 
 /**
- * HTTPReporter is to produce an simple HTTP report for a DiagnoseRun.
+ * StatusReporter is to produce an general status report for a DiagnoseRun.
  *
  */
-public class HTTPReporter implements DiagnoseRunReporter {
+public class StatusReporter implements DiagnoseRunReporter {
     private Boolean status;
 
     public void report(DiagnoseRun run) {

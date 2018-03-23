@@ -117,7 +117,7 @@ public class SelfDiagnoseServlet extends HttpServlet {
         }
         String status = req.getParameter("status");
         if (status != null) {
-            DiagnoseRunReporter reporter = getReporter("http");
+            DiagnoseRunReporter reporter = new StatusReporter();
             try {
                 // bring request available to thread
                 SelfDiagnoseServlet.setCurrentRequest(req);
@@ -174,8 +174,6 @@ public class SelfDiagnoseServlet extends HttpServlet {
             return new XMLReporter();
         if ("json".equals(format))
             return new JSONReporter();
-        if ("http".equals(format))
-            return new HTTPReporter();
         throw new IllegalArgumentException("Unkown format for reporting:" + format);
     }
 
