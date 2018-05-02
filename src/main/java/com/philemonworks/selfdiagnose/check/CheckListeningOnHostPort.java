@@ -30,16 +30,15 @@ public class CheckListeningOnHostPort extends PatternMatchingTask {
                 }
                 if (uri.getPort() == -1) {
                     String scheme = uri.getScheme();
-                    if (StringUtils.countOccurrencesOf(scheme, "http") > 0) {
-                        port = 80;
-                    } else if (StringUtils.countOccurrencesOf(scheme, "https") > 0) {
+                    if (StringUtils.countOccurrencesOf(scheme, "https") > 0) {
                         port = 443;
+                    } else if (StringUtils.countOccurrencesOf(scheme, "http") > 0) {
+                        port = 80;
                     }
                 } else {
                     port = uri.getPort();
                 }
                     hostName = uri.getHost();
-                    port = uri.getPort();
                 } catch(URISyntaxException e){
                     log.error(String.format("Url %s given is not valid, Exception message is : %s", url, e.getMessage()));
                 }
