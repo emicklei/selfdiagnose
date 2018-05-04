@@ -10,6 +10,7 @@
  */
 package com.philemonworks.selfdiagnose.test;
 
+import com.philemonworks.selfdiagnose.ExecutionContext;
 import com.philemonworks.selfdiagnose.output.JSONReporter;
 import junit.framework.TestCase;
 
@@ -73,5 +74,15 @@ public class SelfDiagnoseReporterTest extends TestCase {
         SelfDiagnose.runTasks(reporter);
         System.out.println("---------REPORT FROM XML TEST ----------");
         System.out.println(reporter.getContent());
-    }    
+    }
+
+    public void testHTMLParallel() {
+        HTMLReporter reporter = new HTMLReporter();
+        assertNotNull(reporter.getContentType());
+        ExecutionContext ctx = new ExecutionContext();
+        ctx.setValue("parallel", true);
+        SelfDiagnose.runTasks(reporter, ctx);
+        System.out.println("---------REPORT FROM HTML PARALLEL TEST ----------");
+        System.out.println(reporter.getContent());
+    }
 }

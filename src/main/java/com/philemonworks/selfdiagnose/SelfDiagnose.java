@@ -20,7 +20,6 @@ import com.philemonworks.selfdiagnose.output.DiagnoseRun;
 import com.philemonworks.selfdiagnose.output.DiagnoseRunReporter;
 import com.philemonworks.selfdiagnose.output.XMLReporter;
 import org.apache.log4j.Logger;
-import org.springframework.http.HttpRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.SAXParser;
@@ -200,6 +199,39 @@ public abstract class SelfDiagnose {
         DiagnoseRun run = new DiagnoseRun();
         List<DiagnosticTaskResult> results = new ArrayList<DiagnosticTaskResult>(taskList.size());
 
+        boolean parallelExecution = false;
+        try {
+            parallelExecution = ctx.getValue("parallel") != null;
+        } catch (DiagnoseException e) {
+        }
+
+        if (parallelExecution) {
+            runParallel(taskList, ctx, results);
+        } else {
+            runSync(taskList, ctx, results);
+        }
+
+        run.finished();
+        run.results = results;
+        reporter.report(run);
+        return run;
+    }
+
+    private static void runSync(List<DiagnosticTask> taskList, ExecutionContext ctx, List<DiagnosticTaskResult> results) {
+        for (int i = 0; i < taskList.size(); i++) {
+            DiagnosticTask each = (DiagnosticTask) taskList.get(i);
+            DiagnosticTaskResult result = null;
+            // see if task wants to run with a timeout
+            if (each.needsLimitedRuntime()) {
+                result = BACKGROUND_RUNNER.runWithin(each, ctx, each.getTimeoutInMilliSeconds());
+            } else {
+                result = each.run(ctx);
+            }
+            result.addToResults(results);
+        }
+    }
+
+    private static void runParallel(List<DiagnosticTask> taskList, final ExecutionContext ctx, List<DiagnosticTaskResult> results) {
         ExecutorService executor = Executors.newFixedThreadPool(10);
         List<Callable<DiagnosticTaskResult>> callableTasks = new ArrayList<Callable<DiagnosticTaskResult>>(taskList.size());
 
@@ -235,23 +267,6 @@ public abstract class SelfDiagnose {
             e.printStackTrace();
         }
         executor.shutdown();
-
-
-//        for (int i = 0; i < taskList.size(); i++) {
-//            DiagnosticTask each = (DiagnosticTask) taskList.get(i);
-//            DiagnosticTaskResult result = null;
-//            // see if task wants to run with a timeout
-//            if (each.needsLimitedRuntime()) {
-//                result = BACKGROUND_RUNNER.runWithin(each, ctx, each.getTimeoutInMilliSeconds());
-//            } else {
-//                result = each.run(ctx);
-//            }
-//            result.addToResults(results);
-//        }
-        run.finished();
-        run.results = results;
-        reporter.report(run);
-        return run;
     }
 
     /**
