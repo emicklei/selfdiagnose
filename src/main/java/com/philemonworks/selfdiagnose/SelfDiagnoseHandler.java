@@ -69,8 +69,10 @@ public class SelfDiagnoseHandler extends DefaultHandler {
      *      org.xml.sax.Attributes)
      */
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-        if ("selfdiagnose".equals(qName))
+        if ("selfdiagnose".equals(qName)) {
+            this.handleHeader(attributes);
             return; // document root
+        }
         if ("tasks".equals(qName))
             return; // sequence
         if ("task".equals(qName)) {
@@ -100,6 +102,13 @@ public class SelfDiagnoseHandler extends DefaultHandler {
         if ("iterator".equals(name)) {
             CollectionIteratorTask cit = (CollectionIteratorTask) iteratorStack.pop();
             this.addTaskToRegistration(cit);
+        }
+    }
+
+    private void handleHeader(Attributes attributes) {
+        String parallelExecution = attributes.getValue("parallel");
+        if (parallelExecution != null && !parallelExecution.isEmpty() && parallelExecution.equals("true")) {
+            SelfDiagnose.setParallelExecution(true);
         }
     }
 

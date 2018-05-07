@@ -85,4 +85,14 @@ public class SelfDiagnoseReporterTest extends TestCase {
         System.out.println("---------REPORT FROM HTML PARALLEL TEST ----------");
         System.out.println(reporter.getContent());
     }
+
+    public void testHTMLParallel2() {
+        HTMLReporter reporter = new HTMLReporter();
+        assertNotNull(reporter.getContentType());
+        ExecutionContext ctx = new ExecutionContext();
+        SelfDiagnose.setParallelExecution(true);
+        SelfDiagnose.runTasks(reporter, ctx);
+        System.out.println("---------REPORT FROM HTML PARALLEL TEST ----------");
+        System.out.println(reporter.getContent());
+    }
 }

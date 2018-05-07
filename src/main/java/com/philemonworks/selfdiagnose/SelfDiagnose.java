@@ -59,6 +59,7 @@ public abstract class SelfDiagnose {
     private static List<DiagnosticTask> tasks = Collections.synchronizedList(new ArrayList<DiagnosticTask>());
 
     private static final TaskBackgroundRunner BACKGROUND_RUNNER = new TaskBackgroundRunner(100);
+    private static boolean parallelExecution;
 
     static {
         SelfDiagnose.configure(CONFIG);
@@ -199,13 +200,17 @@ public abstract class SelfDiagnose {
         DiagnoseRun run = new DiagnoseRun();
         List<DiagnosticTaskResult> results = new ArrayList<DiagnosticTaskResult>(taskList.size());
 
-        boolean parallelExecution = false;
+        boolean parallelEnabled = false;
         try {
-            parallelExecution = ctx.getValue("parallel") != null;
+            parallelEnabled = ctx.getValue("parallel") != null;
         } catch (DiagnoseException e) {
         }
 
-        if (parallelExecution) {
+        if (!parallelEnabled) {
+            parallelEnabled = parallelExecution;
+        }
+
+        if (parallelEnabled) {
             runParallel(taskList, ctx, results);
         } else {
             runSync(taskList, ctx, results);
@@ -259,12 +264,12 @@ public abstract class SelfDiagnose {
                     DiagnosticTaskResult diagnosticTaskResult = result.get();
                     diagnosticTaskResult.addToResults(results);
                 } catch (ExecutionException e) {
-                    e.printStackTrace();
+                    LOG.error("Failed to retrieve the result for one of the tasks", e);
                 }
             }
 
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            LOG.error("Could not handle the tasks in parallel", e);
         }
         executor.shutdown();
     }
@@ -308,6 +313,7 @@ public abstract class SelfDiagnose {
      */
     public static void flush() {
         tasks = Collections.synchronizedList(new ArrayList<DiagnosticTask>());
+        parallelExecution = false;
     }
 
     /**
@@ -325,5 +331,13 @@ public abstract class SelfDiagnose {
      */
     public static void unregister(DiagnosticTask task) {
         tasks.remove(task);
+    }
+
+    public static boolean isParallelExecution() {
+        return SelfDiagnose.parallelExecution;
+    }
+
+    public static void setParallelExecution(boolean parallelExecution) {
+        SelfDiagnose.parallelExecution = parallelExecution;
     }
 }
