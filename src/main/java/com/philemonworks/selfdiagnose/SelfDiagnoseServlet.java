@@ -148,7 +148,7 @@ public class SelfDiagnoseServlet extends HttpServlet {
             ExecutionContext ctx = new ExecutionContext();
             String parallel = req.getParameter("parallel");
             if (parallel != null) {
-                ctx.setValue("parallel", true);
+                ctx.setValue("selfdiagnose-tasks-parallel", true);
             }
             try {
                 ctx.setValue("servletcontext", this.getServletContext());

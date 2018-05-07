@@ -202,7 +202,7 @@ public abstract class SelfDiagnose {
 
         boolean parallelEnabled = false;
         try {
-            parallelEnabled = ctx.getValue("parallel") != null;
+            parallelEnabled = ctx.getValue("selfdiagnose-tasks-parallel") != null;
         } catch (DiagnoseException e) {
         }
 
