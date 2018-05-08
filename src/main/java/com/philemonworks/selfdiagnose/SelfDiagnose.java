@@ -21,12 +21,14 @@ import com.philemonworks.selfdiagnose.output.DiagnoseRunReporter;
 import com.philemonworks.selfdiagnose.output.XMLReporter;
 import org.apache.log4j.Logger;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * SelfDiagnose is the component that keeps a registration of DiagnosticTasks
@@ -57,6 +59,7 @@ public abstract class SelfDiagnose {
     private static List<DiagnosticTask> tasks = Collections.synchronizedList(new ArrayList<DiagnosticTask>());
 
     private static final TaskBackgroundRunner BACKGROUND_RUNNER = new TaskBackgroundRunner(100);
+    private static boolean parallelExecution;
 
     static {
         SelfDiagnose.configure(CONFIG);
@@ -193,9 +196,33 @@ public abstract class SelfDiagnose {
     /**
      * Basic method to the tasks provided
      */
-    public static DiagnoseRun runTasks(List<DiagnosticTask> taskList, DiagnoseRunReporter reporter, ExecutionContext ctx) {
+    public static DiagnoseRun runTasks(List<DiagnosticTask> taskList, DiagnoseRunReporter reporter, final ExecutionContext ctx) {
         DiagnoseRun run = new DiagnoseRun();
         List<DiagnosticTaskResult> results = new ArrayList<DiagnosticTaskResult>(taskList.size());
+
+        boolean parallelEnabled = false;
+        try {
+            parallelEnabled = ctx.getValue("selfdiagnose-tasks-parallel") != null;
+        } catch (DiagnoseException e) {
+        }
+
+        if (!parallelEnabled) {
+            parallelEnabled = parallelExecution;
+        }
+
+        if (parallelEnabled) {
+            runParallel(taskList, ctx, results);
+        } else {
+            runSync(taskList, ctx, results);
+        }
+
+        run.finished();
+        run.results = results;
+        reporter.report(run);
+        return run;
+    }
+
+    private static void runSync(List<DiagnosticTask> taskList, ExecutionContext ctx, List<DiagnosticTaskResult> results) {
         for (int i = 0; i < taskList.size(); i++) {
             DiagnosticTask each = (DiagnosticTask) taskList.get(i);
             DiagnosticTaskResult result = null;
@@ -207,16 +234,51 @@ public abstract class SelfDiagnose {
             }
             result.addToResults(results);
         }
-        run.finished();
-        run.results = results;
-        reporter.report(run);
-        return run;
+    }
+
+    private static void runParallel(List<DiagnosticTask> taskList, final ExecutionContext ctx, List<DiagnosticTaskResult> results) {
+        ExecutorService executor = Executors.newFixedThreadPool(10);
+        List<Callable<DiagnosticTaskResult>> callableTasks = new ArrayList<Callable<DiagnosticTaskResult>>(taskList.size());
+
+        final HttpServletRequest request = SelfDiagnoseServlet.getCurrentRequest();
+        for (final DiagnosticTask diagnosticTask : taskList) {
+            Callable<DiagnosticTaskResult> c = new Callable<DiagnosticTaskResult>() {
+                @Override
+                public DiagnosticTaskResult call() {
+                    SelfDiagnoseServlet.setCurrentRequest(request);
+                    DiagnosticTaskResult result = null;
+                    if (diagnosticTask.needsLimitedRuntime()) {
+                        result = BACKGROUND_RUNNER.runWithin(diagnosticTask, ctx, diagnosticTask.getTimeoutInMilliSeconds());
+                    } else {
+                        result = diagnosticTask.run(ctx);
+                    }
+                    return result;
+                }
+            };
+            callableTasks.add(c);
+        }
+        try {
+            List<Future<DiagnosticTaskResult>> executableTasks = executor.invokeAll(callableTasks);
+            for (Future<DiagnosticTaskResult> result : executableTasks) {
+                try {
+                    DiagnosticTaskResult diagnosticTaskResult = result.get();
+                    diagnosticTaskResult.addToResults(results);
+                } catch (ExecutionException e) {
+                    LOG.error("Failed to retrieve the result for one of the tasks", e);
+                }
+            }
+
+        } catch (InterruptedException e) {
+            LOG.error("Could not handle the tasks in parallel", e);
+        }
+        executor.shutdown();
     }
 
     /**
      * Reads the version from the file "pom.properties". The build version number is put in this file during
      * the maven build. This method prevents mistakes by (not) updating both the pom.xml and the VERSION constant
      * in this class.
+     *
      * @return The current version.
      */
     private static String getCurrentVersion() {
@@ -230,7 +292,7 @@ public abstract class SelfDiagnose {
             } catch (IOException ignore) {
             } finally {
                 try {
-                   in.close();
+                    in.close();
                 } catch (IOException ignore) {
                 }
             }
@@ -251,6 +313,7 @@ public abstract class SelfDiagnose {
      */
     public static void flush() {
         tasks = Collections.synchronizedList(new ArrayList<DiagnosticTask>());
+        parallelExecution = false;
     }
 
     /**
@@ -268,5 +331,13 @@ public abstract class SelfDiagnose {
      */
     public static void unregister(DiagnosticTask task) {
         tasks.remove(task);
+    }
+
+    public static boolean isParallelExecution() {
+        return SelfDiagnose.parallelExecution;
+    }
+
+    public static void setParallelExecution(boolean parallelExecution) {
+        SelfDiagnose.parallelExecution = parallelExecution;
     }
 }

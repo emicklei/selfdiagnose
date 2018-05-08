@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+<!-- DOCTYPE selfdiagnose PUBLIC
+    "-//SelfDiagnose/SelfDiagnose Configuration DTD 1.0//EN"
+    "http://www.philemonworks.com/dtd/selfdiagnose-1.0.dtd" -->
+<!-- declaration is commented for sake of local testing -->
+
+<selfdiagnose parallel="ok">
+    <tasks>
+        <!--<checkurlreachable url="http://www.github.com" timeout="200" var="phw" comment='personal blog'/>-->
+        <!--<checkurlreachable url="${phw}" var="phw2"/>-->
+        <!--<checkbeanproperty bean="${phw2}" property="protocol" pattern="http" var="protocol"/>-->
+
+        <checkdatabasetableexists name="BUZ.PERSONS" datasource="jndi/bizzie"/>
+        <checkresourceproperty name="some.properties" property="some" var="some"/>
+
+        <checkresourceproperty name="some.properties" property="som"/>
+        <checkresourceaccessible name="log4j.properties"/>
+        <checkclassloadable name="org.apache.log4j.Logger"/>
+        <checkdatasourceconnectable name="jdbc/active"/>
+        <checkdirectoryaccessible path="." writeable="true"/>
+        <checkdirectoryaccessible path="."/>
+        <checkfilecontainsstring name=".project" string="Hello"/>
+        <checkjndibinding name="jms.queuename"/>
+        <checkjndibinding url="localhost" factory="WsFactory" name="jms.queuename" class="java.lang.String"/>
+        <checkresourceproperty name="some.properties" property="any"/>
+        <checkresourceproperty name="some.properties" property="color" pattern="#[0-9A-F](6)"/>
+        <checkresourcebundlekey name="catalog.properties" key="any"/>
+        <checkvalidurl url="http://localhost:8000"/>
+
+        <checkpropertyvaluesarejavatypes name="classes.properties" filter="type*"/>
+
+        <!-- generic task -->
+        <task
+                class="com.philemonworks.selfdiagnose.check.CheckResourceProperty"
+                name="some.properties"
+                property="any"
+                var="myvar"/>
+
+        <iterator comment="i am an iterator" value="{[&quot;one&quot;]}" var="each">
+            <checkvaluematches value="{each}" pattern=".*"/>
+        </iterator>
+
+    </tasks>
+</selfdiagnose>
