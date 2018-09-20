@@ -31,6 +31,11 @@ public class MavenPomPropertiesUtil {
             if (is == null) {
                 is = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileLocation);
             }
+            // Java 9+ fix
+            // See also: https://stackoverflow.com/questions/49702287/getresourceasstream-returning-null-in-java-10
+            if (is == null) {
+                is = MavenPomPropertiesUtil.class.getResourceAsStream(fileLocation);
+            }
             if (is != null) {
                 Properties prop = new Properties();
                 prop.load(is);
