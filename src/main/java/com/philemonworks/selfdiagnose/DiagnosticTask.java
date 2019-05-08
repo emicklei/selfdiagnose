@@ -165,7 +165,7 @@ public abstract class DiagnosticTask implements Serializable {
             if (why == null) {
                 why = ex.toString();
             }
-            String errorMessage = "Unexpected error occurred while running this task because: " + why;
+            String errorMessage = "Unexpected error occurred while running "+this.getClass().getName()+" because: " + why;
             result.setErrorMessage(errorMessage);
             LOGGER.error(errorMessage, ex);
         }
